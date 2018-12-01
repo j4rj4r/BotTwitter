@@ -1,5 +1,5 @@
 # BotTwitter
-Un bot Twitter pour participer aux concours.
+Un bot multi-compte Twitter pour participer aux concours.
 
 ### Dépendance du script :
 
