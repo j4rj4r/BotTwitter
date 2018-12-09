@@ -21,14 +21,20 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname) :#Fonction de retweet 
             except StopIteration:
                 break
 
-def commentaire(api,tweet,tabname) :
+def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
     try:
-        comment = "@" + tweet.user.screen_name + " J'invite : " #On prepare le message de commentaire
+        if hasattr(tweet, 'retweeted_status') :
+            comment = "@" + tweet.retweeted_status.author.screen_name + " J'invite : "
+        else :
+            comment = "@" + tweet.user.screen_name + " J'invite : " #On prepare le message de commentaire
         user = api.me()
         for username in tabname :
             if username == "@" + user.screen_name : #On veut pas mentionner le compte actif.
                 username = ""
             comment = comment + username + " " #On fait le message de commenataire
-        api.update_status(comment,in_reply_to_status=tweet.id) #On envoit le commentaire
+        if hasattr(tweet, 'retweeted_status') :
+            api.update_status(comment,tweet.retweeted_status.id)
+        else :
+            api.update_status(comment,tweet.id) #On envoit le commentaire
     except tweepy.TweepError as e:
         print(e.reason)
