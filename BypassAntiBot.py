@@ -13,13 +13,7 @@ def bypass(api) :#Fonction principal de bypass anti bot (basé sur le site twren
 
     pourcentageRT = CalculPourcentageRT(api)
     while pourcentageRT >= 50 : #On veut moins de 50% de RT
-        f = open('randomtweet.txt','r')
-        t = f.readlines()
-        f.close()
-        nbrandom =  random.randrange(0,len(t))
-        nbrandom2 = random.randrange(0,1000)
-        message = t[nbrandom]
-        api.update_status(message + str(nbrandom2))#On ajoute nombre random pour éviter probleme dupli (à vérifier)
+        randomtweet(api)
         pourcentageRT = CalculPourcentageRT(api)
         nb += 1
     print("Pourcentage RT final : " + str(pourcentageRT))
@@ -44,7 +38,7 @@ def CalculPourcentageRtFollow(api) : #Fonction calcul pourcentage de RT avec le 
     return pourcentage
 
 def randomretweet(api) : #On retweet un tweet random
-    randommessage = ["#ILOVENICE","Nice","#photographie","YOLO","Tesla","OGCNICE","Surprise","manger","rire","France","tv","chat","matin","Paris","Monde","fatigue","orthographe","chien","#photo"]
+    randommessage = ["#ILOVENICE","Nice","#photographie","YOLO","Tesla","OGCNICE","Surprise","manger","rire","France","tv","chat","matin","Paris","Monde","fatigue","orthographe","chien","#photo","#voyage","#France"]
     nbrandom =  random.randrange(0,len(randommessage))
     for tweet in tweepy.Cursor(api.search,q=randommessage[nbrandom],result_type="recent",lang="fr").items(10):
         try:
@@ -53,3 +47,13 @@ def randomretweet(api) : #On retweet un tweet random
             print(e.reason)
         except StopIteration:
             break
+
+
+def randomtweet(api) : #On tweet un message
+    f = open('randomtweet.txt','r', encoding="utf-8")
+    t = f.readlines()
+    f.close()
+    nbrandom =  random.randrange(0,len(t))
+    nbrandom2 = random.randrange(0,1000)
+    message = t[nbrandom]
+    api.update_status(message + str(nbrandom2))#On ajoute nombre random pour éviter probleme dupli (à vérifier)
