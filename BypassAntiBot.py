@@ -8,8 +8,8 @@ def bypass(api) :#Fonction principal de bypass anti bot (basé sur le site twren
     while pourcentageRTFollow >= 25 : #On veut moins de 25% de RT avec le mot Follow
         randomretweet(api)
         pourcentageRTFollow = CalculPourcentageRtFollow(api)
-        print("Pourcentage de Rt avec Follow (en cours de diminution) : " + str(pourcentageRTFollow))
-    print("Pourcentage de Rt avec Follow (final) : " + str(pourcentageRTFollow))
+        print("Pourcentage de Rt avec le mot Follow (en cours de diminution) : " + str(pourcentageRTFollow))
+    print("Pourcentage de Rt avec le mot Follow (final) : " + str(pourcentageRTFollow))
 
     pourcentageRT = CalculPourcentageRT(api)
     while pourcentageRT >= 50 : #On veut moins de 50% de RT
