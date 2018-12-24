@@ -4,7 +4,7 @@ tabname = []
 ###Constante Paramètre du bot ###
 version = 2.0 #Version du bot
 compte = {"1":["","","",""],"2":["","","",""],"3":["","","",""]} #Liste des comptes avec les identifiants de connexion à l'api
-NombreDeRetweet = 9 #Nombre de tweet que l'on recupère par recherche
+NombreDeRetweet = 10 #Nombre de tweet que l'on recupère par recherche
 listerecherchefr = ["#concours","#JeuConcours","RT & Follow","tenter de gagner","tirage au sort","Gagnez rt + follow","concours pour gagner"]#Mot à retweeté pour un concours
 ###
 for tabauth in compte.values():
@@ -21,7 +21,7 @@ while True :
         api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
         RetweetConcours.retweet(api,NombreDeRetweet,listerecherchefr,tabname)#on retweet les concours
         BypassAntiBot.bypass(api)#On bypass l'anti bot
-    nbrandom = random.randrange(6500,7200)
+    nbrandom = random.randrange(6250,7000)
     try :
         print("Programme en attente de : " + str(nbrandom) + " s") #Temps d'attente en seconde avant une nouvelle boucle
         time.sleep(nbrandom)
