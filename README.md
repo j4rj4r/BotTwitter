@@ -21,4 +21,4 @@ Vous pouvez rajouter autant de compte que vous voulez.
 compte = {"1":[API key,API secret key,Access token,Access token secret],"2":[API key,API secret key,Access token,Access token secret]}
 ```
 
-Pour lance le bot vous devez faire : python3 main.py
+Pour lancer le bot vous devez faire : python3 main.py
