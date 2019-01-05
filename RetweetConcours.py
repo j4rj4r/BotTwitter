@@ -16,9 +16,17 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname) :#Fonction de retweet 
                         commentaire(api,tweet,tabname)
                     elif "MENTIONNE" in tweet.full_text.upper() : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
+                    elif "TAGUEZ" in tweet.full_text.upper() : #On vérifie si il faut inviter des amies.
+                        commentaire(api,tweet,tabname)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
-                print(e.reason)
+                if e.api_code == 185 :
+                    print("Message en attente, on a envoyé trop de message :(")
+                    time.sleep(1500)
+                elif e.api_code == 327 :
+                    pass
+                else :
+                    print(e.reason)
             except StopIteration:
                 break
 
@@ -38,4 +46,8 @@ def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
         else :
             api.update_status(comment,tweet.id) #On envoit le commentaire
     except tweepy.TweepError as e:
-        print(e.reason)
+        if e.api_code == 185 :
+            print("Message en attente, on a envoyé trop de message")
+            time.sleep(1500)
+        else :
+            print(e.reason)
