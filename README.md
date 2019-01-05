@@ -22,3 +22,5 @@ compte = {"1":[API key,API secret key,Access token,Access token secret],"2":[API
 ```
 
 Pour lancer le bot vous devez faire : python3 main.py
+
+Vous avez une question ? Mon nom d'utilisateur twitter est : @j4rj4r1
