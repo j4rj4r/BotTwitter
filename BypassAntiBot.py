@@ -38,9 +38,9 @@ def CalculPourcentageRtFollow(api) : #Fonction calcul pourcentage de RT avec le 
     return pourcentage
 
 def randomretweet(api) : #On retweet un tweet random
-    randommessage = ["#ILOVENICE","Nice","#photographie","YOLO","#Tesla","OGCNICE","Surprise","manger","rire","France","tv","chat","matin","Paris","Monde","fatigue","orthographe","chien","#photo","#voyage","#France"]
-    nbrandom =  random.randrange(0,len(randommessage))
-    for tweet in tweepy.Cursor(api.search,q=randommessage[nbrandom],result_type="recent",lang="fr").items(10):
+    randomsearch = ["Dance","#Fiesta","#ILOVENICE","Nice","#photographie","YOLO","#Tesla","OGCNICE","Surprise","manger","rire","France","tv","chat","matin","Paris","Monde","fatigue","orthographe","chien","#photo","#voyage","#France","#Travel"]
+    nbrandom =  random.randrange(0,len(randomsearch))
+    for tweet in tweepy.Cursor(api.search,q=randomsearch[nbrandom],result_type="recent",lang="fr").items(10):
         try:
             tweet.retweet()
         except tweepy.TweepError as e:
@@ -53,15 +53,23 @@ def randomretweet(api) : #On retweet un tweet random
             break
 
 
-def randomtweet(api) : #On tweet un message
+def randomtweet(api) : #On récupère un message tweeter et on le tweet
     try:
-        f = open('randomtweet.txt','r', encoding="utf-8")
-        t = f.readlines()
-        f.close()
-        nbrandom =  random.randrange(0,len(t))
-        nbrandom2 = random.randrange(0,1500)
-        message = t[nbrandom]
-        api.update_status(message + str(nbrandom2))#On ajoute nombre random pour éviter probleme dupli (à vérifier)
+        randomsearch1 = ["Champion","pizza","#écologie","pizza","#drone","Amour","#photographie","YOLO","#Tesla","Surprise","manger","rire","France","tv","chat","matin","drole","radio","Paris","Monde","fatigue","orthographe","boulot","dodo","cocacola","pepsi","fiesta","chien","#photo","#voyage","#France","#Travel","Tournoi","Tennis","Sport","foot","badminton","vacance","valise","monde","tatouage","#paranormal","#fun","Cote d'azur","Cinéma","théatre","montagne","Bretagne"]
+        nbrandom =  random.randrange(0,len(randomsearch1))
+        for tweet in tweepy.Cursor(api.search,q=randomsearch1[nbrandom],lang="fr",tweet_mode="extended",result_type='recent').items(1):
+            if hasattr(tweet, 'retweeted_status') :
+                tweettext = tweet.retweeted_status.full_text
+                if "@" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
+                    tweettext = tweettext.replace("@"," ")
+                api.update_status(tweettext)
+                time.sleep(10)
+            else :
+                tweettext = tweet.full_text
+                if "@" in tweettext :
+                    tweettext = tweettext.replace("@"," ")
+                api.update_status(tweettext)
+                time.sleep(10)
     except tweepy.TweepError as e:
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
