@@ -8,7 +8,6 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                     if hasattr(tweet, 'retweeted_status') :
                         if(tweet.retweeted_status.author.screen_name in BlackListCompte) :
                             print("Compte blacklist : " + tweet.retweeted_status.author.screen_name)
-                            pass
                         else :
                             tweet.retweet() #On retweet
                             api.create_friendship(tweet.retweeted_status.author.id)
@@ -16,7 +15,6 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                     else :
                         if(tweet.user.screen_name in BlackListCompte) :
                             print("Compte blacklist : " + tweet.user.screen_name)
-                            pass
                         else :
                             tweet.retweet() #On retweet
                             api.create_friendship(tweet.user.id) #On follow
