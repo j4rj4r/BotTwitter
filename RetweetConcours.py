@@ -10,6 +10,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             print("Compte blacklist : " + tweet.retweeted_status.author.screen_name)
                         else :
                             tweet.retweet() #On retweet
+                            tweet.favorite()
                             api.create_friendship(tweet.retweeted_status.author.id)
                             print('Vous avez retweet le tweet de  @' + tweet.retweeted_status.author.screen_name)
                     else :
@@ -17,6 +18,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             print("Compte blacklist : " + tweet.user.screen_name)
                         else :
                             tweet.retweet() #On retweet
+                            tweet.favorite()
                             api.create_friendship(tweet.user.id) #On follow
                             print('Vous avez retweet le tweet de  @' + tweet.user.screen_name)
                     if "INVITER" in tweet.full_text.upper() : #On vérifie si il faut inviter des amies.
