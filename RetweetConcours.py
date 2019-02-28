@@ -1,4 +1,4 @@
-import tweepy,random,BypassAntiBot,time
+import tweepy,random,BypassAntiBot,time,re
 
 def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonction de retweet de concours
     for mot in listerecherchefr : #Pour chaque mot dans la liste un lance une recherche
@@ -21,11 +21,11 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             tweet.favorite()
                             api.create_friendship(tweet.user.id) #On follow
                             print('Vous avez retweet le tweet de  @' + tweet.user.screen_name)
-                    if "INVITER" in tweet.full_text.upper() : #On vérifie si il faut inviter des amies.
+                    if re.search("(^|\s)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
-                    elif "MENTIONNE" in tweet.full_text.upper() : #On vérifie si il faut inviter des amies.
+                    elif re.search("(^|\s|#)TAG(|UE|UER|UEZ|UÉ|É)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
-                    elif "TAGUEZ" in tweet.full_text.upper() : #On vérifie si il faut inviter des amies.
+                    elif re.search("(^|\s)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
@@ -46,10 +46,14 @@ def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
         else :
             comment = "@" + tweet.user.screen_name + " J'invite : " #On prepare le message de commentaire
         user = api.me()
+        nbusernotif = 0 #Variale compteur de compte tag
+        random.shuffle(tabname) #On mélange le tableau aléatoirement.
         for username in tabname :
             if username == "@" + user.screen_name : #On veut pas mentionner le compte actif.
                 username = ""
-            comment = comment + username + " " #On fait le message de commenataire
+            if nbusernotif < 2 : #On veut pas tag plus de 2 comptes
+                comment = comment + username + " " #On fait le message de commentaire
+                nbusernotif +=1 # On augmente le compteur de compte tag
         if hasattr(tweet, 'retweeted_status') :
             api.update_status(comment,tweet.retweeted_status.id)
         else :
@@ -57,6 +61,6 @@ def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
     except tweepy.TweepError as e:
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
-            time.sleep(1500)
+            time.sleep(1000)
         else :
             print(e.reason)
