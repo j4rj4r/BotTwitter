@@ -6,7 +6,7 @@ version = 2.5 #Version du bot
 compte = {"1":["","","",""],"2":["","","",""],"3":["","","",""],"4":["","","",""]} #Liste des comptes avec les identifiants de connexion à l'api
 NombreDeRetweet = 12 #Nombre de tweet que l'on recupère par recherche
 listerecherchefr = ["#concours","#JeuConcours","RT & Follow","tenter de gagner","Gagnez rt + follow","concours pour gagner"]#Mot à retweeté pour un concours
-BlackListCompte = ["NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks","CrashqConcours","Yanteh_"]#Blacklist pour compte à concours (très) bidon | Il faut metre le pseudo après le @
+BlackListCompte = ["NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks","CrashqConcours","Yanteh_","NistiKTV",]#Blacklist pour compte à concours (très) bidon | Il faut metre le pseudo après le @
 ###
 for tabauth in compte.values():
     auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
