@@ -38,7 +38,7 @@ def CalculPourcentageRtFollow(api) : #Fonction calcul pourcentage de RT avec le 
     return pourcentage
 
 def randomretweet(api) : #On retweet un tweet random
-    randomsearch = ["Dance","#Fiesta","#ILOVENICE","Nice","#photographie","YOLO","#Tesla","OGCNICE","Surprise","manger","rire","France","tv","chat","matin","Paris","Monde","fatigue","orthographe","chien","#photo","#voyage","#France","#Travel"]
+    randomsearch = ["#Paris","Dance","#Fiesta","#ILOVENICE","Nice","#photographie","YOLO","#Tesla","OGCNICE","Surprise","manger","rire","France","tv","chat","matin","Paris","Monde","fatigue","orthographe","chien","#photo","#voyage","#France","#Travel"]
     nbrandom =  random.randrange(0,len(randomsearch))
     for tweet in tweepy.Cursor(api.search,q=randomsearch[nbrandom],result_type="recent",lang="fr").items(10):
         try:
@@ -55,7 +55,7 @@ def randomretweet(api) : #On retweet un tweet random
 
 def randomtweet(api) : #On récupère un message tweeter et on le tweet
     try:
-        randomsearch1 = ["Champion","pizza","#écologie","pizza","#drone","Amour","#photographie","YOLO","#Tesla","Surprise","manger","rire","France","tv","chat","matin","drole","radio","Paris","Monde","fatigue","orthographe","boulot","dodo","cocacola","pepsi","fiesta","chien","#photo","#voyage","#France","#Travel","Tournoi","Tennis","Sport","foot","badminton","vacance","valise","monde","tatouage","#paranormal","#fun","Cote d'azur","Cinéma","théatre","montagne","Bretagne"]
+        randomsearch1 = ["#Paris","Champion","pizza","#écologie","pizza","#drone","Amour","#photographie","YOLO","#Tesla","Surprise","manger","rire","France","tv","chat","matin","drole","radio","Paris","Monde","fatigue","orthographe","boulot","dodo","cocacola","pepsi","fiesta","chien","#photo","#voyage","#France","#Travel","Tournoi","Tennis","Sport","foot","badminton","vacance","valise","monde","tatouage","#paranormal","#fun","Cote d'azur","Cinéma","théatre","montagne","Bretagne"]
         nbrandom =  random.randrange(0,len(randomsearch1))
         for tweet in tweepy.Cursor(api.search,q=randomsearch1[nbrandom],lang="fr",tweet_mode="extended",result_type='recent').items(1):
             if hasattr(tweet, 'retweeted_status') :
@@ -74,5 +74,8 @@ def randomtweet(api) : #On récupère un message tweeter et on le tweet
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
             time.sleep(1500)
+        elif (e.api_code == 187) or (e.api_code == 327) or (e.api_code == 186):
+            pass
         else :
             print(e.reason)
+
