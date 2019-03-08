@@ -5,34 +5,36 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
         for tweet in tweepy.Cursor(api.search,q=mot + " since:" + time.strftime('%Y-%m-%d',time.localtime()),lang="fr",tweet_mode="extended").items(NombreDeRetweet): #On cherche avec #concours parmis les plus populaires en france
             try:
                 if tweet.retweet_count > 5 :
-                    if hasattr(tweet, 'retweeted_status') :
-                        if(tweet.retweeted_status.author.screen_name in BlackListCompte) :
+                    if hasattr(tweet, 'retweeted_status') : #Si le tweet est un retweet ou pas
+                        if(tweet.retweeted_status.author.screen_name in BlackListCompte) : #Si l'utilisateur est dans la blacklist on fait rien.
                             print("Compte blacklist : " + tweet.retweeted_status.author.screen_name)
+                            pass
                         else :
                             tweet.retweet() #On retweet
-                            tweet.favorite()
+                            tweet.favorite()  #On like
                             api.create_friendship(tweet.retweeted_status.author.id)
                             print('Vous avez retweet le tweet de  @' + tweet.retweeted_status.author.screen_name)
                     else :
                         if(tweet.user.screen_name in BlackListCompte) :
                             print("Compte blacklist : " + tweet.user.screen_name)
+                            pass
                         else :
                             tweet.retweet() #On retweet
-                            tweet.favorite()
+                            tweet.favorite() #On like
                             api.create_friendship(tweet.user.id) #On follow
                             print('Vous avez retweet le tweet de  @' + tweet.user.screen_name)
-                    if re.search("(^|\s)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
+                    if re.search("(^|\s|#)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
                     elif re.search("(^|\s|#)TAG(|UE|UER|UEZ|UÉ|É)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
-                    elif re.search("(^|\s)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
+                    elif re.search("(^|\s|#)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
                 if e.api_code == 185 :
                     print("Message en attente, on a envoyé trop de message :(")
                     time.sleep(1500)
-                elif e.api_code == 327 :
+                elif (e.api_code == 327) or (e.api_code == 139) :
                     pass
                 else :
                     print(e.reason)
@@ -61,6 +63,6 @@ def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
     except tweepy.TweepError as e:
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
-            time.sleep(1000)
+            time.sleep(1500)
         else :
             print(e.reason)
