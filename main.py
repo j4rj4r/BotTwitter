@@ -8,12 +8,18 @@ NombreDeRetweet = 12 #Nombre de tweet que l'on recupère par recherche
 listerecherchefr = ["#concours","#JeuConcours","RT & Follow","tenter de gagner","Gagnez rt + follow","concours pour gagner"]#Mot à retweeté pour un concours
 BlackListCompte = ["NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks","CrashqConcours","Yanteh_","NistiKTV",]#Blacklist pour compte à concours (très) bidon | Il faut metre le pseudo après le @
 ###
-for tabauth in compte.values():
-    auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-    auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-    api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
-    user = api.me()
-    tabname.append("@" + user.screen_name)
+for cle,tabauth in compte.items():
+    try :
+        auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+        auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+        api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
+        user = api.me()
+        tabname.append("@" + user.screen_name)
+    except tweepy.TweepError as e:
+        if e.api_code == 326 :
+            print("Le compte " + cle + " est bloqué !")
+        else :
+            print(e.reason)
 
 while True :
     for tabauth in compte.values(): #Pour chaque compte on passe dans cette boucle
