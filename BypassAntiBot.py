@@ -47,6 +47,8 @@ def randomretweet(api) : #On retweet un tweet random
             if e.api_code == 185 :
                 print("Message en attente, on a envoyé trop de message")
                 time.sleep(1500)
+            elif e.api_code == 327 :
+                pass
             else :
                 print(e.reason)
         except StopIteration:
@@ -78,4 +80,3 @@ def randomtweet(api) : #On récupère un message tweeter et on le tweet
             pass
         else :
             print(e.reason)
-
