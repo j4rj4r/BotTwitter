@@ -1,5 +1,5 @@
 # BotTwitter
-Un bot multi-compte Twitter pour participer aux concours.
+Un bot multi-compte Twitter simple d'utilisation pour participer aux concours.
 
 ### Dépendance du script :
 
@@ -19,6 +19,11 @@ compte = {"1":[API key,API secret key,Access token,Access token secret]}
 Vous pouvez rajouter autant de compte que vous voulez.
 ```
 compte = {"1":[API key,API secret key,Access token,Access token secret],"2":[API key,API secret key,Access token,Access token secret]}
+```
+
+Vous pouvez choisir de participer à aucun concours d'un compte en le blacklistant. Vous avez juste à ajouter le @ du compte en question dans ce tableau.
+```
+BlackListCompte =["NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks"]
 ```
 
 Pour lancer le bot vous devez faire : python3 main.py
