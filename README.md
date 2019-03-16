@@ -26,6 +26,20 @@ Vous pouvez choisir de participer à aucun concours d'un compte en le blacklista
 BlackListCompte =["NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks"]
 ```
 
+Pour ajouter des comptes à tag vous pouvez mettre les comptes dans ce tableau (Vous devez mettre obligatoirement le @) 
+
+```
+CompteTag = ["@j4rj4r_binks"]
+```
 Pour lancer le bot vous devez faire : python3 main.py
+
+### Les fonctionnalités du bot :
+
+* Multicompte
+* Bypass les protections de Twrench
+* Tag des comptes quand un concours le demande
+* Retweet, like et follow les concours
+* Unfollow automatique
+* Possibilité de blacklist des comptes
 
 Vous avez une question ? Mon nom d'utilisateur twitter est : @j4rj4r1
