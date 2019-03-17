@@ -40,6 +40,9 @@ while True :
     try :
         print("Programme en attente de : " + str(nbrandom) + " s") #Temps d'attente en seconde avant une nouvelle boucle
         time.sleep(nbrandom)
+    except tweepy.TweepError as e:
+        if e.api_code == 326 :
+            pass
     except KeyboardInterrupt : #On termine le programme proprement en cas de ctrl-c
         print("Programme terminé !")
         sys.exit()
