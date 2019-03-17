@@ -26,17 +26,17 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             api.create_friendship(tweet.user.id) #On follow
                             print('Vous avez retweet le tweet de  @' + tweet.user.screen_name)
                             GestionFollow.UpdateTable(tweet.user.id,user)
-                    if re.search("(^|\s|#)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
+                    if re.search("(^|\s|#|-)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
-                    elif re.search("(^|\s|#)TAG(|UE|UER|UEZ|UÉ|É)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
+                    elif re.search("(^|\s|#|-)TAG(G|)(|UE|UER|UEZ|UÉ|É)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
-                    elif re.search("(^|\s|#)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
+                    elif re.search("(^|\s|#|-)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
                 if e.api_code == 185 :
                     print("Message en attente, on a envoyé trop de message :(")
-                    time.sleep(1500)
+                    time.sleep(1250)
                 elif (e.api_code == 327) or (e.api_code == 139) :
                     pass
                 else :
@@ -66,6 +66,6 @@ def commentaire(api,tweet,tabname,CompteTag) : #Fonction pour faire un commentai
     except tweepy.TweepError as e:
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
-            time.sleep(1500)
+            time.sleep(1250)
         else :
             print(e.reason)
