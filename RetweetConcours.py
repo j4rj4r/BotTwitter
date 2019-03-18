@@ -1,6 +1,6 @@
 import tweepy,random,BypassAntiBot,time,re,GestionFollow
 
-def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonction de retweet de concours
+def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteTag) :#Fonction de retweet de concours
     user = api.me()
     for mot in listerecherchefr : #Pour chaque mot dans la liste un lance une recherche
         for tweet in tweepy.Cursor(api.search,q=mot + " since:" + time.strftime('%Y-%m-%d',time.localtime()),lang="fr",tweet_mode="extended").items(NombreDeRetweet): #On cherche avec #concours parmis les plus populaires en france
@@ -28,7 +28,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             GestionFollow.UpdateTable(tweet.user.id,user)
                     if re.search("(^|\s|#|-)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
-                    elif re.search("(^|\s|#|-)TAG(G|)(|UE|UER|UEZ|UÉ|É)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
+                    elif re.search("(^|\s|#|-)TAG(G|)(|UE|UER|UEZ|UÉ|É|ER|EZ)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
                     elif re.search("(^|\s|#|-)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
