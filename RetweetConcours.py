@@ -1,7 +1,13 @@
 import tweepy,random,BypassAntiBot,time,re,GestionFollow
 
+import tweepy,random,BypassAntiBot,time,re,GestionFollow
+
 def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteTag) :#Fonction de retweet de concours
+    try :
     user = api.me()
+    except tweepy.TweepError as e :
+        if e.api_code == 326 :
+            pass
     for mot in listerecherchefr : #Pour chaque mot dans la liste un lance une recherche
         for tweet in tweepy.Cursor(api.search,q=mot + " since:" + time.strftime('%Y-%m-%d',time.localtime()),lang="fr",tweet_mode="extended").items(NombreDeRetweet): #On cherche avec #concours parmis les plus populaires en france
             try:
@@ -28,7 +34,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteT
                             GestionFollow.UpdateTable(tweet.user.id,user)
                     if re.search("(^|\s|#|-)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
-                    elif re.search("(^|\s|#|-)TAG(G|)(|UE|UER|UEZ|UÉ|É|ER|EZ)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
+                    elif re.search("(^|\s|#|-)TAG(G|)(|UE|UER|UEZ|UÉ|É|ER|EZ|E)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
                     elif re.search("(^|\s|#|-)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname,CompteTag)
@@ -37,7 +43,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteT
                 if e.api_code == 185 :
                     print("Message en attente, on a envoyé trop de message :(")
                     time.sleep(1250)
-                elif (e.api_code == 327) or (e.api_code == 139) :
+                elif (e.api_code == 327) or (e.api_code == 139) or (e.api_code == 326):
                     pass
                 else :
                     print(e.reason)
@@ -67,5 +73,7 @@ def commentaire(api,tweet,tabname,CompteTag) : #Fonction pour faire un commentai
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
             time.sleep(1250)
+        elif e.api_code == 326 :
+            pass
         else :
             print(e.reason)
