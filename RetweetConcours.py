@@ -1,10 +1,8 @@
 import tweepy,random,BypassAntiBot,time,re,GestionFollow
 
-import tweepy,random,BypassAntiBot,time,re,GestionFollow
-
 def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteTag) :#Fonction de retweet de concours
     try :
-    user = api.me()
+        user = api.me()
     except tweepy.TweepError as e :
         if e.api_code == 326 :
             pass
