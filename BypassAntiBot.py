@@ -1,22 +1,25 @@
 import tweepy,random,time
 
 def bypass(api) :#Fonction principal de bypass anti bot (basé sur le site twren.ch)
-    user = api.me()
-    print("Bypass pour le compte : " + user.name)
-    nb = 1
-    pourcentageRTFollow = CalculPourcentageRtFollow(api)
-    while pourcentageRTFollow >= 25 : #On veut moins de 25% de RT avec le mot Follow
-        randomretweet(api)
+    try :
+        user = api.me()
+        print("Bypass pour le compte : " + user.name)
+        nb = 1
         pourcentageRTFollow = CalculPourcentageRtFollow(api)
-        print("Pourcentage de Rt avec le mot Follow (en cours de diminution) : " + str(round(pourcentageRTFollow, 2)))
-    print("Pourcentage de Rt avec le mot Follow (final) : " + str(round(pourcentageRTFollow, 2)))
-
-    pourcentageRT = CalculPourcentageRT(api)
-    while pourcentageRT >= 50 : #On veut moins de 50% de RT
-        randomtweet(api)
+        while pourcentageRTFollow >= 25 : #On veut moins de 25% de RT avec le mot Follow
+            randomretweet(api)
+            pourcentageRTFollow = CalculPourcentageRtFollow(api)
+            print("Pourcentage de Rt avec le mot Follow (en cours de diminution) : " + str(round(pourcentageRTFollow, 2)))
+        print("Pourcentage de Rt avec le mot Follow (final) : " + str(round(pourcentageRTFollow, 2)))
         pourcentageRT = CalculPourcentageRT(api)
-        nb += 1
-    print("Pourcentage RT final : " + str(round(pourcentageRT, 2)))
+        while pourcentageRT >= 50 : #On veut moins de 50% de RT
+            randomtweet(api)
+            pourcentageRT = CalculPourcentageRT(api)
+            nb += 1
+        print("Pourcentage RT final : " + str(round(pourcentageRT, 2)))
+    except tweepy.TweepError as e :
+        if e.api_code == 326 :
+            pass
 
 def CalculPourcentageRT(api) : #Fonction calcul pourcentage RT  de l'utilisateur
     nb = 0
@@ -47,7 +50,7 @@ def randomretweet(api) : #On retweet un tweet random
             if e.api_code == 185 :
                 print("Message en attente, on a envoyé trop de message")
                 time.sleep(1500)
-            elif e.api_code == 327 :
+            elif (e.api_code == 327) or (e.api_code == 326) :
                 pass
             else :
                 print(e.reason)
@@ -76,7 +79,7 @@ def randomtweet(api) : #On récupère un message tweeter et on le tweet
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
             time.sleep(1500)
-        elif (e.api_code == 187) or (e.api_code == 327) or (e.api_code == 186):
+        elif (e.api_code == 187) or (e.api_code == 327) or (e.api_code == 186) or (e.api_code == 326):
             pass
         else :
             print(e.reason)
