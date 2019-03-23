@@ -10,8 +10,6 @@ BlackListCompte = ["NistikConcours","WqveConcours","FlawyxC","Linyz_V1","Fortnit
 CompteTag = ["@j4rj4r_binks"]#Les comptes à utiliser pour tag. Si vous utilisez plusieurs comptes bot vous n'avez pas besoins d'ajouter de comptes dans ce tableau. Vous devez rentrer le compte avec son @ (@toto)
 ###
 
-
-
 for cle,tabauth in compte.items():
     try :
         auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
