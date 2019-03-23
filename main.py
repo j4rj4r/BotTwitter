@@ -27,31 +27,19 @@ for cle,tabauth in compte.items():
             print(e.reason)
 tabname = tabname + CompteTag
 
-
-for cle,tabauth in compte.items():
-    try :
-        auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-        auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-        api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
-        user = api.me()
-        tabname.append("@" + user.screen_name)
-        GestionFollow.CreateTables(user)
-    except tweepy.TweepError as e:
-        if e.api_code == 326 :
-            print("Le compte " + cle + " est bloqué !")
-        else :
-            print(e.reason)
-tabname = tabname + CompteTag
-
 while True :
     for tabauth in compte.values(): #Pour chaque compte on passe dans cette boucle
-        auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-        auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-        api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
-        user = api.me()
-        GestionFollow.Unfollow(user,api)
-        RetweetConcours.retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteTag)#on retweet les concours
-        BypassAntiBot.bypass(api)#On bypass l'anti bot
+        try :
+            auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+            auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+            api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
+            user = api.me()
+            GestionFollow.Unfollow(user,api)
+            RetweetConcours.retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteTag)#on retweet les concours
+            BypassAntiBot.bypass(api)#On bypass l'anti bot
+        except tweepy.TweepError as e :
+            if e.api_code == 326 :
+                pass
     nbrandom = random.randrange(2800,3500)
     try :
         print("Programme en attente de : " + str(nbrandom) + " s") #Temps d'attente en seconde avant une nouvelle boucle
