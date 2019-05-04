@@ -41,9 +41,10 @@ def CalculPourcentageRtFollow(api) : #Fonction calcul pourcentage de RT avec le 
     return pourcentage
 
 def randomretweet(api) : #On retweet un tweet random
-    randomsearch = ["#Paris","Dance","#Fiesta","#ILOVENICE","Nice","#photographie","YOLO","#Tesla","OGCNICE","Surprise","manger","rire","France","tv","chat","matin","Paris","Monde","fatigue","orthographe","chien","#photo","#voyage","#France","#Travel"]
-    nbrandom =  random.randrange(0,len(randomsearch))
-    for tweet in tweepy.Cursor(api.search,q=randomsearch[nbrandom],result_type="recent",lang="fr").items(10):
+    trends1 = api.trends_place(610264)
+    trends = list([trend['name'] for trend in trends1[0]['trends']])
+    nbrandom =  random.randrange(0,len(trends))
+    for tweet in tweepy.Cursor(api.search,q=trends[nbrandom],result_type="recent",lang="fr").items(10):
         try:
             tweet.retweet()
         except tweepy.TweepError as e:
@@ -60,9 +61,10 @@ def randomretweet(api) : #On retweet un tweet random
 
 def randomtweet(api) : #On récupère un message tweeter et on le tweet
     try:
-        randomsearch1 = ["#Paris","Champion","pizza","#écologie","pizza","#drone","Amour","#photographie","YOLO","#Tesla","Surprise","manger","rire","France","tv","chat","matin","drole","radio","Paris","Monde","fatigue","orthographe","boulot","dodo","cocacola","pepsi","fiesta","chien","#photo","#voyage","#France","#Travel","Tournoi","Tennis","Sport","foot","badminton","vacance","valise","monde","tatouage","#paranormal","#fun","Cote d'azur","Cinéma","théatre","montagne","Bretagne"]
-        nbrandom =  random.randrange(0,len(randomsearch1))
-        for tweet in tweepy.Cursor(api.search,q=randomsearch1[nbrandom],lang="fr",tweet_mode="extended",result_type='recent').items(1):
+        trends1 = api.trends_place(610264)#Code France (marseille) FR
+        trends = list([trend['name'] for trend in trends1[0]['trends']])
+        nbrandom =  random.randrange(0,len(trends))
+        for tweet in tweepy.Cursor(api.search,q=trends[nbrandom],lang="fr",tweet_mode="extended",result_type='recent').items(1):
             if hasattr(tweet, 'retweeted_status') :
                 tweettext = tweet.retweeted_status.full_text
                 if "@" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
