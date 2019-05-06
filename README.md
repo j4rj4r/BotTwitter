@@ -26,7 +26,7 @@ Vous pouvez choisir de participer à aucun concours d'un compte en le blacklista
 BlackListCompte =["NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks"]
 ```
 
-Pour ajouter des comptes à tag vous pouvez mettre les comptes dans ce tableau (Vous devez mettre obligatoirement le @) 
+Pour ajouter des comptes à tag quand un concours le demande, vous pouvez mettre les comptes dans ce tableau (Vous devez mettre obligatoirement le @) 
 
 ```
 CompteTag = ["@j4rj4r_binks"]
