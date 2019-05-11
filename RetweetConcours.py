@@ -1,6 +1,6 @@
 import tweepy,random,BypassAntiBot,time,re,GestionFollow
 
-def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteTag) :#Fonction de retweet de concours
+def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonction de retweet de concours
     try :
         user = api.me()
     except tweepy.TweepError as e :
@@ -31,11 +31,11 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteT
                             print('Vous avez retweet le tweet de  @' + tweet.user.screen_name)
                             GestionFollow.UpdateTable(tweet.user.id,user)
                     if re.search("(^|\s|#|-)INVIT[É|E](|R|Z)\s", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
-                        commentaire(api,tweet,tabname,CompteTag)
+                        commentaire(api,tweet,tabname)
                     elif re.search("(^|\s|#|-)TAG(G|)(|UE|UER|UEZ|UÉ|É|ER|EZ|E)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
-                        commentaire(api,tweet,tabname,CompteTag)
+                        commentaire(api,tweet,tabname)
                     elif re.search("(^|\s|#|-)MENTIONN[É|E](|Z|R)\s", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
-                        commentaire(api,tweet,tabname,CompteTag)
+                        commentaire(api,tweet,tabname)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
                 if e.api_code == 185 :
@@ -48,7 +48,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte,CompteT
             except StopIteration:
                 break
 
-def commentaire(api,tweet,tabname,CompteTag) : #Fonction pour faire un commentaire
+def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
     try:
         if hasattr(tweet, 'retweeted_status') :
             comment = "@" + tweet.retweeted_status.author.screen_name + " J'invite : "
@@ -58,11 +58,12 @@ def commentaire(api,tweet,tabname,CompteTag) : #Fonction pour faire un commentai
         nbusernotif = 0 #Variale compteur de compte tag
         random.shuffle(tabname) #On mélange le tableau aléatoirement.
         for username in tabname :
-            if username == "@" + user.screen_name : #On veut pas mentionner le compte actif.
-                username = ""
             if nbusernotif < 2 : #On veut pas tag plus de 2 comptes
-                comment = comment + username + " " #On fait le message de commentaire
-                nbusernotif +=1 # On augmente le compteur de compte tag
+                if username == "@" + user.screen_name : #On veut pas mentionner le compte actif.
+                    pass
+                else :
+                    comment = comment + username + " " #On fait le message de commentaire
+                    nbusernotif +=1 # On augmente le compteur de compte tag
         if hasattr(tweet, 'retweeted_status') :
             api.update_status(comment,tweet.retweeted_status.id)
         else :
