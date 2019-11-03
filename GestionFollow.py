@@ -33,7 +33,13 @@ def Unfollow(user,api) :
     data=c.fetchall()
     for i in data:
         date = datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S.%f")
-        date = date.replace(month=date.month+2)
+        if date.month == 11 :
+            newmonth = 1
+        elif date.month == 12 :
+            newmonth = 2
+        else :
+            newmonth = date.month+2
+        date = date.replace(month=newmonth)
         if datetime.datetime.now() > date :
             api.destroy_friendship(i[1])
             c.execute('''DELETE FROM {tab} WHERE compte = ?;'''.format(tab=user.screen_name),(str(i[1]),))
