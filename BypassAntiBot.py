@@ -64,17 +64,21 @@ def randomtweet(api) : #On récupère un message tweeter et on le tweet
         trends1 = api.trends_place(610264)#Code France (marseille) FR
         trends = list([trend['name'] for trend in trends1[0]['trends']])
         nbrandom =  random.randrange(0,len(trends))
-        for tweet in tweepy.Cursor(api.search,q=trends[nbrandom] + " -filter:replies",lang="fr",tweet_mode="extended",result_type='recent').items(1):
+        for tweet in tweepy.Cursor(api.search,q=trends[nbrandom] + " -filter:replies -filter:images",lang="fr",tweet_mode="extended",result_type='recent').items(1):
             if hasattr(tweet, 'retweeted_status') :
                 tweettext = tweet.retweeted_status.full_text
                 if "@" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
                     tweettext = tweettext.replace("@"," ")
+                if "#" in tweettext : #On évite les # pour etre discret
+                    tweettext = tweettext.replace("#"," ")
                 api.update_status(tweettext)
                 time.sleep(10)
             else :
                 tweettext = tweet.full_text
                 if "@" in tweettext :
                     tweettext = tweettext.replace("@"," ")
+                if "#" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
+                    tweettext = tweettext.replace("#"," ")
                 api.update_status(tweettext)
                 time.sleep(10)
     except tweepy.TweepError as e:
