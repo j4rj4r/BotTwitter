@@ -1,4 +1,4 @@
-import tweepy,RetweetConcours,BypassAntiBot,time,random,sys,GestionFollow,csv
+import tweepy,RetweetConcours,BypassAntiBot,time,random,sys,GestionFollow
 tabname = []
 
 ###Constante Paramètre du bot ###
