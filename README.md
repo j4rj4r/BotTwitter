@@ -3,7 +3,7 @@ Un bot multi-compte Twitter simple d'utilisation pour participer aux concours.
 
 ### Dépendance du script :
 
-Vous devez avec cette librairie pour que le script fonctionne.
+Vous devez installer cette librairie pour que le script fonctionne.
 ```
 Tweepy
 ```
