@@ -42,4 +42,4 @@ Pour lancer le bot vous devez faire : python3 main.py
 * Unfollow automatique
 * Possibilité de blacklist des comptes
 
-Vous avez une question ? Mon nom d'utilisateur twitter est : @j4rj4r_binks
+Vous avez une question ? Des idees d'ameliorations ?  Mon nom d'utilisateur twitter est : @j4rj4r_binks
