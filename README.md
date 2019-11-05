@@ -36,7 +36,7 @@ Pour lancer le bot vous devez faire : python3 main.py
 ### Les fonctionnalités du bot :
 
 * Multicompte
-* Bypass les protections de Twrench
+* Bypass les protections de Pickaw (Twrench)
 * Tag des comptes quand un concours le demande
 * Retweet, like et follow les concours
 * Unfollow automatique
