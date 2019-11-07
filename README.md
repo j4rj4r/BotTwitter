@@ -7,7 +7,9 @@ Vous devez installer cette librairie pour que le script fonctionne.
 ```
 Tweepy
 ```
-Vous pouvez l'installer avec : pip install tweepy
+
+Pour vous faciliter les choses vous pouvez l'installer avec pip3 (pour python3).
+Et faire la commande  : python3 -m pip install tweepy
 
 ### Installation :
 
