@@ -30,11 +30,11 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             api.create_friendship(tweet.user.id) #On follow
                             print('Vous avez retweet le tweet de  @' + tweet.user.screen_name)
                             GestionFollow.UpdateTable(tweet.user.id,user)
-                    if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper()) : #On vérifie avec une expression régulière si il faut inviter des amies.
+                    if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie avec une expression régulière si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
-                    elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
+                    elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
-                    elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper()) : #On vérifie si il faut inviter des amies.
+                    elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie si il faut inviter des amies.
                         commentaire(api,tweet,tabname)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
