@@ -5,7 +5,7 @@ tabname = []
 version = 2.9 #Version du bot
 compte = {"1":["","","",""],"2":["","","",""]} #Liste des comptes avec les identifiants de connexion à l'api
 NombreDeRetweet = 12 #Nombre de tweet que l'on recupère par recherche
-listerecherchefr = ["#concours","#JeuConcours","RT & Follow","tenter de gagner","Gagnez rt + follow","concours pour gagner"]#Mot à retweeté pour un concours
+listerecherchefr = ["#concours","#JeuConcours","RT & Follow","tenter de gagner","Gagnez rt + follow","concours pour gagner"]#Mot à retweeter pour un concours
 BlackListCompte = ["gulzaarAvi","NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks","CrashqConcours","Yanteh_","NistiKTV",]#Blacklist pour compte à concours (très) bidon | Il faut metre le pseudo après le @
 CompteTag = ["@j4rj4r_binks"]#Les comptes à utiliser pour tag. Si vous utilisez plusieurs comptes bot vous n'avez pas besoins d'ajouter de comptes dans ce tableau. Vous devez rentrer le compte avec son @ (@toto)
 ###
