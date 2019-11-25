@@ -20,7 +20,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             api.create_friendship(tweet.retweeted_status.author.id)
                             print('Vous avez retweet le tweet de  @' + tweet.retweeted_status.author.screen_name)
                             GestionFollow.UpdateTable(tweet.retweeted_status.author.id,user)
-                            print(tweet)
+                            print(tweet.retweeted_status)
                             print(tweet.full_text.upper())
                             if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) : 
                                 print('oui5')#On vérifie avec une expression régulière si il faut inviter des amies.
