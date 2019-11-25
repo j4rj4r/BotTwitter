@@ -2,7 +2,7 @@ import tweepy,RetweetConcours,BypassAntiBot,time,random,sys,GestionFollow
 tabname = []
 
 ###Constante Paramètre du bot ###
-version = 2.8.1 #Version du bot
+version = 2.9 #Version du bot
 compte = {"1":["","","",""],"2":["","","",""]} #Liste des comptes avec les identifiants de connexion à l'api
 NombreDeRetweet = 12 #Nombre de tweet que l'on recupère par recherche
 listerecherchefr = ["#concours","#JeuConcours","RT & Follow","tenter de gagner","Gagnez rt + follow","concours pour gagner"]#Mot à retweeté pour un concours
