@@ -40,7 +40,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                                 commentaire(api,tweet,tabname)
                             elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
-                            elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) :)#On vérifie si il faut inviter des amies.
+                            elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
