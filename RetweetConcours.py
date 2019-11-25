@@ -26,6 +26,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                                 commentaire(api,tweet,tabname)
                             elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
+                            BypassAntiBot.randomtweet(api)
                     else :
                         if(tweet.user.screen_name in BlackListCompte) :
                             print("Compte blacklist : " + tweet.user.screen_name)
@@ -42,7 +43,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                                 commentaire(api,tweet,tabname)
                             elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
-                BypassAntiBot.randomtweet(api)
+                            BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
                 if e.api_code == 185 :
                     print("Message en attente, on a envoyé trop de message :(")
