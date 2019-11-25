@@ -20,8 +20,8 @@ for cle,tabauth in compte.items():
         tabname.append("@" + user.screen_name)
         GestionFollow.CreateTables(user)
     except tweepy.TweepError as e:
-        if e.api_code == 326 :
-            print("Le compte " + cle + " est bloqué !")
+        if e.api_code == 326 or e.api_code == 32 :
+            print("Le compte " + cle + "a eu un probleme d'authentification !")
         else :
             print(e.reason)
 tabname = tabname + CompteTag
