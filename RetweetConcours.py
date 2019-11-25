@@ -20,11 +20,15 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             api.create_friendship(tweet.retweeted_status.author.id)
                             print('Vous avez retweet le tweet de  @' + tweet.retweeted_status.author.screen_name)
                             GestionFollow.UpdateTable(tweet.retweeted_status.author.id,user)
-                            if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie avec une expression régulière si il faut inviter des amies.
+                            print(tweet.full_text.upper())
+                            if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) : 
+                                print('oui5')#On vérifie avec une expression régulière si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
-                            elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie si il faut inviter des amies.
+                            elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) : 
+                                print('oui6')#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
-                            elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie si il faut inviter des amies.
+                            elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) :
+                                print('oui7')#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
                     else :
                         if(tweet.user.screen_name in BlackListCompte) :
@@ -36,11 +40,15 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             api.create_friendship(tweet.user.id) #On follow
                             print('Vous avez retweet le tweet de  @' + tweet.user.screen_name)
                             GestionFollow.UpdateTable(tweet.user.id,user)
-                            if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie avec une expression régulière si il faut inviter des amies.
+                            print(tweet.full_text.upper())
+                            if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) :
+                                print('oui')#On vérifie avec une expression régulière si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
-                            elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie si il faut inviter des amies.
+                            elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) :
+                                print('oui1')#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
-                            elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) : #On vérifie si il faut inviter des amies.
+                            elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) :
+                                print('oui3')#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
                 BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
