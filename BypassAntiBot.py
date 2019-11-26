@@ -59,7 +59,7 @@ def randomretweet(api) : #On retweet un tweet random
             break
 
 
-def randomtweet(api) : #On récupère un message tweeter et on le tweet
+def randomtweet(api) : #On récupère un message twitter et on le tweet
     try:
         trends1 = api.trends_place(610264)#Code France (marseille) FR
         trends = list([trend['name'] for trend in trends1[0]['trends']])
