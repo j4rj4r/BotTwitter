@@ -79,7 +79,7 @@ def randomtweet(api) : #On récupère un message twitter et on le tweet
                 if "#" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
                     tweettext = tweettext.replace("#"," ")
                 api.update_status(tweettext)
-           time.sleep(20)
+            time.sleep(20)
     except tweepy.TweepError as e:
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
