@@ -9,11 +9,12 @@ Tweepy
 ```
 
 Pour vous faciliter les choses vous pouvez l'installer avec pip3 (pour python3).
-Et faire la commande  : python3 -m pip install tweepy
+Et faire la commande dans votre console (cmd pour Windows) : 
+python3 -m pip install tweepy ou py -m pip install tweepy
 
 ### Installation :
 
-Vous devez avoir [Python 3.0](https://www.python.org/download/releases/3.0/) et la librairie [tweepy](https://www.tweepy.org/) installé.
+Vous devez avoir [Python 3.x](https://www.python.org/downloads/) et la librairie [tweepy](https://www.tweepy.org/) installé.
 Une fois le script téléchargé, vous devez rentrer les clés de l'API [twitter](https://developer.twitter.com/) dans le dictionnaire "compte" du fichier main.py.
 ```
 compte = {"1":[API key,API secret key,Access token,Access token secret]}
