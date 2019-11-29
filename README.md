@@ -10,6 +10,7 @@ Un bot multi-compte Twitter simple d'utilisation pour participer aux concours (e
 * Retweet, like et follow les concours
 * Unfollow automatique
 * Possibilité de blacklist des comptes
+* Si le concours le demande le bot peut follow plusieurs personnes
 
 
 ### Dépendance du script :
