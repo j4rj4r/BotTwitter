@@ -21,7 +21,7 @@ Si pip n'est pas reconnu vous devez l'installer.
 ### Installation :
 
 Vous devez avoir [Python 3.x](https://www.python.org/downloads/) et la librairie [tweepy](https://www.tweepy.org/) installé.
-Une fois le script téléchargé, vous devez rentrer les clés de l'API [twitter](https://developer.twitter.com/) dans le dictionnaire "compte" du fichier main.py.
+Une fois le script téléchargé, vous devez rentrer les clés de l'[API Twitter](https://developer.twitter.com/) dans le dictionnaire "compte" du fichier main.py.
 ```
 compte = {"1":[API key,API secret key,Access token,Access token secret]}
 ```
