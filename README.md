@@ -10,7 +10,13 @@ Tweepy
 
 Pour vous faciliter les choses vous pouvez l'installer avec pip3 (pour python3).
 Et faire la commande dans votre console (cmd pour Windows) : 
-python3 -m pip install tweepy ou py -m pip install tweepy
+```
+python3 -m pip install tweepy
+ou
+py -m pip install tweepy
+```
+
+Si pip n'est pas reconnu vous devez l'installer.
 
 ### Installation :
 
