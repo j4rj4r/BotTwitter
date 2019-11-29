@@ -1,5 +1,5 @@
 # BotTwitter
-Un bot multi-compte Twitter simple d'utilisation pour participer aux concours.
+Un bot multi-compte Twitter simple d'utilisation pour participer aux concours (et de les gagner).
 
 
 ### Les fonctionnalités du bot :
