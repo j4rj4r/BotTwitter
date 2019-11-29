@@ -65,4 +65,4 @@ py main.py
 ```
 
 
-Vous avez une question ? Des idees d'ameliorations ?  Mon nom d'utilisateur twitter est : @j4rj4r_binks
+Vous avez une question ? Des idées d'ameliorations ?  Mon nom d'utilisateur twitter est : @j4rj4r_binks
