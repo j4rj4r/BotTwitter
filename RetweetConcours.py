@@ -21,7 +21,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             print('Vous avez retweet le tweet de  @' + tweet.retweeted_status.author.screen_name)
                             GestionFollow.UpdateTable(tweet.retweeted_status.author.id,user)
                             try :
-                                words = tweet.retweeted_status.full_text.split()
+                                words = tweet.retweeted_status.full_text.split() #Permet de follow d'autres comptes si demandé
                                 for word in words :
                                     if word.find('@') == 0 :
                                         compte = word.replace('@',"")
