@@ -75,10 +75,13 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
 
 def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
     try:
+        com = [" J'invite : "," Merci ! je tag : "," Je tag : ", " Hop Hop, j'invite : ", " Avec moi : ", " Help me "] #Liste de debut de commentaire pour tag
+        nbrandom =  random.randrange(0,len(com))
+        comstart = com[nbrandom]
         if hasattr(tweet, 'retweeted_status') :
-            comment = "@" + tweet.retweeted_status.author.screen_name + " J'invite : "
+            comment = "@" + tweet.retweeted_status.author.screen_name + comstart
         else :
-            comment = "@" + tweet.user.screen_name + " J'invite : " #On prepare le message de commentaire
+            comment = "@" + tweet.user.screen_name + comstart #On prepare le message de commentaire
         user = api.me()
         nbusernotif = 0 #Variale compteur de compte tag
         random.shuffle(tabname) #On mélange le tableau aléatoirement.
