@@ -64,6 +64,7 @@ def randomtweet(api) : #On récupère un message twitter et on le tweet
         trends1 = api.trends_place(610264)#Code France (marseille) FR
         trends = list([trend['name'] for trend in trends1[0]['trends']]) #On récupère la liste des tendances
         nbrandom =  random.randrange(0,len(trends))
+<<<<<<< HEAD
         for tweet in tweepy.Cursor(api.search,q=trends[nbrandom] + " -filter:replies -filter:images",lang="fr",tweet_mode="extended",result_type='recent').items(1): #On filtre les images et les commentaires
             if hasattr(tweet, 'retweeted_status') : #Si c'est un retweet
                 tweettext = tweet.retweeted_status.full_text
@@ -72,14 +73,30 @@ def randomtweet(api) : #On récupère un message twitter et on le tweet
                 if "#" in tweettext : #On évite les # pour etre discret
                     tweettext = tweettext.replace("#"," ")
                 api.update_status(tweettext)
+=======
+        for tweet in tweepy.Cursor(api.search,q=trends[nbrandom] + " -filter:replies -filter:images",lang="fr",tweet_mode="extended",result_type='recent').items(1):
+            if hasattr(tweet, 'retweeted_status') :
+                if "CONCOURS" in tweet.retweeted_status.full_text.upper() : #On ne veut pas tweet un concours
+                    pass
+                else :
+                    tweettext = tweet.retweeted_status.full_text
+                    if "@" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
+                        tweettext = tweettext.replace("@"," ")
+                    if "#" in tweettext : #On évite les # pour etre discret
+                        tweettext = tweettext.replace("#"," ")
+                    api.update_status(tweettext)
+>>>>>>> 73e9f1a23c3138598ad9052c28020b6db89b1186
             else :
-                tweettext = tweet.full_text
-                if "@" in tweettext :
-                    tweettext = tweettext.replace("@"," ")
-                if "#" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
-                    tweettext = tweettext.replace("#"," ")
-                api.update_status(tweettext)
-           time.sleep(20)
+                if "CONCOURS" in tweet.full_text.upper() : #On ne veut pas tweet un concours
+                    pass
+                else:
+                    tweettext = tweet.full_text
+                    if "@" in tweettext :
+                        tweettext = tweettext.replace("@"," ")
+                    if "#" in tweettext : #On évite de notifier les gens quand on récupère un tweet d'un autre
+                        tweettext = tweettext.replace("#"," ")
+                    api.update_status(tweettext)
+            time.sleep(20)
     except tweepy.TweepError as e:
         if e.api_code == 185 :
             print("Message en attente, on a envoyé trop de message")
