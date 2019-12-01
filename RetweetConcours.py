@@ -75,7 +75,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
 
 def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
     try:
-        com = [" J'invite : "," Merci ! je tag : "," Je tag : ", " Hop Hop, j'invite : ", " Avec moi : ", " Help me : ", "Pour vous aussi les gars : "] #Liste de debut de commentaire pour tag
+        com = [" J'invite : "," Merci ! je tag : "," Je tag : ", " Hop Hop, j'invite : ", " Avec moi : ", " Help me : ", " Pour vous aussi les gars : "] #Liste de debut de commentaire pour tag
         nbrandom =  random.randrange(0,len(com))
         comstart = com[nbrandom]
         if hasattr(tweet, 'retweeted_status') :
