@@ -31,7 +31,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                                 pass
                             if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) : #On vérifie avec une expression régulière si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
-                            elif re.search(r"\b(\w*TAG\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) : 
+                            elif re.search(r"\b(\w*TAG\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) :
                                 commentaire(api,tweet,tabname)
                             elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
@@ -54,7 +54,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                                         api.create_friendship(compte)
                                         GestionFollow.UpdateTable(compte,user)
                             except :
-                                pass                            
+                                pass
                             if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie avec une expression régulière si il faut inviter des amies.
                                 commentaire(api,tweet,tabname)
                             elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
@@ -75,7 +75,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
 
 def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
     try:
-        com = [" J'invite : "," Merci ! je tag : "," Je tag : ", " Hop Hop, j'invite : ", " Avec moi : ", " Help me "] #Liste de debut de commentaire pour tag
+        com = [" J'invite : "," Merci ! je tag : "," Je tag : ", " Hop Hop, j'invite : ", " Avec moi : ", " Help me : ", "Pour vous aussi les gars : "] #Liste de debut de commentaire pour tag
         nbrandom =  random.randrange(0,len(com))
         comstart = com[nbrandom]
         if hasattr(tweet, 'retweeted_status') :
