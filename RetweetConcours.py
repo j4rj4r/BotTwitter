@@ -1,11 +1,6 @@
 import tweepy,random,BypassAntiBot,time,re,GestionFollow
 
-def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonction de retweet de concours
-    try :
-        user = api.me()
-    except tweepy.TweepError as e :
-        if e.api_code == 326 :
-            pass
+def retweet(user,api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonction de retweet de concours
     for mot in listerecherchefr : #Pour chaque mot dans la liste un lance une recherche
         for tweet in tweepy.Cursor(api.search,q=mot + " since:" + time.strftime('%Y-%m-%d',time.localtime()),lang="fr",tweet_mode="extended").items(NombreDeRetweet): #On cherche avec #concours parmis les plus populaires en france
             try:
@@ -30,11 +25,11 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             except :
                                 pass
                             if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) : #On vérifie avec une expression régulière si il faut inviter des amies.
-                                commentaire(api,tweet,tabname)
+                                commentaire(user,api,tweet,tabname)
                             elif re.search(r"\b(\w*TAG\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) :
-                                commentaire(api,tweet,tabname)
+                                commentaire(user,api,tweet,tabname)
                             elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.retweeted_status.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
-                                commentaire(api,tweet,tabname)
+                                commentaire(user,api,tweet,tabname)
                             BypassAntiBot.randomtweet(api)
                     else :
                         if(tweet.user.screen_name in BlackListCompte) :
@@ -56,11 +51,11 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
                             except :
                                 pass
                             if re.search(r"\b(\w*INVIT(E|É)\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie avec une expression régulière si il faut inviter des amies.
-                                commentaire(api,tweet,tabname)
+                                commentaire(user,api,tweet,tabname)
                             elif re.search(r"\b(\w*TAG\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
-                                commentaire(api,tweet,tabname)
+                                commentaire(user,api,tweet,tabname)
                             elif re.search(r"\b(\w*MENTIONN(E|É)\w*)\b", tweet.full_text.upper(),re.M) :#On vérifie si il faut inviter des amies.
-                                commentaire(api,tweet,tabname)
+                                commentaire(user,api,tweet,tabname)
                             BypassAntiBot.randomtweet(api)
             except tweepy.TweepError as e:
                 if e.api_code == 185 :
@@ -73,7 +68,7 @@ def retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte) :#Fonc
             except StopIteration:
                 break
 
-def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
+def commentaire(user,api,tweet,tabname) : #Fonction pour faire un commentaire
     try:
         com = [" J'invite : "," Merci ! je tag : "," Je tag : ", " Hop Hop, j'invite : ", " Avec moi : ", " Help me : ", " Pour vous aussi les gars : "," tentez votre chance ! : "," Je tente ma chance ! J'espère que je vais gagner ! : "," J'espère que vais gagner ! : "," Merci pour le concours ! Essayez aussi : "," Que la chance soit avec moi ! et vous "," Merci d'organiser ce concours ! Ça peut vous intéresser "," On croise les doigts ! vous aussi "," C'est pour vous ça ! : ", " Celui là on le gagne "," J'espère que vais gagner ! On participe ! "," Merci d'organiser ce concours ! "," Bonne chance à tous ! "," J'adore les concours et je sais que vous aussi "," J'ai tellement envie de gagner, essayez vous aussi "," Je participe et j'invite "] #Liste de debut de commentaire pour tag
         nbrandom =  random.randrange(0,len(com))
@@ -82,7 +77,6 @@ def commentaire(api,tweet,tabname) : #Fonction pour faire un commentaire
             comment = "@" + tweet.retweeted_status.author.screen_name + comstart
         else :
             comment = "@" + tweet.user.screen_name + comstart #On prepare le message de commentaire
-        user = api.me()
         nbusernotif = 0 #Variale compteur de compte tag
         random.shuffle(tabname) #On mélange le tableau aléatoirement.
         for username in tabname :
