@@ -34,9 +34,12 @@ while True :
             auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
             api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
             user = api.me()
+            print("-------------------------------------")
+            print("Lancement du bot sur : " + user.screen_name)
             GestionFollow.Unfollow(user,api)
-            RetweetConcours.retweet(api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte)#on retweet les concours
+            RetweetConcours.retweet(user,api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte)#on retweet les concours
             BypassAntiBot.bypass(api)#On bypass l'anti bot
+            print('--------------------------------------')
         except tweepy.TweepError as e :
             if e.api_code == 326 :
                 pass
