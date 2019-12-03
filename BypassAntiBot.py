@@ -2,8 +2,7 @@ import tweepy,random,time
 
 def bypass(api) :#Fonction principal de bypass anti bot (basé sur le site twren.ch)
     try :
-        user = api.me()
-        print("Bypass pour le compte : " + user.name)
+        print("Bypass des protections Pickaw en cours")
         nb = 1
         pourcentageRTFollow = CalculPourcentageRtFollow(api)
         while pourcentageRTFollow >= 25 : #On veut moins de 25% de RT avec le mot Follow
