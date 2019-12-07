@@ -43,7 +43,7 @@ while True :
         except tweepy.TweepError as e :
             if e.api_code == 326 :
                 pass
-    nbrandom = random.randrange(2800,3500)
+    nbrandom = random.randrange(2500,3000)
     try :
         print("Programme en attente de : " + str(nbrandom) + " s") #Temps d'attente en seconde avant une nouvelle boucle
         time.sleep(nbrandom)
