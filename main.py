@@ -25,7 +25,7 @@ for cle,tabauth in compte.items():
         else :
             print(e.reason)
 tabname = tabname + CompteTag
- print("--------------------------------------")
+print("--------------------------------------")
 
 while True :
     for tabauth in compte.values(): #Pour chaque compte on passe dans cette boucle
