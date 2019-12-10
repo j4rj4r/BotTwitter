@@ -63,7 +63,7 @@ def randomtweet(api) : #On récupère un message twitter et on le tweet
         trends1 = api.trends_place(610264)#Code France (marseille) FR
         trends = list([trend['name'] for trend in trends1[0]['trends']]) #On récupère la liste des tendances
         nbrandom =  random.randrange(0,len(trends))
-        for tweet in tweepy.Cursor(api.search,q=trends[nbrandom] + " -filter:replies -filter:images",lang="fr",tweet_mode="extended",result_type='recent').items(1):
+        for tweet in tweepy.Cursor(api.search,q=trends[nbrandom] + " -filter:replies -filter:media -filter:retweets",lang="fr",tweet_mode="extended",result_type='recent').items(1):
             if hasattr(tweet, 'retweeted_status') :
                 if "CONCOURS" in tweet.retweeted_status.full_text.upper() : #On ne veut pas tweet un concours
                     pass
