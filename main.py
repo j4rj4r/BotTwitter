@@ -11,57 +11,86 @@ import RetweetConcours
 import BypassAntiBot
 import GestionFollow
 
-tabname = []
 
 ###Constante Paramètre du bot ###
-version = 2.9 #Version du bot
-compte = {"1":["","","",""],"2":["","","",""]} #Liste des comptes avec les identifiants de connexion à l'api
-NombreDeRetweet = 12 #Nombre de tweet que l'on recupère par recherche
-listerecherchefr = ["#concours","#JeuConcours","RT & Follow","tenter de gagner","Gagnez rt + follow","concours pour gagner"]#Mot à retweeter pour un concours
-BlackListCompte = ["gulzaarAvi","NistikConcours","WqveConcours","FlawyxC","Linyz_V1","FortniteVenox","TidaGameuse","YeastLeaks","CrashqConcours","Yanteh_","NistiKTV","BotSpotterBot","b0ttem","RealB0tSpotter","jflessauSpam","ConcoursCool","GamingCRewards"]#Blacklist pour compte à concours (très) bidon | Il faut metre le pseudo après le @
-CompteTag = ["@j4rj4r_binks"]#Les comptes à utiliser pour tag. Si vous utilisez plusieurs comptes bot vous n'avez pas besoins d'ajouter de comptes dans ce tableau. Vous devez rentrer le compte avec son @ (@toto)
+#Version du bot
+VERSION = 2.9
+#Liste des comptes avec les identifiants de connexion à l'api
+COMPTE = {"1":["", "", "", ""], "2":["", "", "", ""]}
+#Nombre de tweet que l'on recupère par recherche
+NOMBREDERETWEET = 12
+#Mot à chercher pour trouver un concours
+LISTERECHERCHEFR = ["#concours", "#JeuConcours", "RT & Follow", "tenter de gagner",
+                    "Gagnez rt + follow", "concours pour gagner"]
+#Liste des comptes au'on blacklist (on ne participe pas à leurs concours)
+#Il faut metre le pseudo sans le @
+BLACKLISTCOMPTE = ["gulzaarAvi", "NistikConcours", "WqveConcours", "FlawyxC",
+                   "Linyz_V1", "FortniteVenox", "TidaGameuse", "YeastLeaks",
+                   "CrashqConcours", "Yanteh_", "NistiKTV", "BotSpotterBot",
+                   "b0ttem", "RealB0tSpotter", "jflessauSpam", "ConcoursCool",
+                   "GamingCRewards"]
+#Les comptes à utiliser pour tag.
+#Si vous utilisez plusieurs comptes bot vous n'avez pas besoins d'ajouter de comptes dans ce tableau.
+#Vous devez rentrer le compte avec son @ (@toto)
+COMPTETAG = ["@j4rj4r_binks"]
 ###
 
+tabname = []
 
-for cle,tabauth in compte.items():
-    try :
-        auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-        auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-        api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
+#Permet de recuperer la liste des comptes qui sont utilises avec le script
+for cle, tabauth in COMPTE.items():
+    try:
+        #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+        auth = tweepy.OAuthHandler(tabauth[0], tabauth[1])
+        #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+        auth.set_access_token(tabauth[2], tabauth[3])
+        #Authentification
+        api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
         user = api.me()
         tabname.append("@" + user.screen_name)
         GestionFollow.CreateTables(user)
-    except tweepy.TweepError as e:
-        if e.api_code == 326 or e.api_code == 32 :
+    except tweepy.TweepError as error:
+        if error.api_code == 326 or error.api_code == 32:
             print("Le compte " + cle + " a eu un probleme d'authentification !")
-        else :
-            print(e.reason)
-tabname = tabname + CompteTag
+        else:
+            print(error.reason)
+tabname = tabname + COMPTETAG
 print("--------------------------------------")
 
-while True :
-    for tabauth in compte.values(): #Pour chaque compte on passe dans cette boucle
-        try :
-            auth = tweepy.OAuthHandler(tabauth[0], tabauth[1]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-            auth.set_access_token(tabauth[2], tabauth[3]) #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
-            api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #Authentification
+#Toujours vrai (boucle infinie)
+while True:
+    #Pour chaque compte on passe dans cette boucle
+    for tabauth in COMPTE.values():
+        try:
+            #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+            auth = tweepy.OAuthHandler(tabauth[0], tabauth[1])
+            #Authentification avec les valeurs du tableau trouvées dans le dictionnaire
+            auth.set_access_token(tabauth[2], tabauth[3])
+            #Authentification
+            api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
             user = api.me()
             print("Lancement du bot sur : " + user.screen_name)
-            GestionFollow.Unfollow(user,api)
-            RetweetConcours.retweet(user,api,NombreDeRetweet,listerecherchefr,tabname,BlackListCompte)#on retweet les concours
-            BypassAntiBot.bypass(api)#On bypass l'anti bot
+            #On regarde si on doit unfollow des comptes
+            GestionFollow.Unfollow(user, api)
+            #on retweet les concours
+            RetweetConcours.retweet(user, api, NOMBREDERETWEET, LISTERECHERCHEFR, tabname, BLACKLISTCOMPTE)
+            #On bypass l'anti bot
+            BypassAntiBot.bypass(api)
             print("Bot terminé pour ce compte.")
             print("--------------------------------------")
-        except tweepy.TweepError as e :
-            if e.api_code == 326 :
+        except tweepy.TweepError as error:
+            if error.api_code == 326:
                 pass
-    nbrandom = random.randrange(2500,3000)
-    try :
-        print("Programme en attente de : " + str(nbrandom) + " s") #Temps d'attente en seconde avant une nouvelle boucle
+    #On genere un nombre aleatoire
+    nbrandom = random.randrange(2500, 3000)
+    try:
+        #Temps d'attente en seconde avant une nouvelle boucle
+        print("Programme en attente de : " + str(nbrandom) + " s")
         time.sleep(nbrandom)
-    except tweepy.TweepError as e:
-        if e.api_code == 326 :
+    except tweepy.TweepError as error:
+        if error.api_code == 326:
             pass
-    except KeyboardInterrupt : #On termine le programme proprement en cas de ctrl-c
+    #On termine le programme proprement en cas de ctrl-c
+    except KeyboardInterrupt:
         print("Programme terminé !")
         sys.exit()
