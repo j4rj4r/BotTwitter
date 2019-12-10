@@ -1,4 +1,10 @@
-import tweepy,random,time
+#Bibliothèques standard
+import random
+import time
+
+#Bibliothèques tierces
+import tweepy
+
 
 def bypass(api) :#Fonction principal de bypass anti bot (basé sur le site twren.ch)
     try :
