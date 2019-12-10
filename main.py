@@ -1,4 +1,16 @@
-import tweepy,RetweetConcours,BypassAntiBot,time,random,sys,GestionFollow
+#Bibliothèques standard
+import time
+import random
+import sys
+
+#Bibliothèques tierces
+import tweepy
+
+#Imports locaux
+import RetweetConcours
+import BypassAntiBot
+import GestionFollow
+
 tabname = []
 
 ###Constante Paramètre du bot ###
