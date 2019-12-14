@@ -85,7 +85,7 @@ while True:
             if error.api_code == 326:
                 pass
     #On genere un nombre aleatoire
-    nbrandom = random.randrange(2500, 3000)
+    nbrandom = random.randrange(2500, 3250)
     try:
         #Temps d'attente en seconde avant une nouvelle boucle
         print("Programme en attente de : " + str(nbrandom) + " s")
