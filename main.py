@@ -33,6 +33,8 @@ BLACKLISTCOMPTE = ["gulzaarAvi", "NistikConcours", "WqveConcours", "FlawyxC",
 #Si vous utilisez plusieurs comptes bot vous n'avez pas besoins d'ajouter de comptes dans ce tableau.
 #Vous devez rentrer le compte avec son @ (@toto)
 COMPTETAG = ["@j4rj4r_binks"]
+#Permet d'activer ou pas la fonction bypass Antibot (False pour désactiver, True pour activer)
+BYPASSANTIBOT = True 
 ###
 
 tabname = []
@@ -74,8 +76,9 @@ while True:
             GestionFollow.Unfollow(user, api)
             #on retweet les concours
             RetweetConcours.retweet(user, api, NOMBREDERETWEET, LISTERECHERCHEFR, tabname, BLACKLISTCOMPTE)
-            #On bypass l'anti bot
-            BypassAntiBot.bypass(api)
+            if BYPASSANTIBOT :
+              #On bypass l'anti bot
+              BypassAntiBot.bypass(api)
             print("Bot terminé pour ce compte.")
             print("--------------------------------------")
         except tweepy.TweepError as error:
