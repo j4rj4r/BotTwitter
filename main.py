@@ -28,7 +28,7 @@ BLACKLISTCOMPTE = ["gulzaarAvi", "NistikConcours", "WqveConcours", "FlawyxC",
                    "Linyz_V1", "FortniteVenox", "TidaGameuse", "YeastLeaks",
                    "CrashqConcours", "Yanteh_", "NistiKTV", "BotSpotterBot",
                    "b0ttem", "RealB0tSpotter", "jflessauSpam", "ConcoursCool",
-                   "GamingCRewards"]
+                   "GamingCRewards", "BotFett"]
 #Les comptes à utiliser pour tag.
 #Si vous utilisez plusieurs comptes bot vous n'avez pas besoins d'ajouter de comptes dans ce tableau.
 #Vous devez rentrer le compte avec son @ (@toto)
