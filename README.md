@@ -65,5 +65,10 @@ ou
 py main.py
 ```
 
+#### To do :
+
+* []Fichier log
+* []Répondre avec un hashtag quand il est demandé
+* []Affichage des stats
 
 Vous avez une question ? Des idées d'ameliorations ?  Mon nom d'utilisateur twitter est : @j4rj4r_binks
