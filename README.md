@@ -71,4 +71,5 @@ py main.py
 * [ ]Répondre avec un hashtag quand il est demandé
 * [ ]Affichage des stats
 
+Si vous ne voulez pas faire plusieurs comptes développeur mon autre projet est pour vous : https://github.com/j4rj4r/BotTwitter-AccountCreator
 Vous avez une question ? Des idées d'ameliorations ?  Mon nom d'utilisateur twitter est : @j4rj4r_binks
