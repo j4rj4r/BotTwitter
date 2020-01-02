@@ -44,14 +44,13 @@ def Unfollow(user, api):
         date = datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S.%f")
         if date.month == 11:
             newmonth = 1
-            newyear = date.year + 1
+            date = date.replace(year=date.year + 1)
         elif date.month == 12:
             newmonth = 2
-            newyear = date.year + 1
+            date = date.replace(year=date.year + 1)
         else:
             newmonth = date.month+2
         date = date.replace(month=newmonth)
-        date = date.replace(year=newyear)
         #Si la date actuel est plus grande aue la date de fin de follow alors :
         if datetime.datetime.now() > date:
             #On unfollow
