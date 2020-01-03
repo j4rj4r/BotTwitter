@@ -50,6 +50,9 @@ def Unfollow(user, api):
             date = date.replace(year=date.year + 1)
         else:
             newmonth = date.month+2
+        #On ne veut pas une date plus grande que 28 pour fevrier au risque de generer une erreur.
+        if newmonth == 2 and date.day > 28 :
+            date = date.replace(day=28)
         date = date.replace(month=newmonth)
         #Si la date actuel est plus grande aue la date de fin de follow alors :
         if datetime.datetime.now() > date:
