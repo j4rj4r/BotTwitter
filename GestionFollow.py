@@ -6,7 +6,7 @@ def CreateTables(user):
     #On crée data.db ou on l'ouvre juste si elle existe
     connexion = sqlite3.connect('data.db')
     c = connexion.cursor()
-    #On fait une table si elle existe deja pas
+    #On fait une table si elle n'existe pas
     #On fait une table pour chaque compte
     c.execute('''CREATE TABLE IF NOT EXISTS {tab}
     (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, compte text, date DATE);'''.format(tab=user.screen_name))
