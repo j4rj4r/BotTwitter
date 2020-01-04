@@ -29,6 +29,8 @@ def retweet(user, api, NombreDeRetweet, listerecherchefr, tabname, BlackListComp
                             pass
                         elif "JFB" in tweet.retweeted_status.full_text.upper() :
                             pass
+                        elif "FLB" in tweet.retweeted_status.full_text.upper() :
+                            pass
                         else:
                             #On retweet
                             tweet.retweet()
@@ -66,6 +68,8 @@ def retweet(user, api, NombreDeRetweet, listerecherchefr, tabname, BlackListComp
                             pass
                         elif "JFB" in tweet.full_text.upper() :
                             pass
+                        elif "FLB" in tweet.full_text.upper() :
+                            pass                   
                         else:
                             #On retweet
                             tweet.retweet()
