@@ -24,6 +24,11 @@ def retweet(user, api, NombreDeRetweet, listerecherchefr, tabname, BlackListComp
                         #Si l'utilisateur est dans la blacklist on fait rien.
                         if(tweet.retweeted_status.author.screen_name in BlackListCompte):
                             print("Compte blacklist : " + tweet.retweeted_status.author.screen_name)
+                        #On évite de retweet et follow les tweets en rapport avec le follow back
+                        elif "BACK" in tweet.retweeted_status.full_text.upper() :
+                            pass
+                        elif "JFB" in tweet.retweeted_status.full_text.upper() :
+                            pass
                         else:
                             #On retweet
                             tweet.retweet()
@@ -56,6 +61,11 @@ def retweet(user, api, NombreDeRetweet, listerecherchefr, tabname, BlackListComp
                     else:
                         if(tweet.user.screen_name in BlackListCompte):
                             print("Compte blacklist : " + tweet.user.screen_name)
+                        #On évite de retweet et follow les tweets en rapport avec le follow back
+                        elif "BACK" in tweet.full_text.upper() :
+                            pass
+                        elif "JFB" in tweet.full_text.upper() :
+                            pass
                         else:
                             #On retweet
                             tweet.retweet()
