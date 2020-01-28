@@ -59,5 +59,6 @@ def Unfollow(user, api):
             #On unfollow
             api.destroy_friendship(i[1])
             c.execute('''DELETE FROM {tab} WHERE compte = ?;'''.format(tab=user.screen_name),(str(i[1]),))
+        #Sinon on ferme la db
     c.close()
     connexion.commit()
