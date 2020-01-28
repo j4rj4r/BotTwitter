@@ -54,12 +54,10 @@ def Unfollow(user, api):
         if newmonth == 2 and date.day > 28 :
             date = date.replace(day=28)
         date = date.replace(month=newmonth)
-        #Si la date actuel est plus grande aue la date de fin de follow alors :
+        #Si la date actuel est plus grande que la date de fin de follow alors :
         if datetime.datetime.now() > date:
             #On unfollow
             api.destroy_friendship(i[1])
             c.execute('''DELETE FROM {tab} WHERE compte = ?;'''.format(tab=user.screen_name),(str(i[1]),))
-        else:
-            pass
     c.close()
     connexion.commit()
