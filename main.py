@@ -84,8 +84,6 @@ while True:
         except tweepy.TweepError as error:
             if error.api_code == 326:
                 pass
-            else:
-                print(error.reason)
     # On génère un nombre aléatoire
     nbrandom = random.randrange(2500, 3250)
     try:
