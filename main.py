@@ -13,16 +13,16 @@ import GestionFollow
 
 
 ### Constante Paramètre du bot ###
-#Version du bot
+# Version du bot
 VERSION = 2.9
 # Liste des comptes avec les identifiants de connexion à l'api
-COMPTE = {"1":["", "", "", ""], "2":["", "", "", ""]}
+COMPTE = {"1": ["", "", "", ""]}
 # Nombre de tweet que l'on recupère par recherche
 NOMBREDERETWEET = 12
 # Mot à chercher pour trouver un concours
 LISTERECHERCHEFR = ["#concours", "#JeuConcours", "RT & Follow", "tenter de gagner",
                     "Gagnez rt + follow", "concours pour gagner"]
-# Liste des comptes au'on blacklist (on ne participe pas à leurs concours)
+# Liste des comptes qu'on blacklist (on ne participe pas à leurs concours)
 # Il faut metre le pseudo sans le @
 BLACKLISTCOMPTE = ["gulzaarAvi", "NistikConcours", "WqveConcours", "FlawyxC",
                    "Linyz_V1", "FortniteVenox", "TidaGameuse", "YeastLeaks",
@@ -34,7 +34,7 @@ BLACKLISTCOMPTE = ["gulzaarAvi", "NistikConcours", "WqveConcours", "FlawyxC",
 # Vous devez rentrer le compte avec son @ (@toto)
 COMPTETAG = ["@j4rj4r_binks"]
 # Permet d'activer ou pas la fonction bypass Antibot (False pour désactiver, True pour activer)
-BYPASSANTIBOT = True 
+BYPASSANTIBOT = True
 ###
 
 tabname = []
@@ -84,7 +84,9 @@ while True:
         except tweepy.TweepError as error:
             if error.api_code == 326:
                 pass
-    # On genere un nombre aleatoire
+            else:
+                print(error.reason)
+    # On génère un nombre aléatoire
     nbrandom = random.randrange(2500, 3250)
     try:
         # Temps d'attente en seconde avant une nouvelle boucle
