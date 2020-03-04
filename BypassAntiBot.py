@@ -78,7 +78,7 @@ def randomtweet(api):
         trends = list([trend['name'] for trend in trends1[0]['trends']])
         nbrandom = random.randrange(0, len(trends))
         #On cherche des tweets parmis les tweets recents
-        for tweet in tweepy.Cursor(api.search, q=trends[nbrandom] + " -filter:replies -filter:media -filter:retweets", lang="fr", tweet_mode="extended", result_type='recent').items(1):
+        for tweet in tweepy.Cursor(api.search, q=trends[nbrandom] + " -pd -tapette -enculé -pédale -filter:replies -filter:media -filter:retweets", lang="fr", tweet_mode="extended", result_type='recent').items(1):
             if hasattr(tweet, 'retweeted_status'):
                 #On ne veut pas tweet un concours
                 if "CONCOURS" in tweet.retweeted_status.full_text.upper():
