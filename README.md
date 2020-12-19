@@ -73,3 +73,4 @@ py main.py
 
 Si vous ne voulez pas faire plusieurs comptes développeur mon autre projet est pour vous : https://github.com/j4rj4r/BotTwitter-AccountCreator
 Vous avez une question ? Des idées d'ameliorations ? vous pouvez venir sur notre serveur discord  : [MoneyMaker](https://discord.gg/gjNbrgwRxT)
+On recherche des devs pour continuer à améliorer ce bot et à commencer de nouveaux projets !
