@@ -25,6 +25,7 @@ PyYaml
 
 * Dans un premier temps pour utiliser le script vous allez avoir besoin d'un compte développeur Twitter et de récupérer vos accès à l'API.
  Vous pouvez demander cet accès sur le site développeur de Twitter : [Twitter Developer](https://developer.twitter.com/)
+ Si vous avez besoin d'un tutoriel : [Tutoriel compte développeur](https://www.extly.com/docs/autotweetng_joocial/tutorials/how-to-auto-post-from-joomla-to-twitter/apply-for-a-twitter-developer-account/#apply-for-a-developer-account)
 
 * Vous devez ensuite installer une version 3.x de Python : [Python 3.x](https://www.python.org/downloads/)
 
