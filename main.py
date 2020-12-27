@@ -14,7 +14,6 @@ from manage_follow import ManageFollow, create_tables
 from retweet_giveaway import RetweetGiveaway
 
 
-# Helper Functions
 def ask_to_exit():
     print('''[1] Next account | [2] Exit ''')
     user_input = input("Your choice (by default 2): ")
@@ -80,7 +79,8 @@ while True:
 
     print("-" * 40)
     # Add Accounts to Tag
-    list_name += accounts_to_tag
+    if accounts_to_tag:
+        list_name += accounts_to_tag
 
     connection = 0
     # Looking for an account to find giveaway
@@ -111,7 +111,7 @@ while True:
     for account in out['accounts']:
         for account_name, list_auth in account.items():
             try:
-                #Thread here
+                # Thread here
                 # Extract API & ACCESS credentials
                 api_key, api_secret, access_token, access_secret = list_auth
 
