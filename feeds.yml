@@ -1,0 +1,27 @@
+Account1: #twitter handler
+  twitter:
+    consumer_key: ''
+    consumer_secret: ''
+    access_key: ''
+    access_secret: ''
+  urls:
+    - https://fluxrss/rss.xml
+    - https://fluxrss2/rss.xml
+Account2: #twitter handler
+  twitter:
+    consumer_key: ''
+    consumer_secret: ''
+    access_key: ''
+    access_secret: ''
+  urls:
+    - https://fluxrss/rss.xml
+    - https://fluxrss2/rss.xml
+Account3: #twitter handler
+  twitter:
+    consumer_key: ''
+    consumer_secret: ''
+    access_key: ''
+    access_secret: ''
+  urls:
+    - https://fluxrss/rss.xml
+    - https://fluxrss2/rss.xml

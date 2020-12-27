@@ -72,7 +72,7 @@ def create_tables(user):
     """
     Create new tables for each user.
 
-    :param user string: Name of new user to create.
+    :param user string: Name of new user to create name of.
     """
     connection = sqlite3.connect('data.db')
     c = connection.cursor()

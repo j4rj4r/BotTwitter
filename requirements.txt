@@ -1,0 +1,14 @@
+beautifulsoup4==4.6.0
+certifi==2017.4.17
+chardet==3.0.3
+feedparser==5.2.1
+idna==2.5
+munch==2.1.1
+oauthlib==2.0.2
+PyYAML==5.1
+requests==2.20.0
+requests-oauthlib==0.8.0
+six==1.10.0
+SQLAlchemy==1.1.10
+tweepy==3.5.0
+urllib3==1.24.2

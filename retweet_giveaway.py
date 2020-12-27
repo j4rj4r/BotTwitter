@@ -6,7 +6,6 @@ import time
 # third party libraries
 import tweepy
 
-
 class RetweetGiveaway:
     def __init__(self, api, user):
         """
@@ -19,8 +18,7 @@ class RetweetGiveaway:
         self.api = api
         self.bot_action = []
 
-    def check_retweet(self, words_to_search, accounts_to_blacklist, hashtag_to_blacklist, giveaway_to_blacklist,
-                      comment_with_hashtag, max_giveaway):
+    def check_retweet(self, words_to_search, accounts_to_blacklist, hashtag_to_blacklist, giveaway_to_blacklist):
         """
         Check for useful tweets by filtering out blacklisted
 
@@ -28,12 +26,9 @@ class RetweetGiveaway:
         :param accounts_to_blacklist list: List of Blacklisted Accounts to Ignore
         :param hashtag_to_blacklist list: List of Blacklisted Hashtags in tweets to ignore
         :param giveaway_to_blacklist list: List of Blacklisted Giveaways to Ignore
-        :param comment_with_hashtag boolean: If we comment with hashtag
-        :param max_giveaway integer: Maximum number of giveaway retrieve for each word
         """
         action = []
         regex_detect_tag = [r"\b(\w*INVIT(E|É)\w*)\b",
-                            r"\b(\w*IDENTIFI(E|É)\w*)\b"
                             r"\b(\w*TAG\w*)\b",
                             r"\b(\w*MENTIONN(E|É)\w*)\b"]
         regex_detect_tag = re.compile('|'.join(regex_detect_tag), re.IGNORECASE)
@@ -43,14 +38,13 @@ class RetweetGiveaway:
             print("Searching giveaway with the word : " + word)
             for tweet in tweepy.Cursor(self.api.search,
                                        q=word, since=time.strftime('%Y-%m-%d', time.localtime()),
-                                       lang="fr", tweet_mode="extended").items(max_giveaway):
+                                       lang="fr", tweet_mode="extended").items(15):
 
                 if tweet.retweet_count > 5:
                     is_in_blacklist = [ele for ele in giveaway_to_blacklist if (ele in tweet.full_text)]
                     if is_in_blacklist:
                         pass
                     else:
-                        # Check if it's a retweet
                         if hasattr(tweet, 'retweeted_status'):
                             screen_name = tweet.retweeted_status.author.screen_name
                             entities = tweet.retweeted_status.entities
@@ -70,28 +64,20 @@ class RetweetGiveaway:
 
                                 # Check if tweet has Hashtags
                                 if len(entities['hashtags']) > 0:
-                                    # if comment with hashtag is enabled
-                                    if comment_with_hashtag:
-                                        # Clean Hastags
-                                        h_list = self.manage_hashtag(entities['hashtags'],
-                                                                     hashtag_to_blacklist)
-                                        # If we find Hashtags -> Record the tweet
-                                        if h_list:
-                                            action.append(tweet)
-                                            action.append(1 + extra)
-                                            self.bot_action.append(action)
-                                        else:
-                                            action.append(tweet)
-                                            action.append(2 + extra)
-                                            self.bot_action.append(action)
-                                    else:
+
+                                    # Clean Hastags
+                                    h_list = self.manage_hashtag(entities['hashtags'],
+                                                                 hashtag_to_blacklist)
+                                    # If we find Hashtags -> Record the tweet
+                                    if h_list:
                                         action.append(tweet)
-                                        action.append(2 + extra)
+                                        action.append(1+extra)
                                         self.bot_action.append(action)
+
                                 # Else Select Action 2
                                 else:
                                     action.append(tweet)
-                                    action.append(2 + extra)
+                                    action.append(2+extra)
                                     self.bot_action.append(action)
 
                             # If regex-tags not found, record the tweet without action number
@@ -103,8 +89,7 @@ class RetweetGiveaway:
 
         return self.bot_action
 
-    def manage_giveaway(self, list_giveaway, sentence_for_tag, list_name, hashtag_to_blacklist, managefollow,
-                        like_giveaway):
+    def manage_giveaway(self, list_giveaway, sentence_for_tag, list_name, hashtag_to_blacklist, managefollow):
         """
         Handle Give away tweets by following/commenting/tagging depending on the giveaway levels
 
@@ -113,7 +98,6 @@ class RetweetGiveaway:
         :param list_name list: List of Names to Randomly Tag on giveaways
         :param hashtag_to_blacklist list: List of hastags to blacklist
         :param managefollow managefollow: Database management object from ManageFollow
-        :param like_giveaway boolean: If we like giveaway
         """
         for giveaway in list_giveaway:
             tweet = giveaway[0]
@@ -134,14 +118,13 @@ class RetweetGiveaway:
 
                 if not retweeted:
                     self.api.retweet(id_)
-                    if like_giveaway:
-                        self.api.create_favorite(id_)
-
-                    self.api.create_friendship(author_id)
 
                     if len(giveaway) == 2:
                         comment_level = giveaway[1]
                         self.comment(tweet, sentence_for_tag, comment_level, list_name, hashtag_to_blacklist)
+
+                    if hasattr(tweet, 'retweeted_status'):
+                        self.api.create_friendship(author_id)
 
                     managefollow.update_table(author_id)
 
@@ -151,14 +134,14 @@ class RetweetGiveaway:
                             managefollow.update_table(mention['id'])
 
                     print("You participated in the giveaway of : @" + screen_name)
-                    time.sleep(random.randrange(10, 20))
+                    time.sleep(random.randrange(120, 180))
+                    ##### Ajout s'un random
+                    ##### tweet ou retwwet
+                    ##### Entre 0 et 2
 
             except tweepy.TweepError as e:
                 if e.api_code == 327:
                     pass
-                elif e.api_code == 161:
-                    print("The account can no longer follow. We go to the next step.")
-                    break
                 else:
                     print(e)
 
@@ -166,7 +149,7 @@ class RetweetGiveaway:
         """
         Add Comment to a given tweet using some rules.
 
-        :param tweet tweepy.tweet: Tweet object  from tweepy library
+        :param tweet tweepy.tweet: Tweet oject  from tweepy library
         :param sentence_for_tag list: List of random sentences
         :param hashtag list: List of Hashtags
         :param list_name list: List of user names

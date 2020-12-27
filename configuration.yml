@@ -1,50 +1,27 @@
-# Define accounts and keys
 accounts:
-  # Accounts name
-  - "Example":
-      # API key
-      - "Example"
-      # API key secret
-      - "Example"
-      # Access token
-      - "Example"
-      # Access token secret
-      - "Example"
-  - "Example2":
-      # API key
-      - "Example"
-      # API key secret
-      - "Example"
-      # Access token
-      - "Example"
-      # Access token secret
-      - "Example"
-
-# Use the antibot bypass feature (True/False)
-bypass_antibot : True
-
-# Like all giveaway (True/False)
-like_giveaway : False
-
-# Comment with hashtag (True/False)
-comment_with_hashtag : True
-
-# Maximum number of giveaway retrieve for each word
-max_giveaway : 10
-
-# Words to search for giveaway
+  - "Account1":
+      - ""
+      - ""
+      - ""
+      - ""
+  - "Account2":
+      - ""
+      - ""
+      - ""
+      - ""
+  - "Account3":
+      - ""
+      - ""
+      - ""
+      - ""
 words_to_search:
   - "#concours"
   - "#JeuConcours"
   - "concours pour gagner"
   - "Gagnez rt + follow"
   - "RT & follow"
-
-# Accounts we want to invite
 accounts_to_tag:
-  - "@j4rj4r_binks"
-
-# Accounts that we don't want to follow
+  - ""
 accounts_to_blacklist:
   - "@RealB0tSpotter"
   - "@jflessauSpam"
@@ -52,16 +29,12 @@ accounts_to_blacklist:
   - "@BotSpotterBot"
   - "@gulzaarAvi"
   - "@BotFett"
-
-# Words that should not be copied with the antibot
 words_to_blacklist_antibot:
   - "pd"
   - "tapette"
   - "enculé"
   - "pédale"
   - "isis"
-
-# Sentences you need to tweet to invite a friend
 sentence_for_tag:
   - "J'invite :"
   - "Merci ! je tag :"
@@ -105,8 +78,6 @@ sentence_for_tag:
   - "Ça vous intéressent ?"
   - "Qu'est ce que vous en pensez ? Allez participez-vous aussi "
   - "Let's go, je suis sûr qu'on va gagner cette fois :) "
-
-# hashtag we don't want to tweet
 hashtag_to_blacklist:
   - "giveaway"
   - "concours"
@@ -128,7 +99,6 @@ hashtag_to_blacklist:
   - "jeuxconcours"
   - "giveawayalert"
   - "retweet"
-
-# We don't want to participate in giveaway with these words
 giveaway_to_blacklist:
+  - "porn"
   - "nude"
