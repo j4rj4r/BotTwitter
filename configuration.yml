@@ -128,6 +128,13 @@ hashtag_to_blacklist:
   - "jeuxconcours"
   - "giveawayalert"
   - "retweet"
+  - "mentionne"
+  - "kdo"
+  - "gratuit"
+  - "cadeaunoel"
+  - "annonce"
+  - "noel"
+  - "joyeuxnoel"
 
 # We don't want to participate in giveaway with these words
 giveaway_to_blacklist:

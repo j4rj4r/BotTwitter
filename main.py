@@ -13,7 +13,7 @@ from bypass_antibot import BypassAntiBot
 from manage_follow import ManageFollow, create_tables
 from retweet_giveaway import RetweetGiveaway
 
-
+# Helper functions
 def ask_to_exit():
     print('''[1] Next account | [2] Exit ''')
     user_input = input("Your choice (by default 2): ")
