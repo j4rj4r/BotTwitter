@@ -41,12 +41,14 @@ class BypassAntiBot:
                     follow_count += 1
         ratio_RtFol = (follow_count * 100) / retweet_count
         if ratio_RtFol > 25:
-            #randomrtobjectif = retweet_count * 4
-            #randomrt = randomrtobjectif - follow_count
-            randomrt = (retweet_count * 4) - follow_count
+            randomrtobjectif = follow_count * 4
+            randomrt = randomrtobjectif - retweet_count
             print("Il y a " + str(ratio_RtFol) + " % de RT pour les concours on va faire " + str(randomrt) + " RT random")
+            if randomrt > 15:
+                randomrt =  15
+                print("On va tweets uniquement " + str(randomrt) + " pour l'instant")
         else:
-            print("Il y a " + str(ratio_RtFol) + " % de RT pour les concours on passe a la suite.")
+            print("Il y a " + str(ratio_RtFol) + " % de RT pour les concours on passe a la suite")
             randomrt = 0
         return randomrt
 
