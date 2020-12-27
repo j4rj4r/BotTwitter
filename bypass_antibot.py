@@ -60,8 +60,8 @@ class BypassAntiBot:
                 retweet_count += 1
 
         if retweet_count > 100:
-            print("actuellement il y a " + str(retweet_count) + " retweets pour 200 tweets il faut faire " + str(nb_randomtweet) + "tweets random")
             nb_randomtweet =  retweet_count - 100
+            print("actuellement il y a " + str(retweet_count) + " retweets pour 200 tweets il faut faire " + str(nb_randomtweet) + "tweets random")
             if nb_randomtweet > 10:
                 nb_randomtweet =  10
                 print("On va tweets uniquement " + str(nb_randomtweet) + " pour l'instant")
