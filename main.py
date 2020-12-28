@@ -154,8 +154,8 @@ while True:
         print("Current time : " + current_time)
 
         # Sleep if it's night time
-        if now.hour > 22 and now.minute > 0:
-            waiting_time = 10 * 3600
+        if 22 < now.hour < 2:
+            waiting_time = 7 * 3600
         else:
             waiting_time = random.randrange(4000, 6000)
         print("Waiting time before restarting bots : " + str(round(waiting_time / 3600, 2)) + "h")
