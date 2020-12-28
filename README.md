@@ -49,6 +49,8 @@ Ces commandes sont à rentrer dans mon console (cmd pour Windows)
 ### Configuration :
 
 Tous les paramètres de configurations sont dans le fichier **configuration.yml**.
+Copiez le fichier **configuration.yml.dist** pour créer le fichier **configuration.yml**.
+
 Une fois que vous avez téléchargé le projet, pour pouvoir lancer le script vous devez ajouter dans le fichier configuration.yml les clés de l'[API Twitter](https://developer.twitter.com/).
 
 ```

@@ -139,5 +139,3 @@ hashtag_to_blacklist:
 # We don't want to participate in giveaway with these words
 giveaway_to_blacklist:
   - "nude"
-  - "banner"
-  - ""
