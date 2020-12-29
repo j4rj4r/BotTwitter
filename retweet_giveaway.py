@@ -162,6 +162,9 @@ class RetweetGiveaway:
                 elif e.api_code == 136:
                     print("You have been blocked by: ", screen_name)
                     break
+                elif e.api_code == 326:
+                    print("You have to do a captcha on the account: ", screen_name)
+                    break
                 else:
                     print(e)
 
