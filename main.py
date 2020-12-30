@@ -36,6 +36,7 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     comment_with_hashtag = out['comment_with_hashtag']
     max_giveaway = out['max_giveaway']
     logging_level = out['logging_level']
+    flux_rss = out['flux_rss']
 
 Helper.logging_configuration(logging_level)
 
@@ -115,7 +116,7 @@ while True:
 
                 # If the antibot bypass feature is activated
                 if bypass_antibot:
-                    bypass = BypassAntiBot(api)
+                    bypass = BypassAntiBot(api, flux_rss, user)
                     bypass.bypass()
 
                 logging.info("Sleeping for 30s...")

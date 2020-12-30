@@ -23,6 +23,11 @@ accounts:
 # Use the antibot bypass feature (True/False)
 bypass_antibot : True
 
+# RSS
+flux_rss:
+    - https://www.feedrss.com/rss
+    - https://www.feedrss2.com/rss
+
 # Like all giveaway (True/False)
 like_giveaway : False
 
