@@ -13,8 +13,7 @@ from bypass_antibot import BypassAntiBot
 from manage_follow import ManageFollow, create_tables
 from retweet_giveaway import RetweetGiveaway
 
-
-# Helper Functions
+# Helper functions
 def ask_to_exit():
     print('''[1] Next account | [2] Exit ''')
     user_input = input("Your choice (by default 2): ")
@@ -58,6 +57,7 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     like_giveaway = out['like_giveaway']
     comment_with_hashtag = out['comment_with_hashtag']
     max_giveaway = out['max_giveaway']
+    flux_rss = out['flux_rss']
 
 # Main loop
 while True:
@@ -80,7 +80,8 @@ while True:
 
     print("-" * 40)
     # Add Accounts to Tag
-    list_name += accounts_to_tag
+    if accounts_to_tag:
+        list_name += accounts_to_tag
 
     connection = 0
     # Looking for an account to find giveaway
@@ -111,7 +112,7 @@ while True:
     for account in out['accounts']:
         for account_name, list_auth in account.items():
             try:
-                #Thread here
+                # Thread here
                 # Extract API & ACCESS credentials
                 api_key, api_secret, access_token, access_secret = list_auth
 
@@ -126,15 +127,13 @@ while True:
 
                 managefollow = ManageFollow(user, api)
                 managefollow.unfollow()
-
                 rtgiveaway = RetweetGiveaway(api, user)
                 rtgiveaway.manage_giveaway(giveaway_list, sentence_for_tag,
                                            list_name, hashtag_to_blacklist,
                                            managefollow, like_giveaway)
-
                 # If the antibot bypass feature is activated
                 if bypass_antibot:
-                    bypass = BypassAntiBot(api)
+                    bypass = BypassAntiBot(api, flux_rss, user)
                     bypass.bypass()
                 time.sleep(30)
 
@@ -154,8 +153,8 @@ while True:
         print("Current time : " + current_time)
 
         # Sleep if it's night time
-        if now.hour > 22 and now.minute > 0:
-            waiting_time = 10 * 3600
+        if 22 < now.hour < 2:
+            waiting_time = 7 * 3600
         else:
             waiting_time = random.randrange(4000, 6000)
         print("Waiting time before restarting bots : " + str(round(waiting_time / 3600, 2)) + "h")

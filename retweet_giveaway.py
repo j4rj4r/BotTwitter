@@ -151,13 +151,16 @@ class RetweetGiveaway:
                             managefollow.update_table(mention['id'])
 
                     print("You participated in the giveaway of : @" + screen_name)
-                    time.sleep(random.randrange(10, 20))
+                    time.sleep(random.randrange(120, 180))
 
             except tweepy.TweepError as e:
                 if e.api_code == 327:
                     pass
                 elif e.api_code == 161:
                     print("The account can no longer follow. We go to the next step.")
+                    break
+                elif e.api_code == 136:
+                    print("You have been blocked by: ", screen_name)
                     break
                 else:
                     print(e)
