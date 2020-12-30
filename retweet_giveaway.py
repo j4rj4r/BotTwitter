@@ -34,7 +34,7 @@ class RetweetGiveaway:
         """
         action = []
         regex_detect_tag = [r"\b(\w*INVIT(E|É)\w*)\b",
-                            r"\b(\w*IDENTIFI(E|É)\w*)\b"
+                            r"\b(\w*IDENTIFI(E|É)\w*)\b",
                             r"\b(\w*TAG\w*)\b",
                             r"\b(\w*MENTIONN(E|É)\w*)\b"]
         regex_detect_tag = re.compile('|'.join(regex_detect_tag), re.IGNORECASE)
