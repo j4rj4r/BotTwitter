@@ -13,48 +13,12 @@ import yaml
 from bypass_antibot import BypassAntiBot
 from manage_follow import ManageFollow, create_tables
 from retweet_giveaway import RetweetGiveaway
-
-# Helper functions
-def ask_to_exit():
-    print('''[1] Next account | [2] Exit ''')
-    user_input = input("Your choice (by default 2): ")
-
-    # Continue
-    if user_input == "1":
-        pass
-    # Exit
-    else:
-        sys.exit()
-    pass
-
-
-def get_user(api_key, api_secret, access_token, access_secret):
-    # Authenticate Key to use Twitter API
-    auth = tweepy.OAuthHandler(api_key, api_secret)
-    auth.set_access_token(access_token, access_secret)
-    api = tweepy.API(auth)
-
-    # Get Twitter User object and Create Table for each user
-    user = api.me()
-    return api, user
-
-def logging_configuration(logging_level):
-    logging.basicConfig(filename='logs/bot_twitter.log',
-                        level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s - %(message)s')
-
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging_level)
-
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    root_logger.addHandler(handler)
+from helper import Helper
 
 # Configuration
 VERSION = 3.0
 CONFIGURATION_FILE = "configuration.yml"
+Helper = Helper()
 
 # Load all configuration variables
 with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
@@ -73,7 +37,7 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     max_giveaway = out['max_giveaway']
     logging_level = out['logging_level']
 
-logging_configuration(logging_level)
+Helper.logging_configuration(logging_level)
 
 # Main loop
 while True:
@@ -83,7 +47,7 @@ while True:
             try:
                 # Extract API & ACCESS credentials
                 api_key, api_secret, access_token, access_secret = list_auth
-                api, user = get_user(api_key, api_secret, access_token, access_secret)
+                api, user = Helper.get_user(api_key, api_secret, access_token, access_secret)
 
                 create_tables(user)
                 list_name.append("@" + user.screen_name)
@@ -108,7 +72,7 @@ while True:
                 if connection == 1:
                     break
                 api_key, api_secret, access_token, access_secret = list_auth
-                api, user = get_user(api_key, api_secret, access_token, access_secret)
+                api, user = Helper.get_user(api_key, api_secret, access_token, access_secret)
                 connection = 1
             except:
                 continue
@@ -158,7 +122,7 @@ while True:
                 time.sleep(30)
 
             except KeyboardInterrupt:
-                ask_to_exit()
+                Helper.ask_to_exit()
 
             except tweepy.TweepError as error:
                 if error.api_code == 326 or error.api_code == 32:
@@ -183,4 +147,4 @@ while True:
 
         time.sleep(waiting_time)
     except KeyboardInterrupt:
-        ask_to_exit()
+        Helper.ask_to_exit()
