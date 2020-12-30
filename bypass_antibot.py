@@ -1,4 +1,5 @@
 # Standard libraries
+import logging
 import random
 import time
 
@@ -20,10 +21,10 @@ class BypassAntiBot:
         Randomly Retweet 5 tweets & Randomly Tweet 10 things.
         """
         try:
-            print("Bypass anti-bot protections ...")
+            logging.info("Bypass anti-bot protections ...")
             self.randomretweet(5)
             self.randomtweet(10)
-            print("Anti-bot bypass completed !")
+            logging.info("Anti-bot bypass completed !")
 
         except tweepy.TweepError as e:
             if e.api_code == 326:
@@ -50,11 +51,11 @@ class BypassAntiBot:
         remaining_tweet = (follow_count * 100) / retweet_count
         return remaining_tweet
 
-    def randomretweet(self, remaining_retweet):
+    def randomretweet(self, retweet_count):
         """
         Randomly select trending tweets and Retweet them.
 
-        :param remaining_retweet int: number of trending tweets to retweet.
+        :param retweet_count int: number of trending tweets to retweet.
         """
 
         # Get tweet at Trending place 610264,
@@ -63,31 +64,42 @@ class BypassAntiBot:
         trends = list([trend['name'] for trend in trend_api_response[0]['trends']])
         # Randomly Select Tweet number in trending topic
         random_count = random.randrange(0, len(trends))
+        # Follow remaining retweet count for logging
+        remaining_retweet = retweet_count
 
         for tweet in tweepy.Cursor(self.api.search,
                                    q=trends[random_count],
                                    result_type="recent",
-                                   lang="fr").items(remaining_retweet):
+                                   lang="fr").items(retweet_count):
             try:
                 tweet.retweet()
-                time.sleep(random.randrange(10, 20))  # Randomly stop activity for 10-20 seconds
+
+                next_retweet_sleep_count = random.randrange(10, 20)
+                remaining_retweet -= 1
+
+                logging.info("Random retweet done, %s remaining, sleeping for %ss...",
+                             str(remaining_retweet),
+                             str(next_retweet_sleep_count))
+
+                time.sleep(next_retweet_sleep_count)  # Randomly stop activity for 10-20 seconds
 
             except tweepy.TweepError as e:
                 if e.api_code == 185:
-                    print("Message en attente, on a envoyé trop de message")
+                    logging.warning("Message en attente, on a envoyé trop de message")
                     time.sleep(1500)
+                    # TODO - Transformer le sleep en pass pour passer au compte d'après sans bloquer ?
                 elif (e.api_code == 327) or (e.api_code == 326):
                     pass
                 else:
-                    print(e.reason)
+                    logging.error(e.reason)
             except StopIteration:
                 break
 
-    def randomtweet(self, remaining_tweet):
+    def randomtweet(self, tweet_count):
         """
         Randomly Tweet thing.
 
-        :param remaining_tweet int: Number of tweets to send.
+        :param tweet_count int: Number of tweets to send.
         """
         try:
             # Get Tweets
@@ -95,9 +107,12 @@ class BypassAntiBot:
             trends = list([trend['name'] for trend in trends_api_response[0]['trends']])
             random_count = random.randrange(0, len(trends))
 
+            # Follow remaining retweet count for logging
+            remaining_tweet = tweet_count
+
             for tweet in tweepy.Cursor(self.api.search,
                                        q=trends[random_count] + " -filter:replies -filter:media -filter:retweets",
-                                       lang="fr", tweet_mode="extended", result_type='recent').items(remaining_tweet):
+                                       lang="fr", tweet_mode="extended", result_type='recent').items(tweet_count):
 
                 full_text = tweet.retweeted_status.full_text if hasattr(tweet, 'retweeted_status') else tweet.full_text
 
@@ -113,13 +128,20 @@ class BypassAntiBot:
 
                     self.api.update_status(full_text)
 
-                time.sleep(random.randrange(10, 20))
+                next_tweet_sleep_count = random.randrange(10, 20)
+                remaining_tweet -= 1
+
+                logging.info("Random tweet done, %s remaining, sleeping for %ss...",
+                             str(remaining_tweet),
+                             str(next_tweet_sleep_count))
+
+                time.sleep(next_tweet_sleep_count)
 
         except tweepy.TweepError as e:
             if e.api_code == 185:
-                print("Message en attente, on a envoyé trop de message")
+                logging.warning("Message en attente, on a envoyé trop de message")
                 time.sleep(1500)
             elif (e.api_code == 187) or (e.api_code == 327) or (e.api_code == 186) or (e.api_code == 326):
                 pass
             else:
-                print(e.reason)
+                logging.error(e.reason)
