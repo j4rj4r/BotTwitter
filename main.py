@@ -38,13 +38,13 @@ def get_user(api_key, api_secret, access_token, access_secret):
     user = api.me()
     return api, user
 
-def logging_configuration():
+def logging_configuration(logging_level):
     logging.basicConfig(filename='logs/bot_twitter.log',
                         level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s')
 
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
+    root_logger.setLevel(logging_level)
 
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.INFO)
@@ -71,8 +71,9 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     like_giveaway = out['like_giveaway']
     comment_with_hashtag = out['comment_with_hashtag']
     max_giveaway = out['max_giveaway']
+    logging_level = out['logging_level']
 
-logging_configuration()
+logging_configuration(logging_level)
 
 # Main loop
 while True:
