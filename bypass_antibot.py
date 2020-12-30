@@ -26,7 +26,6 @@ class BypassAntiBot:
         try:
             logging.info("Bypass anti-bot protections ...")
             self.randomretweet()
-            quit()
             self.rss_and_tweet()
             logging.info("Anti-bot bypass completed !")
 
