@@ -1,6 +1,7 @@
 # Standard libraries
-import sqlite3
 import datetime
+import logging
+import sqlite3
 
 
 class ManageFollow:
@@ -40,7 +41,7 @@ class ManageFollow:
         Remove past users with follow date > 2 months.
 
         """
-        print("We check if there are accounts to unfollow ...")
+        logging.info("We check if there are accounts to unfollow ...")
         connection = sqlite3.connect('data.db')
         c = connection.cursor()
         c.execute("""SELECT * FROM {tab};""".format(tab=self.user.screen_name))
@@ -63,7 +64,7 @@ class ManageFollow:
             except Exception:
                 pass
 
-        print("unfollow accounts : ", str(unfollow_count))
+        logging.info("Unfollow accounts : %s", str(unfollow_count))
         c.close()
         connection.commit()
 

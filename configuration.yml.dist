@@ -32,6 +32,9 @@ comment_with_hashtag : True
 # Maximum number of giveaway retrieve for each word
 max_giveaway : 10
 
+# Minimum level wanted for script logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+logging_level : "WARNING"
+
 # Words to search for giveaway
 words_to_search:
   - "#concours"

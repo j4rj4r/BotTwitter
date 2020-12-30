@@ -2,7 +2,8 @@
 import random
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
+import logging
 
 # third party libraries
 import tweepy
@@ -37,6 +38,19 @@ def get_user(api_key, api_secret, access_token, access_secret):
     user = api.me()
     return api, user
 
+def logging_configuration():
+    logging.basicConfig(filename='logs/bot_twitter.log',
+                        level=logging.INFO,
+                        format='%(asctime)s - %(levelname)s - %(message)s')
+
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    root_logger.addHandler(handler)
 
 # Configuration
 VERSION = 3.0
@@ -58,6 +72,8 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     comment_with_hashtag = out['comment_with_hashtag']
     max_giveaway = out['max_giveaway']
 
+logging_configuration()
+
 # Main loop
 while True:
     list_name = []
@@ -70,14 +86,14 @@ while True:
 
                 create_tables(user)
                 list_name.append("@" + user.screen_name)
-                print("Configuration completed for the account : ", user.screen_name)
+                logging.info("Configuration completed for the account : %s", user.screen_name)
 
             except Exception as e:
-                print("Error with account : ", account_name)
-                print(e)
+                logging.error("Error with account : %s", account_name)
+                logging.error(e)
                 continue
 
-    print("-" * 40)
+    logging.info("-" * 40)
     # Add Accounts to Tag
     if accounts_to_tag:
         list_name += accounts_to_tag
@@ -97,7 +113,7 @@ while True:
                 continue
 
     if connection == 0:
-        print("No account available!")
+        logging.error("No account available!")
         sys.exit()
     else:
         rtgiveaway = RetweetGiveaway(api, user)
@@ -121,8 +137,8 @@ while True:
                 api = tweepy.API(auth)
 
                 user = api.me()
-                print("-" * 40)
-                print("Launching the bot on  : @", user.screen_name)
+                logging.info("-" * 40)
+                logging.info("Launching the bot on : @%s", user.screen_name)
 
                 managefollow = ManageFollow(user, api)
                 managefollow.unfollow()
@@ -136,6 +152,8 @@ while True:
                 if bypass_antibot:
                     bypass = BypassAntiBot(api)
                     bypass.bypass()
+
+                logging.info("Sleeping for 30s...")
                 time.sleep(30)
 
             except KeyboardInterrupt:
@@ -143,7 +161,7 @@ while True:
 
             except tweepy.TweepError as error:
                 if error.api_code == 326 or error.api_code == 32:
-                    print("Connection error : " + account_name)
+                    logging.error("Connection error : %s", account_name)
                     continue
                 else:
                     continue
@@ -151,15 +169,16 @@ while True:
     try:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        print("Current time : " + current_time)
+        logging.info("Current time : %s", current_time)
 
         # Sleep if it's night time
         if 22 < now.hour < 2:
             waiting_time = 7 * 3600
         else:
             waiting_time = random.randrange(4000, 6000)
-        print("Waiting time before restarting bots : " + str(round(waiting_time / 3600, 2)) + "h")
-        print("-" * 40)
+
+        logging.info("Waiting time before restarting bots : " + str(timedelta(seconds=waiting_time)))
+        logging.info("-" * 40)
 
         time.sleep(waiting_time)
     except KeyboardInterrupt:

@@ -1,4 +1,5 @@
 # Standard libraries
+import logging
 import random
 import re
 import time
@@ -40,7 +41,7 @@ class RetweetGiveaway:
 
         for word in words_to_search:
 
-            print("Searching giveaway with the word : " + word)
+            logging.info("Searching giveaway with the word : %s", word)
             for tweet in tweepy.Cursor(self.api.search,
                                        q=word, since=time.strftime('%Y-%m-%d', time.localtime()),
                                        lang="fr", tweet_mode="extended").items(max_giveaway):
@@ -150,23 +151,27 @@ class RetweetGiveaway:
                             self.api.create_friendship(mention['id'])
                             managefollow.update_table(mention['id'])
 
-                    print("You participated in the giveaway of : @" + screen_name)
-                    time.sleep(random.randrange(10, 20))
+                    random_sleep_time = random.randrange(10, 20)
+                    logging.info("You participated in the giveaway of : @%s. Sleeping for %ss...",
+                                 screen_name,
+                                 str(random_sleep_time))
+
+                    time.sleep(random_sleep_time)
 
             except tweepy.TweepError as e:
                 if e.api_code == 327:
                     pass
                 elif e.api_code == 161:
-                    print("The account can no longer follow. We go to the next step.")
+                    logging.warning("The account can no longer follow. We go to the next step.")
                     break
                 elif e.api_code == 136:
-                    print("You have been blocked by: ", screen_name)
+                    logging.info("You have been blocked by: ", screen_name)
                     break
                 elif e.api_code == 326:
-                    print("You have to do a captcha on the account: ", screen_name)
+                    logging.warning("You have to do a captcha on the account: ", screen_name)
                     break
                 else:
-                    print(e)
+                    logging.error(e)
 
     def comment(self, tweet, sentence_for_tag, hashtag, list_name, hashtag_to_blacklist):
         """
