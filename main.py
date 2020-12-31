@@ -116,6 +116,10 @@ while True:
                 managefollow = ManageFollow(user, api)
                 managefollow.unfollow()
 
+                rtgiveaway = RetweetGiveaway(api, user)
+                rtgiveaway.manage_giveaway(giveaway_list, sentence_for_tag,
+                                           list_name, hashtag_to_blacklist,
+                                           managefollow, like_giveaway)
 
                 # If the antibot bypass feature is activated
                 if bypass_antibot:
