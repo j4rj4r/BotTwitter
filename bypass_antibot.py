@@ -3,9 +3,9 @@ import logging
 import random
 import time
 
-import feedparser
 # Third Party Libraries
 import tweepy
+import feedparser
 
 # Local libraries
 from manage_rss import ManageRss
