@@ -23,6 +23,11 @@ accounts:
 # Use the antibot bypass feature (True/False)
 bypass_antibot : True
 
+# RSS
+flux_rss:
+    - https://www.24matins.fr/feed
+    - http://feeds.feedburner.com/actu/dDcd
+
 # Like all giveaway (True/False)
 like_giveaway : False
 

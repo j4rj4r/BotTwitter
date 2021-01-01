@@ -20,6 +20,7 @@ Vous devez installer ces libraries python3 pour que le script fonctionne :
 ```
 Tweepy
 PyYaml
+feedparser
 ```
 ### Installation :
 
@@ -29,20 +30,13 @@ PyYaml
 
 * Vous devez ensuite installer une version 3.x de Python : [Python 3.x](https://www.python.org/downloads/)
 
-* Pour finir vous devez installer les libraries Tweepy et PyYaml :
-    * [Tweepy](https://www.tweepy.org/) (Pour pouvoir communiquer avec l'API Twitter plus facilement)
-         ```
-         python3 -m pip install tweepy
-         ou
-         py -m pip install tweepy
-         ```
-    * [PyYaml](https://pyyaml.org/) (Pour lire les fichiers .yml)
-         ```
-         python3 -m pip install pyyaml
-         ou
-         py -m pip install pyyaml
-         ```
-Ces commandes sont à rentrer dans mon console (cmd pour Windows)
+* Pour finir vous devez installer les libraries Tweepy, PyYaml et feedparser:
+     ```
+     python3 -m pip install tweepy PyYaml feedparser
+     ou
+     py -m pip install tweepy PyYaml feedparser
+     ```
+Ces commandes sont à rentrer dans votre console (cmd pour Windows)
  Si pip n'est pas reconnu vous devez l'installer.
 
 
@@ -88,6 +82,14 @@ accounts:
       - "Example"
       # Access token secret
       - "Example"
+```
+Pour faire fonctionner correctement la fonction de bypass antibot, vous devez renseigner des flux rss.  
+Une liste de flux que vous pouvez ajouter est disponible ici : [Flux rss](http://atlasflux.saynete.net/index.htm)
+```
+# RSS
+flux_rss:
+    - https://partner-feeds.20min.ch/rss/20minutes
+    - https://www.24matins.fr/feed
 ```
 
 Il est possible désactiver la fonction de bypass antibot, la fonction like des concours, la fonction commenter avec un hashtag.
