@@ -112,7 +112,7 @@ class BypassAntiBot:
                     if e.api_code == 185:
                         break
                     elif (e.api_code == 327) or (e.api_code == 326):
-                        break
+                        pass
                     else:
                         logging.error(e.reason)
                 except StopIteration:

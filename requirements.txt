@@ -1,0 +1,3 @@
+Pyyaml
+tweepy
+feedparser
