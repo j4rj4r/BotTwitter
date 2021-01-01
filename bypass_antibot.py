@@ -56,7 +56,7 @@ class BypassAntiBot:
                 randomrt = 15
                 logging.info("We will only do " + str(randomrt) + " retweets for the moment.")
         else:
-            logging.info("Il y a " + str(round(percent_RtFol, 2)) + " % de RT pour les concours on passe a la suite")
+            logging.info("There is " + str(round(percent_RtFol, 2)) + " % retweets for the giveaways, we move on to the next step.")
             randomrt = 0
         return randomrt
 
