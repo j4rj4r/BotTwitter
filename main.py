@@ -10,11 +10,11 @@ import tweepy
 import yaml
 
 # Local libraries
-from bypass_antibot import BypassAntiBot
-from helper import Helper
-from manage_follow import ManageFollow, create_tables_follow
-from manage_rss import create_table_rss
-from retweet_giveaway import RetweetGiveaway
+from BotTwitter.bypass_antibot import BypassAntiBot
+from BotTwitter.helper import Helper
+from BotTwitter.manage_follow import ManageFollow, create_tables_follow
+from BotTwitter.manage_rss import create_table_rss
+from BotTwitter.retweet_giveaway import RetweetGiveaway
 
 # Configuration
 VERSION = 3.0
@@ -145,7 +145,7 @@ while True:
         logging.info("Current time : %s", current_time)
 
         # Sleep if it's night time
-        if 22 < now.hour < 2:
+        if 22 < now.hour or now.hour < 2:
             waiting_time = 7 * 3600
         else:
             waiting_time = random.randrange(4000, 6000)

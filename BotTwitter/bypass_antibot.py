@@ -8,7 +8,7 @@ import tweepy
 import feedparser
 
 # Local libraries
-from manage_rss import ManageRss
+from BotTwitter.manage_rss import ManageRss
 
 
 class BypassAntiBot:
