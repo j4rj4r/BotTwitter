@@ -30,7 +30,7 @@ feedparser
 
 * Vous devez ensuite installer une version 3.x de Python : [Python 3.x](https://www.python.org/downloads/)
 
-* Pour finir vous devez installer les libraries Tweepy et PyYaml :
+* Pour finir vous devez installer les libraries Tweepy, PyYaml et feedparser:
      ```
      python3 -m pip install tweepy PyYaml feedparser
      ou
