@@ -126,6 +126,7 @@ class BypassAntiBot:
         feeds = []  # list of feed objects
         for url in self.flux_rss:
             feeds.append(feedparser.parse(url))
+        random.shuffle(feeds)
         for feed in feeds:
             for post in feed.entries:
                 if nbtweet > 0:
