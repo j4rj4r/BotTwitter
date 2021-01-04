@@ -26,7 +26,6 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     out = yaml.load(stream, Loader=yaml.FullLoader)
     words_to_search = out['words_to_search']
     accounts_to_tag = out['accounts_to_tag']
-    words_to_blacklist_antibot = out['words_to_blacklist_antibot']
     sentence_for_tag = out['sentence_for_tag']
     hashtag_to_blacklist = [x.upper() for x in out['hashtag_to_blacklist']]
     giveaway_to_blacklist = [x.upper() for x in out['giveaway_to_blacklist']]
@@ -38,6 +37,7 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     max_giveaway = out['max_giveaway']
     logging_level = out['logging_level']
     flux_rss = out['flux_rss']
+    nb_account_to_tag = out['nb_account_to_tag']
 
 # Configuration of the logging library
 Helper.logging_configuration(logging_level)
@@ -121,7 +121,8 @@ while True:
                 rtgiveaway = RetweetGiveaway(api, user)
                 rtgiveaway.manage_giveaway(giveaway_list, sentence_for_tag,
                                            list_name, hashtag_to_blacklist,
-                                           managefollow, like_giveaway)
+                                           managefollow, like_giveaway,
+                                           nb_account_to_tag)
 
                 # If the antibot bypass feature is activated
                 if bypass_antibot:

@@ -37,6 +37,9 @@ comment_with_hashtag : True
 # Maximum number of giveaway retrieve for each word
 max_giveaway : 10
 
+# Number of accounts to tag
+nb_account_to_tag = 2
+
 # Minimum level wanted for script logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 logging_level : "INFO"
 
@@ -60,14 +63,6 @@ accounts_to_blacklist:
   - "@BotSpotterBot"
   - "@gulzaarAvi"
   - "@BotFett"
-
-# Words that should not be copied with the antibot
-words_to_blacklist_antibot:
-  - "pd"
-  - "tapette"
-  - "enculé"
-  - "pédale"
-  - "isis"
 
 # Sentences you need to tweet to invite a friend
 sentence_for_tag:
