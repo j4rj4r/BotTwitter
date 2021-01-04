@@ -252,6 +252,7 @@ class RetweetGiveaway:
         nbusernotif = 0
         for username in list_name:
             if nbusernotif < 2:
+                # We don't want to tag ourselves
                 if username == "@" + self.user.screen_name:
                     pass
                 else:

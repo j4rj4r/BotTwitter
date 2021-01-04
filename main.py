@@ -62,6 +62,8 @@ while True:
     # Add Accounts to Tag
     if accounts_to_tag:
         list_name += accounts_to_tag
+        # We don't want a duplicate
+        list_name = list(set(list_name))
 
     connection = 0
     # Looking for an account to find giveaway
