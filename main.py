@@ -1,19 +1,20 @@
 # Standard libraries
+import logging
 import random
 import sys
 import time
 from datetime import datetime, timedelta
-import logging
 
 # third party libraries
 import tweepy
 import yaml
 
 # Local libraries
-from bypass_antibot import BypassAntiBot
-from manage_follow import ManageFollow, create_tables
-from retweet_giveaway import RetweetGiveaway
-from helper import Helper
+from BotTwitter.bypass_antibot import BypassAntiBot
+from BotTwitter.helper import Helper
+from BotTwitter.manage_follow import ManageFollow, create_tables_follow
+from BotTwitter.manage_rss import create_table_rss
+from BotTwitter.retweet_giveaway import RetweetGiveaway
 
 # Configuration
 VERSION = 3.0
@@ -36,8 +37,13 @@ with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     comment_with_hashtag = out['comment_with_hashtag']
     max_giveaway = out['max_giveaway']
     logging_level = out['logging_level']
+    flux_rss = out['flux_rss']
 
+# Configuration of the logging library
 Helper.logging_configuration(logging_level)
+
+# Create a table to store rss links if it does not exist.
+create_table_rss()
 
 # Main loop
 while True:
@@ -49,7 +55,7 @@ while True:
                 api_key, api_secret, access_token, access_secret = list_auth
                 api, user = Helper.get_user(api_key, api_secret, access_token, access_secret)
 
-                create_tables(user)
+                create_tables_follow(user)
                 list_name.append("@" + user.screen_name)
                 logging.info("Configuration completed for the account : %s", user.screen_name)
 
@@ -70,7 +76,7 @@ while True:
     for account in out['accounts']:
         for account_name, list_auth in account.items():
             try:
-                # If an account is available
+                # If an account is available, we break the loop
                 if connection == 1:
                     break
                 api_key, api_secret, access_token, access_secret = list_auth
@@ -79,9 +85,11 @@ while True:
             except:
                 continue
 
+    # If no account is available
     if connection == 0:
         logging.error("No account available!")
         sys.exit()
+    # We retrieve a list of giveaway
     else:
         rtgiveaway = RetweetGiveaway(api, user)
         giveaway_list = rtgiveaway.check_retweet(words_to_search,
@@ -117,7 +125,7 @@ while True:
 
                 # If the antibot bypass feature is activated
                 if bypass_antibot:
-                    bypass = BypassAntiBot(api)
+                    bypass = BypassAntiBot(api, flux_rss)
                     bypass.bypass()
 
                 logging.info("Sleeping for 30s...")
@@ -139,7 +147,7 @@ while True:
         logging.info("Current time : %s", current_time)
 
         # Sleep if it's night time
-        if 22 < now.hour < 2:
+        if 22 < now.hour or now.hour < 2:
             waiting_time = 7 * 3600
         else:
             waiting_time = random.randrange(4000, 6000)

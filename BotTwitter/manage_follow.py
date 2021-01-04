@@ -26,7 +26,7 @@ class ManageFollow:
         c.execute('''SELECT * FROM {tab} WHERE compte = ?;'''.format(tab=self.user.screen_name), (str(follower),))
         data = c.fetchall()
 
-        # If this id exist
+        # If this id exist or not
         if len(data) == 0:
             c.execute('''INSERT INTO {tab}(compte,date) VALUES (:compte, :date);'''.format(
                 tab=self.user.screen_name), (follower, datetime.datetime.now()))
@@ -69,7 +69,7 @@ class ManageFollow:
         connection.commit()
 
 
-def create_tables(user):
+def create_tables_follow(user):
     """
     Create new tables for each user.
 
