@@ -38,7 +38,7 @@ comment_with_hashtag : True
 max_giveaway : 10
 
 # Number of accounts to tag
-nb_account_to_tag = 2
+nb_account_to_tag : 2
 
 # Minimum level wanted for script logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 logging_level : "INFO"
