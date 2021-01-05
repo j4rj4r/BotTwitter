@@ -166,10 +166,10 @@ class RetweetGiveaway:
                     logging.warning("The account can no longer follow. We go to the next step.")
                     break
                 elif e.api_code == 136:
-                    logging.info("You have been blocked by: ", screen_name)
+                    logging.info("You have been blocked by: %s", screen_name)
                     break
                 elif e.api_code == 326:
-                    logging.warning("You have to do a captcha on the account: ", screen_name)
+                    logging.warning("You have to do a captcha on the account: %s", self.user.screen_name)
                     break
                 else:
                     logging.error(e)
