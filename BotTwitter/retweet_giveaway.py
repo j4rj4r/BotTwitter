@@ -105,7 +105,7 @@ class RetweetGiveaway:
         return self.bot_action
 
     def manage_giveaway(self, list_giveaway, sentence_for_tag, list_name, hashtag_to_blacklist, managefollow,
-                        like_giveaway):
+                        like_giveaway, nb_account_to_tag):
         """
         Handle Give away tweets by following/commenting/tagging depending on the giveaway levels
 
@@ -142,7 +142,8 @@ class RetweetGiveaway:
 
                     if len(giveaway) == 2:
                         comment_level = giveaway[1]
-                        self.comment(tweet, sentence_for_tag, comment_level, list_name, hashtag_to_blacklist)
+                        self.comment(tweet, sentence_for_tag, comment_level, list_name, hashtag_to_blacklist,
+                                     nb_account_to_tag)
 
                     managefollow.update_table(author_id)
 
@@ -165,15 +166,15 @@ class RetweetGiveaway:
                     logging.warning("The account can no longer follow. We go to the next step.")
                     break
                 elif e.api_code == 136:
-                    logging.info("You have been blocked by: ", screen_name)
+                    logging.info("You have been blocked by: %s", screen_name)
                     break
                 elif e.api_code == 326:
-                    logging.warning("You have to do a captcha on the account: ", screen_name)
+                    logging.warning("You have to do a captcha on the account: %s", self.user.screen_name)
                     break
                 else:
                     logging.error(e)
 
-    def comment(self, tweet, sentence_for_tag, hashtag, list_name, hashtag_to_blacklist):
+    def comment(self, tweet, sentence_for_tag, hashtag, list_name, hashtag_to_blacklist, nb_account_to_tag):
         """
         Add Comment to a given tweet using some rules.
 
@@ -190,7 +191,7 @@ class RetweetGiveaway:
         # Random Sentence + Tag Comment + Hashtag Comment + Update Status
         if hashtag == 1:
             comment = "@" + tweet.retweeted_status.author.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment)
+            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
             comment = self.add_hashtag_comment(comment, tweet.retweeted_status.entities['hashtags'],
                                                hashtag_to_blacklist)
             self.api.update_status(comment, tweet.retweeted_status.id)
@@ -198,7 +199,7 @@ class RetweetGiveaway:
         # Random Sentence + Tag Comment + Update Status
         elif hashtag == 2:
             comment = "@" + tweet.retweeted_status.author.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment)
+            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
             self.api.update_status(comment, tweet.retweeted_status.id)
 
         # Hashtag Comment + Update Status
@@ -211,7 +212,7 @@ class RetweetGiveaway:
         # User - Random Sentence + Tag Comment + Hashtag Comment + Update Status
         elif hashtag == 4:
             comment = "@" + tweet.user.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment)
+            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
             comment = self.add_hashtag_comment(comment, tweet.entities['hashtags'],
                                                hashtag_to_blacklist)
             self.api.update_status(comment, tweet.id)
@@ -219,7 +220,7 @@ class RetweetGiveaway:
         # User - Random Sentence + Tag Comment + Update Status
         elif hashtag == 5:
             comment = "@" + tweet.user.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment)
+            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
             self.api.update_status(comment, tweet.id)
 
         # User - Hashtag Comment + Update Status
@@ -242,7 +243,7 @@ class RetweetGiveaway:
 
         return list(set(h_list) - set(hashtag_to_blacklist))
 
-    def add_tag_comment(self, list_name, comment):
+    def add_tag_comment(self, list_name, comment, nb_account_to_tag):
         """
         Tag other users in comment.
 
@@ -251,7 +252,8 @@ class RetweetGiveaway:
         """
         nbusernotif = 0
         for username in list_name:
-            if nbusernotif < 2:
+            if nbusernotif < nb_account_to_tag:
+                # We don't want to tag ourselves
                 if username == "@" + self.user.screen_name:
                     pass
                 else:
