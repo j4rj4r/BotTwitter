@@ -125,8 +125,13 @@ class BypassAntiBot:
         nbtweet = self.random_tweet_calculation()
         feeds = []  # list of feed objects
         for url in self.flux_rss:
-            feeds.append(feedparser.parse(url))
+            try:
+                feeds.append(feedparser.parse(url))
+            except Exception as e:
+                logging.error("Error while appending %s feed to feeds' list.", url)
+
         random.shuffle(feeds)
+
         for feed in feeds:
             for post in feed.entries:
                 if nbtweet > 0:
