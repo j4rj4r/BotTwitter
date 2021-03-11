@@ -47,7 +47,7 @@ class RetweetGiveaway:
                                        lang="fr", tweet_mode="extended").items(max_giveaway):
 
                 if tweet.retweet_count > 5:
-                    is_in_blacklist = [ele for ele in giveaway_to_blacklist if (ele in tweet.full_text)]
+                    is_in_blacklist = [ele for ele in giveaway_to_blacklist if (ele in tweet.full_text.upper())]
                     if is_in_blacklist:
                         pass
                     else:
