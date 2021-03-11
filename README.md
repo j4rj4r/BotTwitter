@@ -60,7 +60,7 @@ accounts:
       # Access token secret
       - "Example"
 ```
-Vous pouvez rajouter autant de comptes que vous voulez.
+Vous pouvez rajouter autant de comptes que vous voulez. Evitez les comptes commençants par un chiffre.
 ```
 accounts:
   # Accounts name
