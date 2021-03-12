@@ -50,6 +50,12 @@ words_to_search:
   - "concours pour gagner"
   - "Gagnez rt + follow"
   - "RT & follow"
+  
+# Period to check. How many days back from today
+#Default : 0 : today
+# 1 : yesterday and today
+# 5 : since 5 days back
+nb_days_rollback: 0
 
 # Accounts we want to invite
 accounts_to_tag:
