@@ -25,6 +25,7 @@ Helper = Helper()
 with open(CONFIGURATION_FILE, 'r', encoding="utf8") as stream:
     out = yaml.load(stream, Loader=yaml.FullLoader)
     words_to_search = out['words_to_search']
+    nb_days_rollback = out['nb_days_rollback']
     accounts_to_tag = out['accounts_to_tag']
     sentence_for_tag = out['sentence_for_tag']
     hashtag_to_blacklist = [x.upper() for x in out['hashtag_to_blacklist']]
@@ -97,7 +98,8 @@ while True:
                                                  hashtag_to_blacklist,
                                                  giveaway_to_blacklist,
                                                  comment_with_hashtag,
-                                                 max_giveaway)
+                                                 max_giveaway,
+                                                 nb_days_rollback)
 
     for account in out['accounts']:
         for account_name, list_auth in account.items():
