@@ -3,6 +3,7 @@ import logging
 import random
 import re
 import time
+from datetime import datetime, timedelta
 
 # third party libraries
 import tweepy
@@ -21,7 +22,7 @@ class RetweetGiveaway:
         self.bot_action = []
 
     def check_retweet(self, words_to_search, accounts_to_blacklist, hashtag_to_blacklist, giveaway_to_blacklist,
-                      comment_with_hashtag, max_giveaway):
+                      comment_with_hashtag, max_giveaway, nb_days_rollback):
         """
         Check for useful tweets by filtering out blacklisted
 
@@ -31,6 +32,7 @@ class RetweetGiveaway:
         :param giveaway_to_blacklist list: List of Blacklisted Giveaways to Ignore
         :param comment_with_hashtag boolean: If we comment with hashtag
         :param max_giveaway integer: Maximum number of giveaway retrieve for each word
+        :param nb_days_rollback integer: Number of day back
         """
         action = []
         regex_detect_tag = [r"\b(\w*INVIT(E|É)\w*)\b",
@@ -43,7 +45,7 @@ class RetweetGiveaway:
 
             logging.info("Searching giveaway with the word : %s", word)
             for tweet in tweepy.Cursor(self.api.search,
-                                       q=word, since=time.strftime('%Y-%m-%d', time.localtime()),
+                                       q=word, since=(datetime.now() - timedelta(nb_days_rollback)).strftime('%Y-%m-%d'),
                                        lang="fr", tweet_mode="extended").items(max_giveaway):
 
                 if tweet.retweet_count > 5:
