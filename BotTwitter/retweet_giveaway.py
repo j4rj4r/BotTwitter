@@ -40,15 +40,18 @@ class RetweetGiveaway:
                             r"\b(\w*TAG\w*)\b",
                             r"\b(\w*MENTIONN(E|É)\w*)\b"]
         regex_detect_tag = re.compile('|'.join(regex_detect_tag), re.IGNORECASE)
+        
+        giveaway_blacklist_search = ' -'.join(map(str, giveaway_to_blacklist))
+        giveaway_blacklist_search = '-' + giveaway_blacklist_search
 
         for word in words_to_search:
 
             logging.info("Searching giveaway with the word : %s", word)
             for tweet in tweepy.Cursor(self.api.search,
-                                       q=word, since=(datetime.now() - timedelta(nb_days_rollback)).strftime('%Y-%m-%d'),
+                                       q=word + ' ' + giveaway_blacklist_search, since=(datetime.now() - timedelta(nb_days_rollback)).strftime('%Y-%m-%d'),
                                        lang="fr", tweet_mode="extended").items(max_giveaway):
 
-                if tweet.retweet_count > 5:
+                if tweet.retweet_count > 1:
                     is_in_blacklist = [ele for ele in giveaway_to_blacklist if (ele in tweet.full_text.upper())]
                     if is_in_blacklist:
                         pass
