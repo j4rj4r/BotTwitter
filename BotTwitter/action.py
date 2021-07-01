@@ -9,30 +9,22 @@ from datetime import datetime, timedelta
 import tweepy
 
 
-class RetweetGiveaway:
-    def __init__(self, api, user):
+class Action:
+    def __init__(self, api, user, configuration):
         """
-        RetweetGiveaway class constructor, requires api object and user object
+        Tweet class constructor, requires api object and user object
 
-        :param api tweepy.API: api object from tweepy library
-        :param user tweepy.API.me() : User object for current bot
+        :param api: api object from tweepy library
+        :param user: User object for current bot
+        :param configuration : configuration dictionary
         """
         self.user = user
         self.api = api
-        self.bot_action = []
+        self.configuration = configuration
 
-    def check_retweet(self, words_to_search, accounts_to_blacklist, hashtag_to_blacklist, giveaway_to_blacklist,
-                      comment_with_hashtag, max_giveaway, nb_days_rollback):
+    def search_tweets(self):
         """
-        Check for useful tweets by filtering out blacklisted
-
-        :param words_to_search list: List of Keywords to Search tweet for
-        :param accounts_to_blacklist list: List of Blacklisted Accounts to Ignore
-        :param hashtag_to_blacklist list: List of Blacklisted Hashtags in tweets to ignore
-        :param giveaway_to_blacklist list: List of Blacklisted Giveaways to Ignore
-        :param comment_with_hashtag boolean: If we comment with hashtag
-        :param max_giveaway integer: Maximum number of giveaway retrieve for each word
-        :param nb_days_rollback integer: Number of day back
+        Search for tweets and return a list of tweets based on the configuration.
         """
         action = []
         regex_detect_tag = [r"\b(\w*INVIT(E|É)\w*)\b",
@@ -41,73 +33,82 @@ class RetweetGiveaway:
                             r"\b(\w*MENTIONN(E|É)\w*)\b"]
         regex_detect_tag = re.compile('|'.join(regex_detect_tag), re.IGNORECASE)
 
-        for word in words_to_search:
-
-            logging.info("Searching giveaway with the word : %s", word)
+        for word in self.configuration['words_to_search']:
+            logging.info('Searching tweet with the word : %s', word)
             for tweet in tweepy.Cursor(self.api.search,
-                                       q=word, since=(datetime.now() - timedelta(nb_days_rollback)).strftime('%Y-%m-%d'),
-                                       lang="fr", tweet_mode="extended").items(max_giveaway):
+                                       q=word, since=(
+                            datetime.now() - timedelta(self.configuration['nb_days_rollback'])).strftime('%Y-%m-%d'),
+                                       lang="fr", tweet_mode="extended").items(self.configuration['max_retrieve']):
 
-                if tweet.retweet_count > 5:
-                    is_in_blacklist = [ele for ele in giveaway_to_blacklist if (ele in tweet.full_text.upper())]
-                    if is_in_blacklist:
-                        pass
-                    else:
+                if tweet.retweet_count > self.configuration['min_retweet']:
+                    is_in_blacklist = [ele for ele in self.configuration['words_to_blacklist'] if
+                                       (ele in tweet.full_text.upper())]
+                    if not is_in_blacklist:
                         # Check if it's a retweet
                         if hasattr(tweet, 'retweeted_status'):
                             screen_name = tweet.retweeted_status.author.screen_name
                             entities = tweet.retweeted_status.entities
                             full_text = tweet.retweeted_status.full_text
-                            extra = 0
                         else:
                             screen_name = tweet.user.screen_name
                             entities = tweet.entities
                             full_text = tweet.full_text
-                            extra = 3
 
                         # Check if Tweet Author is blacklisted or not
-                        if screen_name not in accounts_to_blacklist:
+                        if screen_name not in self.configuration['accounts_to_blacklist']:
 
                             # Check for INVITE/TAG/MENTIONNE in retweet text
                             if re.search(regex_detect_tag, full_text):
 
-                                # Check if tweet has Hashtags
-                                if len(entities['hashtags']) > 0:
-                                    # if comment with hashtag is enabled
-                                    if comment_with_hashtag:
+                                # if comment with hashtag is enabled
+                                if self.configuration['comment_with_hashtag']:
+                                    # If there are hashtags in the tweet
+                                    if len(entities['hashtags']) > 0:
                                         # Clean Hastags
                                         h_list = self.manage_hashtag(entities['hashtags'],
-                                                                     hashtag_to_blacklist)
+                                                                     self.configuration['hashtag_to_blacklist'])
                                         # If we find Hashtags -> Record the tweet
                                         if h_list:
-                                            action.append(tweet)
-                                            action.append(1 + extra)
-                                            self.bot_action.append(action)
+                                            dict_action = {'tweet_object': tweet, 'hashtag': 1, 'tag': 1}
+                                            action.append(dict_action)
                                         else:
-                                            action.append(tweet)
-                                            action.append(2 + extra)
-                                            self.bot_action.append(action)
+                                            dict_action = {"tweet_object": tweet, "hashtag": 0, 'tag': 1}
+                                            action.append(dict_action)
                                     else:
-                                        action.append(tweet)
-                                        action.append(2 + extra)
-                                        self.bot_action.append(action)
-                                # Else Select Action 2
+                                        dict_action = {"tweet_object": tweet, "hashtag": 0, 'tag': 1}
+                                        action.append(dict_action)
                                 else:
-                                    action.append(tweet)
-                                    action.append(2 + extra)
-                                    self.bot_action.append(action)
+                                    dict_action = {"tweet_object": tweet, "hashtag": 0, 'tag': 1}
+                                    action.append(dict_action)
 
-                            # If regex-tags not found, record the tweet without action number
+                            # If regex-tags not found
                             else:
-                                action.append(tweet)
-                                self.bot_action.append(action)
+                                # if comment with hashtag is enabled
+                                if self.configuration['comment_with_hashtag']:
+                                    # If there are hashtags in the tweet
+                                    if len(entities['hashtags']) > 0:
+                                        # Clean Hastags
+                                        h_list = self.manage_hashtag(entities['hashtags'],
+                                                                     self.configuration['hashtag_to_blacklist'])
+                                        # If we find Hashtags
+                                        if h_list:
+                                            dict_action = {'tweet_object': tweet, 'hashtag': 1, 'tag': 0}
+                                            action.append(dict_action)
+                                        else:
+                                            dict_action = {'tweet_object': tweet, 'hashtag': 0, 'tag': 0}
+                                            action.append(dict_action)
+                                    else:
+                                        dict_action = {'tweet_object': tweet, 'hashtag': 0, 'tag': 0}
+                                        action.append(dict_action)
+                                else:
+                                    dict_action = {'tweet_object': tweet, 'hashtag': 0, 'tag': 0}
+                                    action.append(dict_action)
 
-                        action = []
+        return action
 
-        return self.bot_action
-
-    def manage_giveaway(self, list_giveaway, sentence_for_tag, list_name, hashtag_to_blacklist, managefollow,
-                        like_giveaway, nb_account_to_tag):
+#To Do
+    def manage_action(self, list_action, sentence_for_tag, list_name, hashtag_to_blacklist, managefollow,
+                      like_giveaway, nb_account_to_tag):
         """
         Handle Give away tweets by following/commenting/tagging depending on the giveaway levels
 
@@ -118,8 +119,8 @@ class RetweetGiveaway:
         :param managefollow managefollow: Database management object from ManageFollow
         :param like_giveaway boolean: If we like giveaway
         """
-        for giveaway in list_giveaway:
-            tweet = giveaway[0]
+        for action in list_action:
+            tweet = action['tweet_object']
 
             try:
                 if hasattr(tweet, 'retweeted_status'):

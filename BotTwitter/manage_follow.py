@@ -1,10 +1,11 @@
 # Standard libraries
 import datetime
 import logging
-import sqlite3
+
+import database_client
 
 
-class ManageFollow:
+class manage_follow:
     def __init__(self, user, api):
         """
         ManageFollow object keeps track of user and tweets in an sqlite table
@@ -14,6 +15,8 @@ class ManageFollow:
         """
         self.user = user
         self.api = api
+        self.database_path = "_BotTwitter_.db"
+        self.database = database_client.database(self.database_path)
 
     def update_table(self, follower):
         """

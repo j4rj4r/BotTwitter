@@ -1,74 +1,98 @@
+### GENERAL SETTINGS ###
+
 # Define accounts and keys
 accounts:
-  # Accounts name
-  - "Example":
+ # Accounts name
+  - "jdrf4r":
       # API key
-      - "Example"
+      - "Ht7oRxhMYFjLtB"
       # API key secret
-      - "Example"
+      - "Sc7ESucV7qD9E9LsBhTmFmD"
       # Access token
-      - "Example"
+      - "805850378096-UJBmDK71e4E3roj2lizUI"
       # Access token secret
-      - "Example"
-  - "Example2":
-      # API key
-      - "Example"
-      # API key secret
-      - "Example"
-      # Access token
-      - "Example"
-      # Access token secret
-      - "Example"
+      - "xjH6TWQ4wBbNQ1Lv"
 
-# Use the antibot bypass feature (True/False)
-bypass_antibot : True
-
-# RSS
-flux_rss:
-    - https://www.24matins.fr/feed
-    - http://feeds.feedburner.com/actu/dDcd
-
-# Like all giveaway (True/False)
-like_giveaway : False
-
-# Comment with hashtag (True/False)
-comment_with_hashtag : True
-
-# Maximum number of giveaway retrieve for each word
-max_giveaway : 10
-
-# Number of accounts to tag
-nb_account_to_tag : 2
 
 # Minimum level wanted for script logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 logging_level : "INFO"
 
-# Words to search for giveaway
+### END GENERAL SETTINGS ###
+
+
+### ACTION SETTINGS ###
+
+# Like all tweets (True/False)
+like_tweets : False
+
+# Retweet all tweets (True/False)
+retweet_tweets : True
+
+# automatic follow of the creators of the tweets (True/False)
+automatic_follow : True
+
+# automatic follow of accounts tagged in the tweet (True/False)
+automatic_tag_follow : True
+
+### END ACTION SETTINGS ###
+
+
+### SEARCH SETTINGS ###
+
+# Words to search
 words_to_search:
   - "#concours"
   - "#JeuConcours"
   - "concours pour gagner"
   - "Gagnez rt + follow"
   - "RT & follow"
-  
+
 # Period to check. How many days back from today
-#Default : 0 : today
+# Default : 0 : today
 # 1 : yesterday and today
 # 5 : since 5 days back
 nb_days_rollback: 0
 
+# Maximum number of tweets retrieved for each word
+max_retrieve : 10
+
+# Minimum number of retweets the tweet must have
+min_retweet : 5
+
+# We don't want to retrieved the tweets with these words
+words_to_blacklist:
+  - "nude"
+
+### END SEARCH SETTINGS ###
+
+
+### BYPASS-ANTIBOT SETTINGS ###
+
+# Use the antibot bypass feature (True/False)
+bypass_antibot : True
+
+# RSS sources
+flux_rss:
+    - https://www.24matins.fr/feed
+    - http://feeds.feedburner.com/actu/dDcd
+
+### END BYPASS-ANTIBOT SETTINGS ###
+
+
+### Comment SETTINGS ###
+
+# Use the tag feature (True/False)
+tag : True
+
+# Comment with hashtag (True/False)
+comment_with_hashtag : True
+
+# Number of accounts to tag
+nb_account_to_tag : 2
+
 # Accounts we want to invite
 accounts_to_tag:
   - "@j4rj4r_binks"
-
-# Accounts that we don't want to follow
-accounts_to_blacklist:
-  - "@RealB0tSpotter"
-  - "@jflessauSpam"
-  - "@b0ttem"
-  - "@BotSpotterBot"
-  - "@gulzaarAvi"
-  - "@BotFett"
 
 # Sentences you need to tweet to invite a friend
 sentence_for_tag:
@@ -115,7 +139,7 @@ sentence_for_tag:
   - "Qu'est ce que vous en pensez ? Allez participez-vous aussi "
   - "Let's go, je suis sûr qu'on va gagner cette fois :) "
 
-# hashtag we don't want to tweet
+# hashtag we don't want to tweet when we tag
 hashtag_to_blacklist:
   - "giveaway"
   - "concours"
@@ -144,7 +168,35 @@ hashtag_to_blacklist:
   - "annonce"
   - "noel"
   - "joyeuxnoel"
+  - "PS4"
+  - "PS5"
 
-# We don't want to participate in giveaway with these words
-giveaway_to_blacklist:
-  - "nude"
+### END TAG SETTINGS ###
+
+
+### FOLLOW SETTINGS ###
+
+# Accounts that we don't want to follow
+accounts_to_blacklist:
+  - "@RealB0tSpotter"
+  - "@jflessauSpam"
+  - "@b0ttem"
+  - "@BotSpotterBot"
+  - "@gulzaarAvi"
+  - "@BotFett"
+
+### END FOLLOW SETTINGS ###
+
+
+  
+
+
+
+
+
+
+
+
+
+
+

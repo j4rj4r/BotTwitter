@@ -21,7 +21,7 @@ class BypassAntiBot:
         """
         self.api = api
         self.flux_rss = flux_rss
-        self.managerss = ManageRss()
+        self.managers = ManageRss()
 
     def bypass(self):
         """
