@@ -133,26 +133,26 @@ class Action:
                     entities = tweet.entities
                     screen_name = tweet.user.screen_name
 
-                    if self.configuration['retweet_tweets']:
-                        if not retweeted:
-                            api.retweet(id_)
+                if self.configuration['retweet_tweets']:
+                    if not retweeted:
+                        api.retweet(id_)
 
-                    if self.configuration['like_tweets']:
-                        if not favorited:
-                            api.create_favorite(id_)
+                if self.configuration['like_tweets']:
+                    if not favorited:
+                        api.create_favorite(id_)
 
-                    if self.configuration['automatic_follow']:
-                        api.create_friendship(author_id)
-                        managefollow.update_table(author_id)
+                if self.configuration['automatic_follow']:
+                    api.create_friendship(author_id)
+                    managefollow.update_table(author_id)
 
-                    if self.configuration['tag']:
-                        self.comment(tweet, api)
+                if self.configuration['tag']:
+                    self.comment(tweet, api)
 
-                    if self.configuration['automatic_tag_follow'] :
-                        if len(entities['user_mentions']) > 0:
-                            for mention in entities['user_mentions']:
-                                api.create_friendship(mention['id'])
-                                managefollow.update_table(mention['id'])
+                if self.configuration['automatic_tag_follow'] :
+                    if len(entities['user_mentions']) > 0:
+                        for mention in entities['user_mentions']:
+                            api.create_friendship(mention['id'])
+                            managefollow.update_table(mention['id'])
 
                     random_sleep_time = random.randrange(10, 20)
                     logging.info("You participated in the giveaway of : @%s. Sleeping for %ss...",
