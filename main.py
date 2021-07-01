@@ -67,10 +67,10 @@ while True:
         # We don't want a duplicate
         list_name = list(set(list_name))
 
-    list_action = Action(mainaccount[0], mainaccount[1], config)
+    action = Action(mainaccount[0], mainaccount[1], config)
+
+    list_action = action.search_tweets()
     if not list_action:
         logging.error('There is no action to do!')
         sys.exit()
-
-    giveaway_list = Action.search_tweets()
     time.sleep(100)
