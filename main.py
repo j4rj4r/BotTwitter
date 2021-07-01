@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 
 # third party libraries
 import tweepy
-import logging
 
 # Local libraries
 from BotTwitter.helpers import Helpers
@@ -31,8 +30,9 @@ dbman = BotTwitter.database_client.database(DB_FILE)
 dbuser = dbman.Users()
 
 while True:
+    mainaccount = None
     list_name = []
-    mainaccount = []
+    user_information_list = []
     for account in config['accounts']:
         for account_name, list_auth in account.items():
             try:
@@ -46,9 +46,10 @@ while True:
 
                 # Get account to retrieve the list of giveaways
                 if not mainaccount:
-                    mainaccount = [api, user]
+                    mainaccount = api
 
                 list_name.append('@' + user.screen_name)
+                user_information_list.append({'api': api, 'user': user})
                 logging.info('Configuration completed for the account : %s', user.screen_name)
 
             except Exception as e:
@@ -67,10 +68,16 @@ while True:
         # We don't want a duplicate
         list_name = list(set(list_name))
 
-    action = Action(mainaccount[0], mainaccount[1], config)
+    action = Action(config, list_name)
 
-    list_action = action.search_tweets()
+    # We retrieve the list of actions to do
+    list_action = action.search_tweets(mainaccount)
+    # If there is no action
     if not list_action:
         logging.error('There is no action to do!')
         sys.exit()
+
+    # Each user do the actions
+    for user_information in user_information_list:
+        action.manage_action()
     time.sleep(100)

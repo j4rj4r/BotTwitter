@@ -10,21 +10,21 @@ import tweepy
 
 
 class Action:
-    def __init__(self, api, user, configuration):
+    def __init__(self, configuration, list_name):
         """
-        Tweet class constructor, requires api object and user object
+        Tweet class constructor, requires configuration dictionnary and username list
 
-        :param api: api object from tweepy library
-        :param user: User object for current bot
         :param configuration : configuration dictionary
+        :param list_name : username list
         """
-        self.user = user
-        self.api = api
         self.configuration = configuration
+        self.list_name = list_name
 
-    def search_tweets(self):
+    def search_tweets(self, api):
         """
         Search for tweets and return a list of tweets based on the configuration.
+
+        :param api : api object
         """
         action = []
         regex_detect_tag = [r"\b(\w*INVIT(E|É)\w*)\b",
@@ -35,7 +35,7 @@ class Action:
 
         for word in self.configuration['words_to_search']:
             logging.info('Searching tweet with the word : %s', word)
-            for tweet in tweepy.Cursor(self.api.search,
+            for tweet in tweepy.Cursor(api.search,
                                        q=word, since=(
                             datetime.now() - timedelta(self.configuration['nb_days_rollback'])).strftime('%Y-%m-%d'),
                                        lang="fr", tweet_mode="extended").items(self.configuration['max_retrieve']):
@@ -69,16 +69,16 @@ class Action:
                                                                      self.configuration['hashtag_to_blacklist'])
                                         # If we find Hashtags -> Record the tweet
                                         if h_list:
-                                            dict_action = {'tweet_object': tweet, 'hashtag': 1, 'tag': 1}
+                                            dict_action = {'tweet_object': tweet, 'hashtag': True, 'tag': True}
                                             action.append(dict_action)
                                         else:
-                                            dict_action = {"tweet_object": tweet, "hashtag": 0, 'tag': 1}
+                                            dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': True}
                                             action.append(dict_action)
                                     else:
-                                        dict_action = {"tweet_object": tweet, "hashtag": 0, 'tag': 1}
+                                        dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': True}
                                         action.append(dict_action)
                                 else:
-                                    dict_action = {"tweet_object": tweet, "hashtag": 0, 'tag': 1}
+                                    dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': True}
                                     action.append(dict_action)
 
                             # If regex-tags not found
@@ -92,32 +92,27 @@ class Action:
                                                                      self.configuration['hashtag_to_blacklist'])
                                         # If we find Hashtags
                                         if h_list:
-                                            dict_action = {'tweet_object': tweet, 'hashtag': 1, 'tag': 0}
+                                            dict_action = {'tweet_object': tweet, 'hashtag': True, 'tag': False}
                                             action.append(dict_action)
                                         else:
-                                            dict_action = {'tweet_object': tweet, 'hashtag': 0, 'tag': 0}
+                                            dict_action = {'tweet_object': tweet, 'hashtag': False, 'tag': False}
                                             action.append(dict_action)
                                     else:
-                                        dict_action = {'tweet_object': tweet, 'hashtag': 0, 'tag': 0}
+                                        dict_action = {'tweet_object': tweet, 'hashtag': False, 'tag': False}
                                         action.append(dict_action)
                                 else:
-                                    dict_action = {'tweet_object': tweet, 'hashtag': 0, 'tag': 0}
+                                    dict_action = {'tweet_object': tweet, 'hashtag': False, 'tag': False}
                                     action.append(dict_action)
 
         return action
 
-#To Do
-    def manage_action(self, list_action, sentence_for_tag, list_name, hashtag_to_blacklist, managefollow,
-                      like_giveaway, nb_account_to_tag):
+    # To Do
+    def manage_action(self, list_action, api):
         """
         Handle Give away tweets by following/commenting/tagging depending on the giveaway levels
 
-        :param list_giveaway list: List of Giveaways tweets and (optional) Giveaway levels
-        :param sentence_for_tag list: List of Random Sentences to use for commenting
-        :param list_name list: List of Names to Randomly Tag on giveaways
-        :param hashtag_to_blacklist list: List of hastags to blacklist
-        :param managefollow managefollow: Database management object from ManageFollow
-        :param like_giveaway boolean: If we like giveaway
+        :param list_action : List of Giveaways tweets and (optional) Giveaway levels
+        :param api : api object
         """
         for action in list_action:
             tweet = action['tweet_object']
@@ -125,41 +120,44 @@ class Action:
             try:
                 if hasattr(tweet, 'retweeted_status'):
                     retweeted = tweet.retweeted_status.retweeted
+                    favorited = tweet.retweeted_status.favorited
                     id_ = tweet.retweeted_status.id
                     author_id = tweet.retweeted_status.author.id
                     entities = tweet.retweeted_status.entities
                     screen_name = tweet.retweeted_status.user.screen_name
                 else:
                     retweeted = tweet.retweeted
+                    favorited = tweet.liked
                     id_ = tweet.id
                     author_id = tweet.user.id
                     entities = tweet.entities
                     screen_name = tweet.user.screen_name
 
-                if not retweeted:
-                    self.api.retweet(id_)
-                    if like_giveaway:
-                        self.api.create_favorite(id_)
+                    if self.configuration['retweet_tweets']:
+                        if not retweeted:
+                            api.retweet(id_)
 
-                    self.api.create_friendship(author_id)
+                    if self.configuration['like_tweets']:
+                        if not favorited:
+                            api.create_favorite(id_)
 
-                    if len(giveaway) == 2:
-                        comment_level = giveaway[1]
-                        self.comment(tweet, sentence_for_tag, comment_level, list_name, hashtag_to_blacklist,
-                                     nb_account_to_tag)
+                    if self.configuration['automatic_follow']:
+                        api.create_friendship(author_id)
+                        managefollow.update_table(author_id)
 
-                    managefollow.update_table(author_id)
+                    if self.configuration['tag']:
+                        self.comment(tweet, api)
 
-                    if len(entities['user_mentions']) > 0:
-                        for mention in entities['user_mentions']:
-                            self.api.create_friendship(mention['id'])
-                            managefollow.update_table(mention['id'])
+                    if self.configuration['automatic_tag_follow'] :
+                        if len(entities['user_mentions']) > 0:
+                            for mention in entities['user_mentions']:
+                                api.create_friendship(mention['id'])
+                                managefollow.update_table(mention['id'])
 
                     random_sleep_time = random.randrange(10, 20)
                     logging.info("You participated in the giveaway of : @%s. Sleeping for %ss...",
                                  screen_name,
                                  str(random_sleep_time))
-
                     time.sleep(random_sleep_time)
 
             except tweepy.TweepError as e:
@@ -177,7 +175,7 @@ class Action:
                 else:
                     logging.error(e)
 
-    def comment(self, tweet, sentence_for_tag, hashtag, list_name, hashtag_to_blacklist, nb_account_to_tag):
+    def comment(self, tweet, api):
         """
         Add Comment to a given tweet using some rules.
 

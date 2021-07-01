@@ -44,9 +44,9 @@ class Helpers:
         # Authenticate Key to use Twitter API
         auth = tweepy.OAuthHandler(api_key, api_secret)
         auth.set_access_token(access_token, access_secret)
+        # calling the api
         api = tweepy.API(auth)
-
-        # Get Twitter User object and Create Table for each user
+        # getting the authenticated user's information
         user = api.me()
         return api, user
 
