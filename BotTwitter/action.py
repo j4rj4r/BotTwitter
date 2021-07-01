@@ -8,17 +8,19 @@ from datetime import datetime, timedelta
 # third party libraries
 import tweepy
 
-
 class Action:
-    def __init__(self, configuration, list_name):
+    def __init__(self, configuration, list_name, user, api):
         """
         Tweet class constructor, requires configuration dictionnary and username list
 
         :param configuration : configuration dictionary
         :param list_name : username list
+        :param user : current user account
         """
         self.configuration = configuration
         self.list_name = list_name
+        self.user = user
+        self.api = api
 
     def search_tweets(self, api):
         """
@@ -41,8 +43,14 @@ class Action:
                                        lang="fr", tweet_mode="extended").items(self.configuration['max_retrieve']):
 
                 if tweet.retweet_count > self.configuration['min_retweet']:
-                    is_in_blacklist = [ele for ele in self.configuration['words_to_blacklist'] if
-                                       (ele in tweet.full_text.upper())]
+                    # Blacklist words management 
+                    blacklist = self.configuration['words_to_blacklist']
+                    blacklist = [blacklist_elem.upper() for blacklist_elem in blacklist]
+                    is_in_blacklist = False
+                    for tweet_word_upper in tweet.full_text.upper().split():
+                        if tweet_word_upper in blacklist: 
+                            is_in_blacklist = True
+                   
                     if not is_in_blacklist:
                         # Check if it's a retweet
                         if hasattr(tweet, 'retweeted_status'):
@@ -58,56 +66,34 @@ class Action:
                         if screen_name not in self.configuration['accounts_to_blacklist']:
 
                             # Check for INVITE/TAG/MENTIONNE in retweet text
-                            if re.search(regex_detect_tag, full_text):
-
-                                # if comment with hashtag is enabled
-                                if self.configuration['comment_with_hashtag']:
-                                    # If there are hashtags in the tweet
-                                    if len(entities['hashtags']) > 0:
-                                        # Clean Hastags
-                                        h_list = self.manage_hashtag(entities['hashtags'],
-                                                                     self.configuration['hashtag_to_blacklist'])
-                                        # If we find Hashtags -> Record the tweet
-                                        if h_list:
-                                            dict_action = {'tweet_object': tweet, 'hashtag': True, 'tag': True}
-                                            action.append(dict_action)
-                                        else:
-                                            dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': True}
-                                            action.append(dict_action)
+                            match_keyword_tag = re.search(regex_detect_tag, full_text)
+                            is_present_keyword_tag = match_keyword_tag is not None
+                            # if comment with hashtag is enabled
+                            if self.configuration['comment_with_hashtag']:
+                                # If there are hashtags in the tweet
+                                if len(entities['hashtags']) > 0:
+                                    # Clean Hastags
+                                    h_list = self.manage_hashtag(entities['hashtags'])
+                                    # If we find Hashtags -> Record the tweet
+                                    if h_list:
+                                        dict_action = {'tweet_object': tweet, 'hashtag': True, 'tag': is_present_keyword_tag}
+                                        action.append(dict_action)
                                     else:
-                                        dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': True}
+                                        dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': is_present_keyword_tag}
                                         action.append(dict_action)
                                 else:
-                                    dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': True}
+                                    dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': is_present_keyword_tag}
                                     action.append(dict_action)
-
-                            # If regex-tags not found
                             else:
-                                # if comment with hashtag is enabled
-                                if self.configuration['comment_with_hashtag']:
-                                    # If there are hashtags in the tweet
-                                    if len(entities['hashtags']) > 0:
-                                        # Clean Hastags
-                                        h_list = self.manage_hashtag(entities['hashtags'],
-                                                                     self.configuration['hashtag_to_blacklist'])
-                                        # If we find Hashtags
-                                        if h_list:
-                                            dict_action = {'tweet_object': tweet, 'hashtag': True, 'tag': False}
-                                            action.append(dict_action)
-                                        else:
-                                            dict_action = {'tweet_object': tweet, 'hashtag': False, 'tag': False}
-                                            action.append(dict_action)
-                                    else:
-                                        dict_action = {'tweet_object': tweet, 'hashtag': False, 'tag': False}
-                                        action.append(dict_action)
-                                else:
-                                    dict_action = {'tweet_object': tweet, 'hashtag': False, 'tag': False}
-                                    action.append(dict_action)
+                                dict_action = {"tweet_object": tweet, "hashtag": False, 'tag': is_present_keyword_tag}
+                                action.append(dict_action)
+                    else:
+                        logging.info("Blacklisted words match with the tweet : ", tweet.entities)
 
         return action
 
-    # To Do
-    def manage_action(self, list_action, api):
+
+    def manage_action(self, list_action, manage_follow):
         """
         Handle Give away tweets by following/commenting/tagging depending on the giveaway levels
 
@@ -135,24 +121,24 @@ class Action:
 
                 if self.configuration['retweet_tweets']:
                     if not retweeted:
-                        api.retweet(id_)
+                        self.api.retweet(id_)
 
                 if self.configuration['like_tweets']:
                     if not favorited:
-                        api.create_favorite(id_)
+                        self.api.create_favorite(id_)
 
                 if self.configuration['automatic_follow']:
-                    api.create_friendship(author_id)
-                    managefollow.update_table(author_id)
+                    self.api.create_friendship(author_id)
+                    manage_follow.update_table(author_id)
 
                 if self.configuration['tag']:
-                    self.comment(tweet, api)
+                    self.comment(action)
 
                 if self.configuration['automatic_tag_follow'] :
                     if len(entities['user_mentions']) > 0:
                         for mention in entities['user_mentions']:
-                            api.create_friendship(mention['id'])
-                            managefollow.update_table(mention['id'])
+                            self.api.create_friendship(mention['id'])
+                            manage_follow.update_table(mention['id'])
 
                     random_sleep_time = random.randrange(10, 20)
                     logging.info("You participated in the giveaway of : @%s. Sleeping for %ss...",
@@ -175,7 +161,7 @@ class Action:
                 else:
                     logging.error(e)
 
-    def comment(self, tweet, api):
+    def comment(self, action):
         """
         Add Comment to a given tweet using some rules.
 
@@ -185,66 +171,76 @@ class Action:
         :param list_name list: List of user names
         :param hashtag_to_blacklist list: List of Blacklisted Hastags to avoid
         """
-        random.shuffle(list_name)
+        # Extract tweet and actions
+        tweet = action["tweet_object"]
+        hashtag = action["hashtag"]
+        tag = action["tag"]
+        need_comment = tag is not None
+
+        sentence_for_tag = self.configuration["sentence_for_tag"]
+        random.shuffle(self.list_name)
         nbrandom = random.randrange(0, len(sentence_for_tag))
         randomsentence = sentence_for_tag[nbrandom]
 
-        # Random Sentence + Tag Comment + Hashtag Comment + Update Status
-        if hashtag == 1:
-            comment = "@" + tweet.retweeted_status.author.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
-            comment = self.add_hashtag_comment(comment, tweet.retweeted_status.entities['hashtags'],
-                                               hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.retweeted_status.id)
+         # if the tweet ask for INVITE/TAG/MENTIONNE
+        if need_comment is not None:  
+            # check context Tweet or retweet
+            if tweet.retweeted_status is not None:
+                # Context: Retweet
+                # Random Sentence + Tag Comment + Hashtag Comment + Update Status
+                if hashtag and tag:
+                    comment = "@" + tweet.retweeted_status.author.screen_name + " " + randomsentence + " "
+                    comment = self.add_tag_comment(self.list_name, comment)
+                    comment = self.add_hashtag_comment(comment, tweet.retweeted_status.entities['hashtags'])
+                    self.api.update_status(comment, tweet.retweeted_status.id)
 
-        # Random Sentence + Tag Comment + Update Status
-        elif hashtag == 2:
-            comment = "@" + tweet.retweeted_status.author.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
-            self.api.update_status(comment, tweet.retweeted_status.id)
+                # Random Sentence + Tag Comment + Update Status
+                elif not hashtag and tag:
+                    comment = "@" + tweet.retweeted_status.author.screen_name + " " + randomsentence + " "
+                    comment = self.add_tag_comment(self.list_name, comment)
+                    self.api.update_status(comment, tweet.retweeted_status.id)
 
-        # Hashtag Comment + Update Status
-        elif hashtag == 3:
-            comment = "@" + tweet.retweeted_status.author.screen_name + " "
-            comment = self.add_hashtag_comment(comment, tweet.retweeted_status.entities['hashtags'],
-                                               hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.retweeted_status.id)
+                # Hashtag Comment + Update Status
+                elif hashtag and not tag:
+                    comment = "@" + tweet.retweeted_status.author.screen_name + " "
+                    comment = self.add_hashtag_comment(comment, tweet.retweeted_status.entities['hashtags'])
+                    self.api.update_status(comment, tweet.retweeted_status.id)
+            else:
+                # Context: Tweet
+                # User - Random Sentence + Tag Comment + Hashtag Comment + Update Status
+                if hashtag and tag:
+                    comment = "@" + tweet.user.screen_name + " " + randomsentence + " "
+                    comment = self.add_tag_comment(self.list_name, comment)
+                    comment = self.add_hashtag_comment(comment, tweet.entities['hashtags'])
+                    self.api.update_status(comment, tweet.id)
 
-        # User - Random Sentence + Tag Comment + Hashtag Comment + Update Status
-        elif hashtag == 4:
-            comment = "@" + tweet.user.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
-            comment = self.add_hashtag_comment(comment, tweet.entities['hashtags'],
-                                               hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.id)
+                # User - Random Sentence + Tag Comment + Update Status
+                elif not hashtag and tag:
+                    comment = "@" + tweet.user.screen_name + " " + randomsentence + " "
+                    comment = self.add_tag_comment(self.list_name, comment)
+                    self.api.update_status(comment, tweet.id)
 
-        # User - Random Sentence + Tag Comment + Update Status
-        elif hashtag == 5:
-            comment = "@" + tweet.user.screen_name + " " + randomsentence + " "
-            comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
-            self.api.update_status(comment, tweet.id)
+                # User - Hashtag Comment + Update Status
+                elif hashtag and not tag:
+                    comment = "@" + tweet.user.screen_name + " "
+                    comment = self.add_hashtag_comment(comment, tweet.entities['hashtags'])
+                    self.api.update_status(comment, tweet.id)
 
-        # User - Hashtag Comment + Update Status
-        elif hashtag == 6:
-            comment = "@" + tweet.user.screen_name + " "
-            comment = self.add_hashtag_comment(comment, tweet.entities['hashtags'],
-                                               hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.id)
-
-    def manage_hashtag(self, hashtag_list, hashtag_to_blacklist):
+    def manage_hashtag(self, hashtag_list):
         """
         Filter Blacklisted Hastags
 
         :param hashtag_list list: List of Hashtags from Tweet
         :param hashtag_to_blacklist list: List of BlackListed Hashtags
         """
+        hashtag_to_blacklist = [h_blacklisted_elem.upper() for h_blacklisted_elem in self.configuration["hashtag_to_blacklist"]] 
         h_list = []
         for h in hashtag_list:
             h_list.append(h['text'].upper())
 
         return list(set(h_list) - set(hashtag_to_blacklist))
 
-    def add_tag_comment(self, list_name, comment, nb_account_to_tag):
+    def add_tag_comment(self, list_name, comment):
         """
         Tag other users in comment.
 
@@ -252,8 +248,8 @@ class Action:
         :param comment string: Tweet/text/Comment
         """
         nbusernotif = 0
-        for username in list_name:
-            if nbusernotif < nb_account_to_tag:
+        for username in self.list_name:
+            if nbusernotif < self.configuration["nb_account_to_tag"]:
                 # We don't want to tag ourselves
                 if username == "@" + self.user.screen_name:
                     pass
@@ -262,15 +258,14 @@ class Action:
                     nbusernotif += 1
         return comment
 
-    def add_hashtag_comment(self, comment, hashtag_list, hashtag_to_blacklist):
+    def add_hashtag_comment(self, comment, hashtag_list):
         """
         Add hashtag in Comments
 
         :param comment string: Comment to which to add hashtags
         :param hashtag_list list: List of Hashtags
-        :param hashtag_to_blacklist list: List of Blacklisted Hashtags to avoid
         """
-        h_list = self.manage_hashtag(hashtag_list, hashtag_to_blacklist)
+        h_list = self.manage_hashtag(hashtag_list)
         for hashtag in h_list:
             comment = comment + "#" + hashtag + " "
         return comment

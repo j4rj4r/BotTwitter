@@ -11,6 +11,7 @@ import tweepy
 # Local libraries
 from BotTwitter.helpers import Helpers
 from BotTwitter.action import Action
+from BotTwitter.manage_follow import Manage_follow
 import BotTwitter.database_client
 
 # Configuration
@@ -68,16 +69,18 @@ while True:
         # We don't want a duplicate
         list_name = list(set(list_name))
 
-    action = Action(config, list_name)
 
-    # We retrieve the list of actions to do
-    list_action = action.search_tweets(mainaccount)
-    # If there is no action
-    if not list_action:
-        logging.error('There is no action to do!')
-        sys.exit()
-
-    # Each user do the actions
+    # Each user do the actions, twitter will suggest different suggestion could be different
     for user_information in user_information_list:
-        action.manage_action()
+        action = Action(config, list_name, user_information["user"], user_information["api"])
+        manage_follow = Manage_follow(user_information["user"], user_information["api"])
+
+        # We retrieve the list of actions to do
+        list_action = action.search_tweets(mainaccount)
+        # If there is no action
+        if not list_action:
+            logging.error('There is no action to do!')
+            sys.exit()
+
+        action.manage_action(list_action, manage_follow)
     time.sleep(100)

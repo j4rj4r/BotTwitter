@@ -1,11 +1,12 @@
 # Standard libraries
 import datetime
 import logging
+import sqlite3
 
-import database_client
+import BotTwitter.database_client as database_client
 
 
-class manage_follow:
+class Manage_follow:
     def __init__(self, user, api):
         """
         ManageFollow object keeps track of user and tweets in an sqlite table
@@ -17,6 +18,8 @@ class manage_follow:
         self.api = api
         self.database_path = "_BotTwitter_.db"
         self.database = database_client.database(self.database_path)
+        self.database_follows = self.database.Follows()
+
 
     def update_table(self, follower):
         """
@@ -24,20 +27,26 @@ class manage_follow:
 
         :param follower string: Follower Name/ID to be recorded in database.
         """
-        connection = sqlite3.connect('data.db')
-        c = connection.cursor()
-        c.execute('''SELECT * FROM {tab} WHERE compte = ?;'''.format(tab=self.user.screen_name), (str(follower),))
-        data = c.fetchall()
+        # connection = sqlite3.connect('data.db')
+        # c = connection.cursor()
+        # c.execute('''SELECT * FROM {tab} WHERE compte = ?;'''.format(tab=self.user.screen_name), (str(follower),))
+        # data = c.fetchall()
 
-        # If this id exist or not
-        if len(data) == 0:
-            c.execute('''INSERT INTO {tab}(compte,date) VALUES (:compte, :date);'''.format(
-                tab=self.user.screen_name), (follower, datetime.datetime.now()))
+        # # If this id exist or not
+        # if len(data) == 0:
+        #     c.execute('''INSERT INTO {tab}(compte,date) VALUES (:compte, :date);'''.format(
+        #         tab=self.user.screen_name), (follower, datetime.datetime.now()))
+        # else:
+        #     c.execute('''UPDATE {tab} SET date = ? WHERE compte = ?'''.format(
+        #         tab=self.user.screen_name), (datetime.datetime.now(), str(follower),))
+        # c.close()
+        # connection.commit()
+
+        already_exists = self.database_follows.follow_exists(str(follower))
+        if already_exists:
+            self.database_follows.update_follow()
         else:
-            c.execute('''UPDATE {tab} SET date = ? WHERE compte = ?'''.format(
-                tab=self.user.screen_name), (datetime.datetime.now(), str(follower),))
-        c.close()
-        connection.commit()
+            self.database_follows.add_follow(str(self.user.screen_name), str(follower), datetime.datetime.now())
 
     def unfollow(self):
         """
@@ -72,15 +81,15 @@ class manage_follow:
         connection.commit()
 
 
-def create_tables_follow(user):
-    """
-    Create new tables for each user.
+# def create_tables_follow(user):
+#     """
+#     Create new tables for each user.
 
-    :param user string: Name of new user to create.
-    """
-    connection = sqlite3.connect('data.db')
-    c = connection.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS {tab}
-        (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, compte text, date DATE);'''.format(tab=user.screen_name))
-    c.close()
-    connection.commit()
+#     :param user string: Name of new user to create.
+#     """
+#     connection = sqlite3.connect('data.db')
+#     c = connection.cursor()
+#     c.execute('''CREATE TABLE IF NOT EXISTS {tab}
+#         (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, compte text, date DATE);'''.format(tab=user.screen_name))
+#     c.close()
+#     connection.commit()
