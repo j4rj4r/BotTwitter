@@ -5,6 +5,8 @@ import re
 import time
 from datetime import datetime, timedelta
 
+from BotTwitter.manage_follow import Manage_follow
+
 # third party libraries
 import tweepy
 
@@ -16,11 +18,13 @@ class Action:
         :param configuration : configuration dictionary
         :param list_name : username list
         :param user : current user account
+        :param api : api references
         """
         self.configuration = configuration
         self.list_name = list_name
         self.user = user
         self.api = api
+        self.manage_follow = Manage_follow(user, api)
 
     def search_tweets(self, api):
         """
@@ -93,12 +97,11 @@ class Action:
         return action
 
 
-    def manage_action(self, list_action, manage_follow):
+    def manage_action(self, list_action):
         """
         Handle Give away tweets by following/commenting/tagging depending on the giveaway levels
 
         :param list_action : List of Giveaways tweets and (optional) Giveaway levels
-        :param api : api object
         """
         for action in list_action:
             tweet = action['tweet_object']
@@ -129,7 +132,7 @@ class Action:
 
                 if self.configuration['automatic_follow']:
                     self.api.create_friendship(author_id)
-                    manage_follow.update_table(author_id)
+                    self.manage_follow.update_table(author_id)
 
                 if self.configuration['tag']:
                     self.comment(action)
@@ -138,7 +141,7 @@ class Action:
                     if len(entities['user_mentions']) > 0:
                         for mention in entities['user_mentions']:
                             self.api.create_friendship(mention['id'])
-                            manage_follow.update_table(mention['id'])
+                            self.manage_follow.update_table(mention['id'])
 
                     random_sleep_time = random.randrange(10, 20)
                     logging.info("You participated in the giveaway of : @%s. Sleeping for %ss...",

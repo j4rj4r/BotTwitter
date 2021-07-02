@@ -44,7 +44,7 @@ class Manage_follow:
 
         already_exists = self.database_follows.follow_exists(str(follower))
         if already_exists:
-            self.database_follows.update_follow()
+            self.database_follows.update_follow() #TODO
         else:
             self.database_follows.add_follow(str(self.user.screen_name), str(follower), datetime.datetime.now())
 

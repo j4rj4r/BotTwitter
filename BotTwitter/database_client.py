@@ -473,14 +473,14 @@ class database:
             self._cursor.execute(f'SELECT COUNT(*) FROM {self._table_name}')
             return self._cursor.fetchone()[0]
 
-        def rss_exists(self, RSSId):
+        def rss_exists(self, Url):
             """
-            :param RSSId: target RSS
+            :param Url: target Url
             :return: True or False
             """
             self._cursor.execute(
-                f'SELECT StatId FROM {self._table_name} WHERE RSSId=?',
-                (RSSId,))
+                f'SELECT RSSId FROM {self._table_name} WHERE Url=?',
+                (Url,))
             return self._cursor.fetchone() is not None
 
         def get_rss(self, RSSId=None, UserId=None, Url=None, DateRSS=None):

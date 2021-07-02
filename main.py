@@ -11,8 +11,8 @@ import tweepy
 # Local libraries
 from BotTwitter.helpers import Helpers
 from BotTwitter.action import Action
-from BotTwitter.manage_follow import Manage_follow
 import BotTwitter.database_client
+from BotTwitter.bypass_antibot import BypassAntiBot
 
 # Configuration
 VERSION = 3.0
@@ -73,7 +73,6 @@ while True:
     # Each user do the actions, twitter will suggest different suggestion could be different
     for user_information in user_information_list:
         action = Action(config, list_name, user_information["user"], user_information["api"])
-        manage_follow = Manage_follow(user_information["user"], user_information["api"])
 
         # We retrieve the list of actions to do
         list_action = action.search_tweets(mainaccount)
@@ -81,6 +80,12 @@ while True:
         if not list_action:
             logging.error('There is no action to do!')
             sys.exit()
+         
+         # If the antibot bypass feature is activated, we bypass the antibot before new participations 
+        if config["bypass_antibot"]:
+            bypass = BypassAntiBot(user_information["api"], config["flux_rss"], user_information["user"])
+            bypass.bypass()
 
-        action.manage_action(list_action, manage_follow)
+        # Participate to giveaway
+        action.manage_action(list_action)
     time.sleep(100)

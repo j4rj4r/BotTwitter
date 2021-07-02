@@ -12,7 +12,7 @@ from BotTwitter.manage_rss import ManageRss
 
 
 class BypassAntiBot:
-    def __init__(self, api, flux_rss):
+    def __init__(self, api, flux_rss, user):
         """
         BypassAntiBot constructor containing anti bot avoidance logic
 
@@ -21,7 +21,7 @@ class BypassAntiBot:
         """
         self.api = api
         self.flux_rss = flux_rss
-        self.managers = ManageRss()
+        self.managerss = ManageRss(user)
 
     def bypass(self):
         """
