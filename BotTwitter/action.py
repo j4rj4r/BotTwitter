@@ -5,7 +5,9 @@ import re
 import time
 from datetime import datetime, timedelta
 
+import BotTwitter.constants as const
 from BotTwitter.manage_follow import Manage_follow
+from BotTwitter.manage_giveaway import Manage_Giveaway
 
 # third party libraries
 import tweepy
@@ -24,7 +26,9 @@ class Action:
         self.list_name = list_name
         self.user = user
         self.api = api
-        self.manage_follow = Manage_follow(user, api)
+        self.manage_follow = Manage_follow(user, api) # Init follow management
+        self.manage_follow.unfollow() # Clear the follow list before to do any actions
+        self.manage_giveaway = Manage_Giveaway(user) # Init giveaway management for stats
 
     def search_tweets(self, api):
         """
@@ -33,18 +37,13 @@ class Action:
         :param api : api object
         """
         action = []
-        regex_detect_tag = [r"\b(\w*INVIT(E|É)\w*)\b",
-                            r"\b(\w*IDENTIFI(E|É)\w*)\b",
-                            r"\b(\w*TAG\w*)\b",
-                            r"\b(\w*MENTIONN(E|É)\w*)\b"]
-        regex_detect_tag = re.compile('|'.join(regex_detect_tag), re.IGNORECASE)
+        regex_detect_tag = re.compile('|'.join(const.regex_detect_tag), re.IGNORECASE)
 
         for word in self.configuration['words_to_search']:
             logging.info('Searching tweet with the word : %s', word)
-            for tweet in tweepy.Cursor(api.search,
-                                       q=word, since=(
-                            datetime.now() - timedelta(self.configuration['nb_days_rollback'])).strftime('%Y-%m-%d'),
-                                       lang="fr", tweet_mode="extended").items(self.configuration['max_retrieve']):
+            for tweet in tweepy.Cursor(api.search, q=word,
+                                since=(datetime.now() - timedelta(self.configuration['nb_days_rollback'])).strftime('%Y-%m-%d'),
+                                lang="fr", tweet_mode="extended").items(self.configuration['max_retrieve']):
 
                 if tweet.retweet_count > self.configuration['min_retweet']:
                     # Blacklist words management 
@@ -52,9 +51,9 @@ class Action:
                     blacklist = [blacklist_elem.upper() for blacklist_elem in blacklist]
                     is_in_blacklist = False
                     for tweet_word_upper in tweet.full_text.upper().split():
-                        if tweet_word_upper in blacklist: 
+                        if tweet_word_upper in blacklist:
                             is_in_blacklist = True
-                   
+
                     if not is_in_blacklist:
                         # Check if it's a retweet
                         if hasattr(tweet, 'retweeted_status'):
@@ -93,7 +92,6 @@ class Action:
                                 action.append(dict_action)
                     else:
                         logging.info("Blacklisted words match with the tweet : ", tweet.entities)
-
         return action
 
 
@@ -106,6 +104,10 @@ class Action:
         for action in list_action:
             tweet = action['tweet_object']
 
+            action_rt, action_like, action_follow, action_tag = False, False, False, False
+            need_tag = action["tag"]
+            need_hashtag= action["hashtag"]
+
             try:
                 if hasattr(tweet, 'retweeted_status'):
                     retweeted = tweet.retweeted_status.retweeted
@@ -114,6 +116,7 @@ class Action:
                     author_id = tweet.retweeted_status.author.id
                     entities = tweet.retweeted_status.entities
                     screen_name = tweet.retweeted_status.user.screen_name
+                    text = tweet.retweeted_status.full_text
                 else:
                     retweeted = tweet.retweeted
                     favorited = tweet.liked
@@ -121,21 +124,26 @@ class Action:
                     author_id = tweet.user.id
                     entities = tweet.entities
                     screen_name = tweet.user.screen_name
+                    text = tweet.full_text
 
                 if self.configuration['retweet_tweets']:
                     if not retweeted:
                         self.api.retweet(id_)
+                        action_rt = True
 
                 if self.configuration['like_tweets']:
                     if not favorited:
                         self.api.create_favorite(id_)
+                        action_like = True
 
                 if self.configuration['automatic_follow']:
                     self.api.create_friendship(author_id)
                     self.manage_follow.update_table(author_id)
+                    action_follow = True
 
                 if self.configuration['tag']:
                     self.comment(action)
+                    action_tag = True
 
                 if self.configuration['automatic_tag_follow'] :
                     if len(entities['user_mentions']) > 0:
@@ -143,6 +151,13 @@ class Action:
                             self.api.create_friendship(mention['id'])
                             self.manage_follow.update_table(mention['id'])
 
+                    #Log participation and sleep a random time
+                    self.manage_giveaway.add_giveaway(
+                        GiveawayUserId=author_id, GiveawayUsername=screen_name, TweetId=id_, TweetMessage=text,
+                        NeedTags=need_tag, DateBot=datetime.now(),
+                        TagsBot=action_tag, RtBot=action_rt, FollowBot=action_follow, LikeBot=action_like, CommentBot=action_tag,
+                        PrivateMessage=False
+                    )
                     random_sleep_time = random.randrange(10, 20)
                     logging.info("You participated in the giveaway of : @%s. Sleeping for %ss...",
                                  screen_name,
@@ -162,6 +177,7 @@ class Action:
                     logging.warning("You have to do a captcha on the account: %s", self.user.screen_name)
                     break
                 else:
+                    logging.error('Error occurred dunring action with the API:')
                     logging.error(e)
 
     def comment(self, action):
@@ -186,7 +202,7 @@ class Action:
         randomsentence = sentence_for_tag[nbrandom]
 
          # if the tweet ask for INVITE/TAG/MENTIONNE
-        if need_comment is not None:  
+        if need_comment is not None:
             # check context Tweet or retweet
             if tweet.retweeted_status is not None:
                 # Context: Retweet

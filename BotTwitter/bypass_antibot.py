@@ -71,7 +71,7 @@ class BypassAntiBot:
         if retweet_count > 100:
             randomtweet = retweet_count - 100
             logging.info("They are " + str(retweet_count) + " retweets for 200 tweets, we need " + str(
-                randomtweet) + "tweets random")
+                randomtweet) + " tweets random")
             if randomtweet > 15:
                 randomtweet = 15
                 logging.info("We will only do " + str(randomtweet) + " tweets for the moment")
@@ -159,4 +159,5 @@ class BypassAntiBot:
                                     e.api_code == 326):
                                 break
                             else:
+                                logging.error('Error occurred during rss and tweet process :')
                                 logging.error(e.reason)

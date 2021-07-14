@@ -1,8 +1,7 @@
 # Standard libraries
 import datetime
-import logging
-import sqlite3
 
+import BotTwitter.constants as const
 import BotTwitter.database_client as database_client
 
 class ManageRss:
@@ -11,7 +10,7 @@ class ManageRss:
         GestionRss constructor
         """
         self.user = user
-        self.database_path = "_BotTwitter_.db"
+        self.database_path = const.DB_FILE
         self.database = database_client.database(self.database_path)
         self.database_rss = self.database.RSS()
 
