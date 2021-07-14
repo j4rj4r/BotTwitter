@@ -131,5 +131,5 @@ def wait(min=60, max=min, name=''):
     Wait random time in second beetween min and max seconds, to have an not linear behavior and be more human.
     """
     random_sleep_time = random.randrange(min, max)
-    print(name+" - Sleep %s seconds.", str(random_sleep_time))
+    print(name+' - Sleep '+ str(random_sleep_time) +' seconds.')
     time.sleep(random_sleep_time)
