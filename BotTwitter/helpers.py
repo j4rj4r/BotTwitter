@@ -121,15 +121,15 @@ def header():
     """
     This method display an header when the script start
     """
-    print('==\t=============================================================\t==')
-    print('==\t                   ' + const.APP_NAME + '                             \t==')
-    print('==\t                   version : ' + const.VERSION + '                         \t==')
-    print('==\t=============================================================\t==\n')
+    logging.info('==\t=============================================================\t==')
+    logging.info('==\t                   ' + const.APP_NAME + '                             \t==')
+    logging.info('==\t                   version : ' + const.VERSION + '                         \t==')
+    logging.info('==\t=============================================================\t==\n')
 
-def wait(min=60, max=min, name=''):
+def wait(min=60, max=min, prefix=''):
     """
     Wait random time in second beetween min and max seconds, to have an not linear behavior and be more human.
     """
     random_sleep_time = random.randrange(min, max)
-    print(name+' - Sleep '+ str(random_sleep_time) +' seconds.')
+    logging.info(prefix +' - Sleep '+ str(random_sleep_time) +' seconds...')
     time.sleep(random_sleep_time)

@@ -27,7 +27,6 @@ class Action:
         self.user = user
         self.api = api
         self.manage_follow = Manage_follow(user, api) # Init follow management
-        self.manage_follow.unfollow() # Clear the follow list before to do any actions
         self.manage_giveaway = Manage_Giveaway(user) # Init giveaway management for stats
 
     def search_tweets(self, api):

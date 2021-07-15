@@ -88,13 +88,13 @@ if config['accounts_to_tag']:
 
                 # Initialize actions and unfollow giveaway > 2 month
                 action = Action(config, list_name, user_information["user"], user_information["api"])
+                action.manage_follow.unfollow() # Clear the follow list before to do any actions
 
                 # We retrieve the list of actions to do
                 list_action = action.search_tweets(mainaccount)
                 # If there is no action
                 if not list_action:
                     logging.error('There is no action to do!')
-                    #sys.exit()
 
                 # If the antibot bypass feature is activated, we bypass the antibot before to participate to a new giveaway 
                 if config["bypass_antibot"]:
@@ -104,10 +104,12 @@ if config['accounts_to_tag']:
                 # Participate to giveaway
                 action.manage_action(list_action)
 
-                wait(100, 200, "Participate giveaways")
             except Exception as e:
                 logging.error('Error thread to participate to giveaways.')
                 logging.error(e)
+
+            # Wait few seconds/minutes before to continue
+            wait(100, 200, "Participate giveaways")
 
     # Worker 2 : Notify new private message receive
     def worker_detecting_mp(api, user):
@@ -149,11 +151,11 @@ if config['accounts_to_tag']:
                                     #+ textMp
                                     +'\n------------------------------------------------------------\n'
                     )
-                wait(180, 250, "Direct message")
             except Exception as e:
                 logging.error('Error thread to notify new private message.')
                 logging.error(e)
-
+            # Wait few seconds/minutes before to continue
+            wait(180, 250, "Direct message")
 
 
 # Step 2 :  Run Workers 2 per account ( worker_detecting_mp, worker_participate_giveaways)
