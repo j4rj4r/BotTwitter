@@ -4,6 +4,7 @@ import datetime
 import BotTwitter.constants as const
 import BotTwitter.database_client as database_client
 
+
 class ManageRss:
     def __init__(self, user):
         """
@@ -28,4 +29,4 @@ class ManageRss:
 
         :param link String: Link of an rss article
         """
-        return  self.database_rss.rss_exists(str(link))
+        return self.database_rss.rss_exists(str(link))

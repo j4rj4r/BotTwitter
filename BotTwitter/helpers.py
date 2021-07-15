@@ -26,7 +26,7 @@ class Helpers:
         user_input = input("Your choice (by default 2): ")
 
         # Continue
-        if user_input == "1":
+        if user_input == '1':
             pass
         # Exit
         else:
@@ -112,7 +112,7 @@ class Helpers:
         :return: out
         """
         # Load all configuration variables
-        with open(configuration_file, 'r', encoding="utf8") as stream:
+        with open(configuration_file, 'r', encoding='utf8') as stream:
             out = yaml.load(stream, Loader=yaml.FullLoader)
         return out
 

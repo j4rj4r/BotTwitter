@@ -97,8 +97,8 @@ if config['accounts_to_tag']:
                     logging.error('There is no action to do!')
 
                 # If the antibot bypass feature is activated, we bypass the antibot before to participate to a new giveaway 
-                if config["bypass_antibot"]:
-                    bypass = BypassAntiBot(user_information["api"], config["flux_rss"], user_information["user"])
+                if config['bypass_antibot']:
+                    bypass = BypassAntiBot(user_information['api'], config['flux_rss'], user_information['user'])
                     bypass.bypass()
 
                 # Participate to giveaway
@@ -109,7 +109,7 @@ if config['accounts_to_tag']:
                 logging.error(e)
 
             # Wait few seconds/minutes before to continue
-            wait(100, 200, "Participate giveaways")
+            wait(100, 200, 'Participate giveaways')
 
     # Worker 2 : Notify new private message receive
     def worker_detecting_mp(api, user):
@@ -132,12 +132,12 @@ if config['accounts_to_tag']:
                 is_not_old_message = (int(datetime.now().timestamp()) - 5*60) < int(dateMp)
                 if is_not_old_message and config['be_notify_by_alerters'] and author_id is not last_author_id:
                     last_author_id = author_id
-                    logging.info("Notification send : You have win a giveaway !")
+                    logging.info('Notification send : You have win a giveaway !')
                     # Retrive the giveaway
-                    action = Action(config, list_name, user_information["user"], user_information["api"])
+                    action = Action(config, list_name, user_information['user'], user_information['api'])
                     tweetId, giveawayUsername, dateBot, tweetMessage = action.manage_giveaway.win(authorId=author_id)
                     # Notify user
-                    alerters( subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏', 
+                    alerters(subject=f'🎁 Congratulation @{user.screen_name}, You probably won a giveaway ! 👏',
                             content='You just received a new private message on Twitter from @'+giveawayUsername+' this is probably about your participation'
                                     +'on '+str(dateBot)+' to the giveaway https://twitter.com/'+giveawayUsername+'/status/'+str(tweetId)+' !\n'
                                     +'-------------------- Giveaway details : --------------------\n'
@@ -155,7 +155,7 @@ if config['accounts_to_tag']:
                 logging.error('Error thread to notify new private message.')
                 logging.error(e)
             # Wait few seconds/minutes before to continue
-            wait(180, 250, "Direct message")
+            wait(180, 250, 'Direct message')
 
 
 # Step 2 :  Run Workers 2 per account ( worker_detecting_mp, worker_participate_giveaways)
