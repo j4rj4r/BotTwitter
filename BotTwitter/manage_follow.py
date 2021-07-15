@@ -28,11 +28,11 @@ class Manage_follow:
 
         :param follower string: Follower Name/ID to be recorded in database.
         """
-        follows_rows = self.database_follows.get_follows(UserId=str(self.user.screen_name), FollowIdAccount=str(follower))
+        follows_rows = self.database_follows.get_follows(UserId=str(self.user.id), FollowIdAccount=str(follower))
         if len(follows_rows) > 0:
             # already follow, update the date with the current date
             self.database_follows.update_follow(FollowId=follows_rows[0].FollowId, 
-                                                new_UserId=str(self.user.screen_name), 
+                                                new_UserId=str(self.user.id), 
                                                 new_DateFollow=datetime.datetime.now())
         else:
             # Insert new line in follows table with the current date
@@ -45,7 +45,7 @@ class Manage_follow:
 
         """
         logging.info("We check if there are accounts to unfollow ...")
-        follows_rows = self.database_follows.get_follows(UserId=str(self.user.screen_name))
+        follows_rows = self.database_follows.get_follows(UserId=str(self.user.id))
         unfollow_count = 0
         for follows_row in follows_rows:
             try:
