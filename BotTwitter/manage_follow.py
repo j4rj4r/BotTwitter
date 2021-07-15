@@ -2,10 +2,12 @@
 import datetime
 import logging
 
-import database_client
+
+import BotTwitter.constants as const
+import BotTwitter.database_client as database_client
 
 
-class manage_follow:
+class Manage_follow:
     def __init__(self, user, api):
         """
         ManageFollow object keeps track of user and tweets in an sqlite table
@@ -15,8 +17,10 @@ class manage_follow:
         """
         self.user = user
         self.api = api
-        self.database_path = "_BotTwitter_.db"
+        self.database_path = const.DB_FILE
         self.database = database_client.database(self.database_path)
+        self.database_follows = self.database.Follows()
+
 
     def update_table(self, follower):
         """
@@ -24,20 +28,16 @@ class manage_follow:
 
         :param follower string: Follower Name/ID to be recorded in database.
         """
-        connection = sqlite3.connect('data.db')
-        c = connection.cursor()
-        c.execute('''SELECT * FROM {tab} WHERE compte = ?;'''.format(tab=self.user.screen_name), (str(follower),))
-        data = c.fetchall()
-
-        # If this id exist or not
-        if len(data) == 0:
-            c.execute('''INSERT INTO {tab}(compte,date) VALUES (:compte, :date);'''.format(
-                tab=self.user.screen_name), (follower, datetime.datetime.now()))
+        follows_rows = self.database_follows.get_follows(UserId=str(self.user.id), FollowIdAccount=str(follower))
+        if len(follows_rows) > 0:
+            # already follow, update the date with the current date
+            self.database_follows.update_follow(FollowId=follows_rows[0].FollowId, 
+                                                new_UserId=str(self.user.id), 
+                                                new_DateFollow=datetime.datetime.now())
         else:
-            c.execute('''UPDATE {tab} SET date = ? WHERE compte = ?'''.format(
-                tab=self.user.screen_name), (datetime.datetime.now(), str(follower),))
-        c.close()
-        connection.commit()
+            # Insert new line in follows table with the current date
+            self.database_follows.add_follow(str(self.user.id), str(follower), datetime.datetime.now())
+
 
     def unfollow(self):
         """
@@ -45,14 +45,11 @@ class manage_follow:
 
         """
         logging.info("We check if there are accounts to unfollow ...")
-        connection = sqlite3.connect('data.db')
-        c = connection.cursor()
-        c.execute("""SELECT * FROM {tab};""".format(tab=self.user.screen_name))
-        data = c.fetchall()
+        follows_rows = self.database_follows.get_follows(UserId=str(self.user.id))
         unfollow_count = 0
-        for i in data:
+        for follows_row in follows_rows:
             try:
-                date = datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S.%f")
+                date = datetime.datetime.strptime(follows_row.DateFollow, "%Y-%m-%d %H:%M:%S.%f")
 
                 # Add 2 Months into Next Year
                 newyear = date.year + 1 if date.month > 10 else date.year
@@ -60,27 +57,15 @@ class manage_follow:
                 date = date.replace(month=newmonth, year=newyear)
 
                 if datetime.datetime.now() > date:
-                    c.execute('''DELETE FROM {tab} WHERE compte = ?;'''.format(tab=self.user.screen_name), (str(i[1]),))
-                    self.api.destroy_friendship(i[1])
+                    # Delete row in database
+                    self.database_follows.delete_follow(FollowId=follows_row.FollowId)
+                    # Unfollow 
+                    self.api.destroy_friendship(follows_row.FollowIdAccount)
                     unfollow_count += 1
 
-            except Exception:
+            except Exception as e:
+                logging.error('Error occurred during unfollow :')
+                logging.error(e)
                 pass
 
         logging.info("Unfollow accounts : %s", str(unfollow_count))
-        c.close()
-        connection.commit()
-
-
-def create_tables_follow(user):
-    """
-    Create new tables for each user.
-
-    :param user string: Name of new user to create.
-    """
-    connection = sqlite3.connect('data.db')
-    c = connection.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS {tab}
-        (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, compte text, date DATE);'''.format(tab=user.screen_name))
-    c.close()
-    connection.commit()

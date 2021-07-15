@@ -19,6 +19,36 @@ logging_level : "INFO"
 
 ### END GENERAL SETTINGS ###
 
+### ALERT SETTINGS ###
+be_notify_by_alerters : False
+# Multiple alert channels supported
+alerters:
+  # Discord alert
+#  discord:
+#    webhook_url: https://discord.com/api/webhooks/XXXXXXXXXXXX...
+#    mentions:
+#      - XXXXXXXXXXXXXXX
+#      - XXXXXXXXXXXXXXX
+  # Telegram alert
+#  telegram:
+#    webhook_url: https://api.telegram.org/botXXXXXXXXXXXXXXXXXXXXXXXX/sendMessage
+#    chat_id: XXXXXXXXXXXXX
+  # Email alert
+#  email:
+#    sender: myemail@email.com
+#    recipients:
+#      - myemail@email.com
+#      - myfriendsemail@email.com
+#    relay: 127.0.0.1
+#    password: XXXXXXXXXX   # optional
+  # Slack alert
+#  slack:
+#    webhook_url: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+#    mentions:
+#      - XXXXXXXXXXXXXXX
+#      - XXXXXXXXXXXXXXX
+
+### END ALERT SETTINGS ###
 
 ### ACTION SETTINGS ###
 

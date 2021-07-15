@@ -1,12 +1,18 @@
 # Standard libraries
-import sqlite3
+import datetime
 
+import BotTwitter.constants as const
+import BotTwitter.database_client as database_client
 
 class ManageRss:
-    def __init__(self):
+    def __init__(self, user):
         """
         GestionRss constructor
         """
+        self.user = user
+        self.database_path = const.DB_FILE
+        self.database = database_client.database(self.database_path)
+        self.database_rss = self.database.RSS()
 
     def add_link(self, link):
         """
@@ -14,11 +20,7 @@ class ManageRss:
 
         :param link String: link of an rss article
         """
-        connection = sqlite3.connect('data.db')
-        c = connection.cursor()
-        c.execute('''INSERT INTO rss_links (link) VALUES (:link);''', (link,))
-        c.close()
-        connection.commit()
+        self.database_rss.add_rss(self.user.id, str(link), datetime.datetime.now())
 
     def link_exist(self, link):
         """
@@ -26,25 +28,4 @@ class ManageRss:
 
         :param link String: Link of an rss article
         """
-        connection = sqlite3.connect('data.db')
-        c = connection.cursor()
-        c.execute('''SELECT * FROM rss_links WHERE link = ?;''', (link,))
-        data = c.fetchall()
-        # If this link exist or not
-        if len(data) == 0:
-            return False
-        else:
-            return True
-
-
-def create_table_rss():
-    """
-    Create new tables to save the rss links.
-
-    """
-    connection = sqlite3.connect('data.db')
-    c = connection.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS rss_links
-        (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, link text);''')
-    c.close()
-    connection.commit()
+        return  self.database_rss.rss_exists(str(link))

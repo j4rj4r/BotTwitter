@@ -12,7 +12,7 @@ from BotTwitter.manage_rss import ManageRss
 
 
 class BypassAntiBot:
-    def __init__(self, api, flux_rss):
+    def __init__(self, api, flux_rss, user):
         """
         BypassAntiBot constructor containing anti bot avoidance logic
 
@@ -21,7 +21,7 @@ class BypassAntiBot:
         """
         self.api = api
         self.flux_rss = flux_rss
-        self.managers = ManageRss()
+        self.managerss = ManageRss(user)
 
     def bypass(self):
         """
@@ -71,7 +71,7 @@ class BypassAntiBot:
         if retweet_count > 100:
             randomtweet = retweet_count - 100
             logging.info("They are " + str(retweet_count) + " retweets for 200 tweets, we need " + str(
-                randomtweet) + "tweets random")
+                randomtweet) + " tweets random")
             if randomtweet > 15:
                 randomtweet = 15
                 logging.info("We will only do " + str(randomtweet) + " tweets for the moment")
@@ -159,4 +159,5 @@ class BypassAntiBot:
                                     e.api_code == 326):
                                 break
                             else:
+                                logging.error('Error occurred during rss and tweet process :')
                                 logging.error(e.reason)

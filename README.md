@@ -133,6 +133,43 @@ words_to_blacklist_antibot:
   - "isis"
 ```
 
+
+# Notifications / Alerters
+
+1. Dans le fichier de configuration, assurez vous que vous avez activé les alertes.
+    ```
+    be_notify_by_alerters : True
+    ```
+
+2. Configurer le ou les alertes que vous souhaitez:
+
+    ```
+    ---
+    alerters:
+      discord:
+        webhook_url: https://discord.com/api/webhooks/XXXXXXXXXXXX...
+        mentions:
+          - XXXXXXXXXXXXXXX
+          - XXXXXXXXXXXXXXX
+      telegram:
+        webhook_url: https://api.telegram.org/botXXXXXXXXXXXXXXXXXXXX/sendMessage
+        chat_id: XXXXXXXX
+      email:
+        sender: myemail@email.com
+        recipients:
+          - myemail@email.com
+          - myfriendsemail@email.com
+        relay: 127.0.0.1
+        password: XXXXXXXXXX   # optional
+      slack:
+        webhook_url: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+        mentions:
+          - XXXXXXXXXXXXXXX
+          - XXXXXXXXXXXXXXX
+    ...
+    ```
+
+
 ### Lancement du bot :
 ```
 python3 main.py

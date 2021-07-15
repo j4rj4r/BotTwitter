@@ -31,8 +31,9 @@ class database:
     Users_row = namedtuple('Users_row', ('UserId', 'IdAccount', 'NameAccount'))
     Follows_row = namedtuple('Follows_row', ('FollowId', 'UserId', 'FollowIdAccount', 'DateFollow'))
     Stats_row = namedtuple('Stats_row', ('StatId', 'UserId', 'NbRetweet', 'NbTag'))
+    Giveaways_row = namedtuple('Giveaways_row',
+    ('GiveawayId', 'UserId', 'GiveawayUserId', 'GiveawayUsername', 'TweetId', 'TweetMessage', 'NeedTags', 'NeedComment', 'NeedLike', 'NeedFollow',   'NeedRt', 'DateBot', 'TagsBot', 'RtBot', 'FollowBot', 'LikeBot', 'CommentBot', 'PrivateMessage'))
     RSS_row = namedtuple('RSS_row', ('RSSId', 'UserId', 'Url', 'DateRSS'))
-
     # -------------------------------------------------------
 
     class _Table:
@@ -85,6 +86,9 @@ class database:
             elif isinstance(self, self._owner._RSS):
                 self._owner._add_RSS_table(new_name, self._reference)
                 result = self._owner.RSS(new_name, auto_create=False)
+            elif isinstance(self, self._owner._Giveaways):
+                self._owner._add_Giveaways_table(new_name, self._reference)
+                result = self._owner.Giveaways(new_name, auto_create=False)
             self._cursor.execute(f'INSERT INTO {new_name} SELECT * FROM {self._table_name}')
             self._save_if_possible()
             return result
@@ -473,14 +477,14 @@ class database:
             self._cursor.execute(f'SELECT COUNT(*) FROM {self._table_name}')
             return self._cursor.fetchone()[0]
 
-        def rss_exists(self, RSSId):
+        def rss_exists(self, Url):
             """
-            :param RSSId: target RSS
+            :param Url: target Url
             :return: True or False
             """
             self._cursor.execute(
-                f'SELECT StatId FROM {self._table_name} WHERE RSSId=?',
-                (RSSId,))
+                f'SELECT RSSId FROM {self._table_name} WHERE Url=?',
+                (Url,))
             return self._cursor.fetchone() is not None
 
         def get_rss(self, RSSId=None, UserId=None, Url=None, DateRSS=None):
@@ -589,6 +593,285 @@ class database:
             uid = self._cursor.fetchone()[0]
             self._cursor.execute(f'SELECT * FROM {self._reference} WHERE UserId = ?', (uid,))
             return self._cursor.fetchone()
+
+    class _Giveaways(_Table):
+        def __init__(self, owner, table_name='Giveaways', reference='Users', auto_save=True):
+            super().__init__(owner, table_name, auto_save)
+            self._reference = reference
+
+        def giveaways_count(self):
+            """
+            :return: all Giveaways count in the table
+            """
+            self._cursor.execute(f'SELECT COUNT(*) FROM {self._table_name}')
+            return self._cursor.fetchone()[0]
+
+        def giveaway_exists(self, GiveawayId):
+            """
+            :param GiveawayId: target Giveaway
+            :return: True or False
+            """
+            self._cursor.execute(
+                f'SELECT GiveawayId FROM {self._table_name} WHERE GiveawayId=?',
+                (GiveawayId,))
+            return self._cursor.fetchone() is not None
+
+        def get_giveaways(self, GiveawayId=None, UserId=None,
+                    GiveawayUserId=None, GiveawayUsername=None, TweetId=None, TweetMessage=None,
+                    NeedTags=None, NeedRt=None, NeedComment=None, NeedLike=None, NeedFollow=None,
+                    DateBot=None, TagsBot=None, RtBot=None, FollowBot=None, LikeBot=None, CommentBot=None, PrivateMessage=None ):
+            """
+            returns a tuple of all matched Giveaways with the passed arguments,
+            all of the arguments are optimal
+            :return: list of named tuple <Giveaways_row>
+            """
+            params = []
+            where = ''
+            if GiveawayId is not None:
+                params.append(GiveawayId)
+                where += 'GiveawayId = ?'
+            if UserId is not None:
+                params.append(UserId)
+                where += ' AND ' if where else ''
+                where += 'UserId = ?'
+            if GiveawayUserId is not None:
+                params.append(GiveawayUserId)
+                where += ' AND ' if where else ''
+                where += 'GiveawayUserId = ?'
+            if GiveawayUsername is not None:
+                params.append(GiveawayUsername)
+                where += ' AND ' if where else ''
+                where += 'GiveawayUsername = ?'
+            if TweetId is not None:
+                params.append(TweetId)
+                where += ' AND ' if where else ''
+                where += 'TweetId = ?'
+            if TweetMessage is not None:
+                params.append(TweetMessage)
+                where += ' AND ' if where else ''
+                where += 'TweetMessage = ?'
+            if NeedTags is not None:
+                params.append(NeedTags)
+                where += ' AND ' if where else ''
+                where += 'NeedTags = ?'
+            if NeedRt is not None:
+                params.append(NeedRt)
+                where += ' AND ' if where else ''
+                where += 'NeedRt = ?'
+            if NeedComment is not None:
+                params.append(NeedComment)
+                where += ' AND ' if where else ''
+                where += 'NeedComment = ?'
+            if NeedLike is not None:
+                params.append(NeedLike)
+                where += ' AND ' if where else ''
+                where += 'NeedLike = ?'
+            if NeedFollow is not None:
+                params.append(NeedFollow)
+                where += ' AND ' if where else ''
+                where += 'NeedFollow = ?'
+            if DateBot is not None:
+                params.append(DateBot)
+                where += ' AND ' if where else ''
+                where += 'DateBot = ?'
+            if TagsBot is not None:
+                params.append(TagsBot)
+                where += ' AND ' if where else ''
+                where += 'TagsBot = ?'
+            if RtBot is not None:
+                params.append(RtBot)
+                where += ' AND ' if where else ''
+                where += 'RtBot = ?'
+            if FollowBot is not None:
+                params.append(FollowBot)
+                where += ' AND ' if where else ''
+                where += 'FollowBot = ?'
+            if LikeBot is not None:
+                params.append(LikeBot)
+                where += ' AND ' if where else ''
+                where += 'LikeBot = ?'
+            if CommentBot is not None:
+                params.append(CommentBot)
+                where += ' AND ' if where else ''
+                where += 'CommentBot = ?'
+            if PrivateMessage is not None:
+                params.append(PrivateMessage)
+                where += ' AND ' if where else ''
+                where += 'PrivateMessage = ?'
+            params = tuple(params)
+            if where != '':
+                where = 'WHERE ' + where
+            order = f'SELECT * FROM {self._table_name} {where} ORDER BY DateBot DESC'
+            self._cursor.execute(order, params)
+
+            return [self._owner.Giveaways_row(*x) for x in self._cursor.fetchall()]
+
+        def add_giveaway(self, UserId='', GiveawayUserId='', GiveawayUsername='', TweetId='', TweetMessage='', NeedTags='', NeedRt='', 
+                NeedComment='', NeedLike='', NeedFollow='',  DateBot='', TagsBot='', RtBot='', FollowBot='', LikeBot='', CommentBot='', PrivateMessage=''):
+            """
+            Add a new Giveaway
+
+            :param UserId Integer/Boolean : User account id
+            :param GiveawayUserId Integer/Boolean : User account id of the creator of the giveaway
+            :param GiveawayUsername String : User account name of the creator of the giveaway
+            :param TweetId Integer/Boolean : Tweet/Giveaway id
+            :param TweetMessage String : Tweet/Giveaway message text
+            :param NeedTags Integer/Boolean : Giveaway ask for Tags other users
+            :param NeedRt Integer/Boolean : Giveaway ask for RT action
+            :param NeedComment Integer/Boolean : Giveaway ask for Comment
+            :param NeedLike Integer/Boolean : Giveaway ask for Like
+            :param NeedFollow Integer/Boolean :  Giveaway ask for Follows
+            :param DateBot Integer/Boolean : Date of participation to the giveaway
+            :param TagsBot Integer/Boolean : Bot have tags users on this giveaway
+            :param RtBot Integer/Boolean :  Bot have RT this giveaway
+            :param FollowBot Integer/Boolean :  Bot have Follow the author of this giveaway
+            :param LikeBot Integer/Boolean :  Bot have Like this giveaway
+            :param CommentBot Integer/Boolean :  Bot have comment users on this giveaway
+            :param PrivateMessage Integer/Boolean : Bot user have been contact  by the author of the giveaway after participation
+
+            :return: GiveawayId when success, or None
+            """
+            self._cursor.execute(
+                f'INSERT INTO {self._table_name} (UserId, GiveawayUserId, GiveawayUsername, TweetId, TweetMessage, NeedTags, NeedRt, NeedComment, NeedLike, NeedFollow,  DateBot, TagsBot, RtBot, FollowBot, LikeBot, CommentBot, PrivateMessage) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                (UserId, GiveawayUserId, GiveawayUsername, TweetId, TweetMessage, NeedTags, NeedRt, NeedComment, NeedLike, NeedFollow,  DateBot, TagsBot, RtBot, FollowBot, LikeBot, CommentBot, PrivateMessage
+))
+            self._save_if_possible()
+            # > the next line just to get the ID of the last inserted row, which is this one
+            self._cursor.execute(f'SELECT MAX(GiveawayId) FROM {self._table_name}')
+            return self._cursor.fetchone()[0]
+
+        def update_giveaway(self, GiveawayId: int, new_UserId=None, new_GiveawayUserId=None, new_GiveawayUsername=None, 
+                new_TweetId=None, new_TweetMessage=None, new_NeedTags=None, new_NeedRt=None, new_NeedComment=None, new_NeedLike=None, new_NeedFol1low=None,  new_DateBot=None, new_TagsBot=None, new_RtBot=None, new_FollowBot=None, new_LikeBot=None, new_CommentBot=None, new_PrivateMessage=None):
+            """
+            this method allows you to change the values of a Giveaway
+
+            :param GiveawayId: target Giveaway
+            :param UserId : new value
+            :param GiveawayUserId : new value
+            :param GiveawayUsername : new value
+            :param TweetId : new value
+            :param TweetMessage : new value
+            :param NeedTags : new value
+            :param NeedRt : new value
+            :param NeedComment : new value
+            :param NeedLike : new value
+            :param NeedFollow : new value
+            :param DateBot : new value
+            :param TagsBot : new value
+            :param RtBot : new value
+            :param FollowBot : new value
+            :param LikeBot : new value
+            :param CommentBot : new value
+            :param PrivateMessage : new value
+
+            :return: None
+            """
+            if GiveawayId is None:
+                return None
+            params = []
+            set_ = ''
+            if new_UserId is not None:
+                params.append(new_UserId)
+                set_ += ' UserId = ?'
+            if new_GiveawayUserId is not None:
+                params.append(new_GiveawayUserId)
+                set_ += ', ' if set_ else ''
+                set_ += ' GiveawayUserId = ?'
+            if new_GiveawayUsername is not None:
+                params.append(new_GiveawayUsername)
+                set_ += ', ' if set_ else ''
+                set_ += ' GiveawayUsername = ?'
+            if new_TweetId is not None:
+                params.append(new_TweetId)
+                set_ += ', ' if set_ else ''
+                set_ += ' TweetId = ?'
+            if new_TweetMessage is not None:
+                params.append(new_TweetMessage)
+                set_ += ', ' if set_ else ''
+                set_ += ' TweetMessage = ?'
+            if new_NeedTags is not None:
+                params.append(new_NeedTags)
+                set_ += ', ' if set_ else ''
+                set_ += ' NeedTags = ?'
+            if new_NeedRt is not None:
+                params.append(new_NeedRt)
+                set_ += ', ' if set_ else ''
+                set_ += ' NeedRt = ?'
+            if new_NeedComment is not None:
+                params.append(new_NeedComment)
+                set_ += ', ' if set_ else ''
+                set_ += ' NeedComment = ?'
+            if new_NeedLike is not None:
+                params.append(new_NeedLike)
+                set_ += ', ' if set_ else ''
+                set_ += ' NeedLike = ?'
+            if new_NeedFol1low is not None:
+                params.append(new_NeedFol1low)
+                set_ += ', ' if set_ else ''
+                set_ += ' NeedFol1low = ?'
+            if new_DateBot is not None:
+                params.append(new_DateBot)
+                set_ += ', ' if set_ else ''
+                set_ += ' DateBot = ?'
+            if new_TagsBot is not None:
+                params.append(new_TagsBot)
+                set_ += ', ' if set_ else ''
+                set_ += ' TagsBot = ?'
+            if new_RtBot is not None:
+                params.append(new_RtBot)
+                set_ += ', ' if set_ else ''
+                set_ += ' RtBot = ?'
+            if new_FollowBot is not None:
+                params.append(new_FollowBot)
+                set_ += ', ' if set_ else ''
+                set_ += ' FollowBot = ?'
+            if new_LikeBot is not None:
+                params.append(new_LikeBot)
+                set_ += ', ' if set_ else ''
+                set_ += ' LikeBot = ?'
+            if new_CommentBot is not None:
+                params.append(new_CommentBot)
+                set_ += ', ' if set_ else ''
+                set_ += ' CommentBot = ?'
+            if new_PrivateMessage is not None:
+                params.append(new_PrivateMessage)
+                set_ += ', ' if set_ else ''
+                set_ += ' PrivateMessage = ?'
+            params.append(GiveawayId)
+            params = tuple(params)
+            self._cursor.execute(
+                f'UPDATE {self._table_name} SET {set_} WHERE GiveawayId = ?',
+                params)
+            self._save_if_possible()
+
+        def delete_Giveaway(self, GiveawayId: int):
+            """
+            you can specify a Giveaway to delete by GiveawayId
+
+            :param GiveawayId: the target Giveaway
+            :return: None
+            """
+            self._cursor.execute(f'DELETE FROM {self._table_name} WHERE GiveawayId = ?', (GiveawayId,))
+            self._save_if_possible()
+
+        def delete_all_Giveaways(self):
+            """
+            CAREFUL this method deletes all of the Giveaways from the table
+
+            :return: None
+            """
+            self._cursor.execute(f'DELETE FROM {self._table_name}')
+            self._save_if_possible()
+
+        def get_Giveaway_referenced_user(self, GiveawayId: int):
+            """
+            :param GiveawayId: target Giveaway
+            :return: an <Giveaways_row> presents the user in the referenced or parent table
+            """
+            self._cursor.execute(f'SELECT UserId FROM {self._table_name} WHERE GiveawayId = ?', (GiveawayId,))
+            uid = self._cursor.fetchone()[0]
+            self._cursor.execute(f'SELECT * FROM {self._reference} WHERE UserId = ?', (uid,))
+            return self._cursor.fetchone()
     # ------------------------------------------------------
 
     def __init__(self, database_file: str):
@@ -669,6 +952,36 @@ class database:
                             f'DateRSS DATE'
                             f')')
 
+
+    def _add_giveaways_table(self, a_name: str, references: str, if_not_exists=False):
+        """
+        This method creates a Giveaways table with a chosen name
+
+        :param a_name: the chosen name
+        :param if_not_exists: set to True to avoid error if already exists
+        :return: None
+        """
+        ine = 'IF NOT EXISTS' if if_not_exists else ''
+        self._cursor.execute(f'CREATE TABLE {ine} {a_name} ('
+                            f'GiveawayId INTEGER PRIMARY KEY AUTOINCREMENT,'
+                            f'UserId INTEGER REFERENCES {references}(UserId),'
+                            f'GiveawayUserId INTEGER,'
+                            f'GiveawayUsername TEXT,'
+                            f'TweetId INTEGER,'
+                            f'TweetMessage TEXT,'
+                            f'NeedTags INTEGER,'
+                            f'NeedComment INTEGER,'
+                            f'NeedLike INTEGER,'
+                            f'NeedFollow INTEGER,'
+                            f'NeedRT INTEGER,'
+                            f'DateBot DATE,'
+                            f'TagsBot INTEGER,'
+                            f'RtBot INTEGER,'
+                            f'FollowBot INTEGER,'
+                            f'LikeBot INTEGER,'
+                            f'CommentBot INTEGER,'
+                            f'PrivateMessage INTEGER'
+                            f')')
     # Check State Methods
 
     def table_exists(self, table_name: str):
@@ -738,6 +1051,20 @@ class database:
         if auto_create:
             self._add_Stats_table(table_name, reference_table, True)
         return self._Stats(self, table_name, reference_table, auto_save)
+
+    def Giveaways(self, table_name='Giveaways', reference_table='Users', auto_create=True, auto_save=True):
+        """
+        control a Giveaways table with this method
+
+        :param table_name: the name of the table, default to "Giveaways"
+        :param reference_table: the reference table to refer UserId column
+        :param auto_create: to create the table if doesn't exists, to avoid error
+        :param auto_save: to save changes automatically, highly recommended
+        :return: <_Giveaways> instance
+        """
+        if auto_create:
+            self._add_giveaways_table(table_name, reference_table, True)
+        return self._Giveaways(self, table_name, reference_table, auto_save)
 
     def RSS(self, table_name='RSS', reference_table='Users', auto_create=True, auto_save=True):
         """

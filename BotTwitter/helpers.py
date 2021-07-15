@@ -1,11 +1,14 @@
 # Standard libraries
 import sys
 import logging
-
+import random
+import time
 # third party libraries
 import tweepy
 import yaml
 
+
+import BotTwitter.constants as const
 
 class Helpers:
     def __init__(self):
@@ -45,27 +48,59 @@ class Helpers:
         auth = tweepy.OAuthHandler(api_key, api_secret)
         auth.set_access_token(access_token, access_secret)
         # calling the api
-        api = tweepy.API(auth)
+        api = tweepy.API(auth, wait_on_rate_limit=True)
         # getting the authenticated user's information
         user = api.me()
         return api, user
 
-    def logging_configuration(self, logging_level):
+    def logging_get_format(self, username=None):
+        """
+        Define the correct format for logs if we have the username of the current account.
+
+        :return format : format for logging
+        """
+        if username is None:
+            format='%(asctime)s - %(levelname)s - '+const.APP_NAME+'\t- %(message)s'
+        else:
+            format='%(asctime)s - %(levelname)s - ' + str(username) + '\t-  %(message)s'
+        return format
+
+    def logging_update_format(self, username=None):
+        """
+        Update logging format if an username is specify
+        """
+        format = self.logging_get_format(username)
+        formatter = logging.Formatter(format)
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(formatter)
+        root_logger = logging.getLogger()  # root logger
+        for hdlr in root_logger.handlers[:]: # remove all old handlers
+            root_logger.removeHandler(hdlr)
+        root_logger.addHandler(handler) # set the new handler
+
+
+    def logging_configuration(self, logging_level=logging.INFO, filename='logs/bot_twitter.log'):
         """
         Logging configuration function
 
+        :param logging_level: logging level
+        :filename: log file location and name
+        :username: username of the account
+
         :return: None
         """
-        logging.basicConfig(filename='logs/bot_twitter.log',
+        format = self.logging_get_format()
+
+        logging.basicConfig(filename=filename,
                             level=logging.INFO,
-                            format='%(asctime)s - %(levelname)s - %(message)s')
+                            format=format)
 
         root_logger = logging.getLogger()
         root_logger.setLevel(logging_level)
 
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(format)
         handler.setFormatter(formatter)
         root_logger.addHandler(handler)
 
@@ -80,3 +115,21 @@ class Helpers:
         with open(configuration_file, 'r', encoding="utf8") as stream:
             out = yaml.load(stream, Loader=yaml.FullLoader)
         return out
+
+# Utilities methods
+def header():
+    """
+    This method display an header when the script start
+    """
+    logging.info('==\t=============================================================\t==')
+    logging.info('==\t                   ' + const.APP_NAME + '                             \t==')
+    logging.info('==\t                   version : ' + const.VERSION + '                         \t==')
+    logging.info('==\t=============================================================\t==\n')
+
+def wait(min=60, max=min, prefix=''):
+    """
+    Wait random time in second beetween min and max seconds, to have an not linear behavior and be more human.
+    """
+    random_sleep_time = random.randrange(min, max)
+    logging.info(prefix +' - Sleep '+ str(random_sleep_time) +' seconds...')
+    time.sleep(random_sleep_time)
