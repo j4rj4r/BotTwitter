@@ -31,7 +31,7 @@ class Bot:
                 self.helpers.logging_update_format(username=user.screen_name)
 
                 # Initialize actions and unfollow giveaway > 2 month
-                action = Action(self.config, self.list_name, user, api)
+                action = Action(self.config, self.list_name, user, api, self.alerters)
                 action.manage_follow.unfollow() # Clear the follow list before to do any actions
 
                 # We retrieve the list of actions to do
@@ -49,10 +49,20 @@ class Bot:
                 action.manage_action(list_action)
             except Exception as e:
                 logging.error('Error thread to participate to giveaways.')
-                logging.error(e)
+                logging.debug(e)
                 if e.api_code == 261 :
-                    logging.error('Error code 261 : Application blocked by Twitter.')
-                    logging.error('/!\\ Stop participations for account ' + user.screen_name)
+                     # Send notification for the error code 261
+                    alert_message = 'Error code 261 : Application blocked by Twitter.'
+                    logging.error(alert_message)
+                    if self.config["be_notify_by_alerters"]:
+                        self.alerters(  subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
+                                    content=alert_message)
+                    # Send notification for the end of the thread
+                    alert_message = '/!\\ Stop participations for account ' + user.screen_name
+                    logging.error(alert_message)
+                    if self.config["be_notify_by_alerters"]:
+                        self.alerters(  subject='🔴❌🔴 An issue with the account @'+self.user.screen_name+' need your attention ! 🔴❌🔴',
+                                    content=alert_message)
                     self.run = False
 
             # Wait few seconds/minutes before to continue
@@ -85,7 +95,7 @@ class Bot:
                     last_author_id = author_id
                     logging.info("Notification send : You have win a giveaway !")
                     # Retrive the giveaway
-                    action = Action(self.config, self.list_name, user, api)
+                    action = Action(self.config, self.list_name, user, api,  self.alerters)
                     tweetId, giveawayUsername, dateBot, tweetMessage = action.manage_giveaway.win(authorId=author_id)
                     if tweetId is not None:
                         # Notify user
@@ -118,6 +128,9 @@ class Bot:
         # Step 2 :  Run Workers, 2 per account ( worker_detecting_mp, worker_participate_giveaways)
         # Each user do the actions, twitter will suggest different suggestion could be different
         threads = list()
+
+        if self.config["be_notify_by_alerters"]:
+            self.alerters( subject='🚀 '+const.APP_NAME+' version '+const.VERSION+' is starting !  🚀', content='')
         # Start workers for every accounts
         for user_information in user_information_list:
             # Worker 1 : Participate to giveaways
