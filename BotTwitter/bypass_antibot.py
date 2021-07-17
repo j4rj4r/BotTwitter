@@ -30,10 +30,10 @@ class BypassAntiBot:
         Randomly Retweet 5 tweets & Randomly Tweet 10 things.
         """
         try:
-            logging.info("Bypass anti-bot protections ...")
+            logging.info('Bypass anti-bot protections ...')
             self.randomretweet()
             self.rss_and_tweet()
-            logging.info("Anti-bot bypass completed !")
+            logging.info('Anti-bot bypass completed !')
 
         except tweepy.TweepError as e:
             if e.api_code == 326:
@@ -44,10 +44,10 @@ class BypassAntiBot:
         Check for number of ReTweet Follow needed to bypass
         """
         follow_count, retweet_count = 0, 0
-        for tweet in self.api.user_timeline(count=200, tweet_mode="extended"):
+        for tweet in self.api.user_timeline(count=200, tweet_mode='extended'):
             if tweet.retweeted:
                 retweet_count += 1
-                if "FOLLOW" in tweet.full_text.upper():
+                if 'FOLLOW' in tweet.full_text.upper():
                     follow_count += 1
         percent_RtFol = (follow_count * 100) / retweet_count
         if percent_RtFol > 25:
@@ -67,18 +67,18 @@ class BypassAntiBot:
         Check for number of tweet needed to bypass
         """
         retweet_count = 0
-        for tweet in self.api.user_timeline(count=200, tweet_mode="extended"):
+        for tweet in self.api.user_timeline(count=200, tweet_mode='extended'):
             if tweet.retweeted:
                 retweet_count += 1
         if retweet_count > 100:
             randomtweet = retweet_count - 100
-            logging.info("They are " + str(retweet_count) + " retweets for 200 tweets, we need " + str(
-                randomtweet) + " tweets random")
+            logging.info('They are ' + str(retweet_count) + ' retweets for 200 tweets, we need ' + str(
+                randomtweet) + ' tweets random')
             if randomtweet > 15:
                 randomtweet = 15
-                logging.info("We will only do " + str(randomtweet) + " tweets for the moment")
+                logging.info('We will only do ' + str(randomtweet) + ' tweets for the moment')
         else:
-            logging.info("There are less than 50% ReTweets on the account we move on to the next step.")
+            logging.info('There are less than 50% ReTweets on the account we move on to the next step.')
             randomtweet = 0
         return randomtweet
 
@@ -87,7 +87,7 @@ class BypassAntiBot:
         Randomly select trending tweets and Retweet them.
         """
         nbtweet = self.random_retweet_calculation()
-        logging.info("Random retweet started, %s remaining",
+        logging.info('Random retweet started, %s remaining',
                      str(nbtweet))
         time.sleep(5)
         if nbtweet > 0:
@@ -99,14 +99,14 @@ class BypassAntiBot:
             random_count = random.randrange(0, len(trends))
             for tweet in tweepy.Cursor(self.api.search,
                                        q=trends[random_count],
-                                       result_type="recent",
-                                       include_entities="True",
-                                       lang="fr").items(nbtweet):
+                                       result_type='recent',
+                                       include_entities='True',
+                                       lang='fr').items(nbtweet):
                 try:
                     tweet.retweet()
                     next_retweet_sleep_count = random.randrange(10, 20)
                     nbtweet -= 1
-                    logging.info("Random retweet done, %s remaining, sleeping for %ss...",
+                    logging.info('Random retweet done, %s remaining, sleeping for %ss...',
                                  str(nbtweet),
                                  str(next_retweet_sleep_count))
                     time.sleep(next_retweet_sleep_count)  # Randomly stop activity for 10-20 seconds

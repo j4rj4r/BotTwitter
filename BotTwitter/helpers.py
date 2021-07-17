@@ -135,7 +135,7 @@ class Helpers:
         :return: out
         """
         # Load all configuration variables
-        with open(configuration_file, 'r', encoding="utf8") as stream:
+        with open(configuration_file, 'r', encoding='utf8') as stream:
             out = yaml.load(stream, Loader=yaml.FullLoader)
         return out
 
