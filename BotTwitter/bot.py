@@ -50,9 +50,14 @@ class Bot:
             except Exception as e:
                 logging.error('Error thread to participate to giveaways.')
                 logging.error(e)
+                if e.api_code == 261 :
+                    logging.error('Error code 261 : Application blocked by Twitter.')
+                    logging.error('/!\\ Stop participations for account ' + user.screen_name)
+                    self.run = False
 
             # Wait few seconds/minutes before to continue
-            wait(120, 240, "Participate giveaways")
+            if self.run :
+                wait(120, 240, "Participate giveaways")
 
     # Worker 2 : Notify new private message receive
     def worker_detecting_mp(self ,user, api):

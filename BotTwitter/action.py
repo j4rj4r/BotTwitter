@@ -1,4 +1,5 @@
 # Standard libraries
+from BotTwitter.helpers import wait
 import logging
 import random
 import re
@@ -157,11 +158,7 @@ class Action:
                         TagsBot=action_tag, RtBot=action_rt, FollowBot=action_follow, LikeBot=action_like, CommentBot=action_tag,
                         PrivateMessage=False
                     )
-                    random_sleep_time = random.randrange(10, 20)
-                    logging.info('You participated in the giveaway of : @%s. Sleeping for %ss...',
-                                 screen_name,
-                                 str(random_sleep_time))
-                    time.sleep(random_sleep_time)
+                    logging.info('You participated in the giveaway of : @%s', screen_name)
 
             except tweepy.TweepError as e:
                 if e.api_code == 327:
@@ -174,10 +171,17 @@ class Action:
                     break
                 elif e.api_code == 326:
                     logging.warning('You have to do a captcha on the account: %s', self.user.screen_name)
-                    break
+                    raise e
+                elif e.api_code == 261:
+                    logging.error('Your application have been disable/blocked by Twitter.')
+                    raise e
                 else:
                     logging.error('Error occurred dunring action with the API:')
                     logging.error(e)
+            # Sleep a random time
+            finally: #Sleep random time to avoid to be detected as a bot
+                wait(120, 240, "Participate giveaways")
+
 
     def comment(self, action):
         """

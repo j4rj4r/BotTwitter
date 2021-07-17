@@ -38,6 +38,9 @@ class BypassAntiBot:
         except tweepy.TweepError as e:
             if e.api_code == 326:
                 pass
+            else:
+                logging.error("Error occurred during bypass :")
+                raise  e
 
     def random_retweet_calculation(self):
         """
@@ -115,12 +118,15 @@ class BypassAntiBot:
                         break
                     elif (e.api_code == 327) or (e.api_code == 326):
                         pass
+                    elif e.api_code == 261:
+                        raise e
                     else:
                         logging.error("Error occurred during bypass :")
                         logging.error(e.reason)
                 except StopIteration as si:
                     logging.error("Error occurred during bypass (stop iteration) :")
                     logging.error(si.reason)
+                    raise e
                     break
 
     def rss_and_tweet(self):
