@@ -191,7 +191,7 @@ class Action:
                     logging.error(e)
             # Sleep a random time
             finally: #Sleep random time to avoid to be detected as a bot
-                wait(120, 240, "Participate giveaways")
+                wait(120, 240, "Worker 1 : Participate giveaways")
 
 
     def comment(self, action):

@@ -1,6 +1,7 @@
 # Standard libraries
 import logging
 import threading
+import sys
 from datetime import datetime, timedelta
 
 # third party libraries
@@ -67,7 +68,7 @@ class Bot:
 
             # Wait few seconds/minutes before to continue
             if self.run :
-                wait(120, 240, "Participate giveaways")
+                wait(40, 180, "Worker 1 : Participate giveaways")
 
     # Worker 2 : Notify new private message receive
     def worker_detecting_mp(self ,user, api):
@@ -121,7 +122,7 @@ class Bot:
                 logging.error('Error thread to notify new private message.')
                 logging.error(e)
             # Wait few seconds/minutes before to continue
-            wait(180, 250, "Direct message")
+            wait(20, 180, "Worker 2 : Direct message")
 
 
     def bot_start(self, user_information_list):
@@ -148,4 +149,7 @@ class Bot:
         while self.run:
             self.run = not self.helpers.ask_to_exit()
         logging.info("Bot will stop in few minutes !")
-
+        # Stop all threads
+        for thread in threads:
+            thread.join()
+        sys.exit(0)
