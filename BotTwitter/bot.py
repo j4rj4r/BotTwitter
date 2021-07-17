@@ -29,8 +29,8 @@ class Bot:
         while self.run:  # Infinite loop
             try:
                 # Set logs for the current user
-                self.helpers.logging_update_format(username=user.screen_name)
-
+                #self.helpers.logging_update_format(username=user.screen_name)
+                self.helpers.logging_configuration(self.config['logging_level'],username=user.screen_name)
                 # Initialize actions and unfollow giveaway > 2 month
                 action = Action(self.config, self.list_name, user, api, self.alerters)
                 action.manage_follow.unfollow() # Clear the follow list before to do any actions

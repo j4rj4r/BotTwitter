@@ -81,24 +81,12 @@ class Helpers:
         :return format : format for logging
         """
         if username is None:
-            format='%(asctime)s - %(levelname)s - '+const.APP_NAME+' - %(message)s'
+            format='%(asctime)s - %(levelname)s \t- '+const.APP_NAME+' \t- %(message)s'
         else:
-            format='%(asctime)s - %(levelname)s - ' + str(username) + ' -  %(message)s'
+            format='%(asctime)s - %(levelname)s \t- ' + str(username) + ' \t-  %(message)s'
         return format
 
-    def logging_update_format(self, username=None):
-        """
-        Update logging format if an username is specify
-        """
-        format = self.logging_get_format(username)
-        formatter = logging.Formatter(format)
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(formatter)
-        root_logger = logging.getLogger()  # root logger
-        root_logger.addHandler(handler)  # set the new handler
-
-
-    def logging_configuration(self, logging_level=logging.INFO, filename='logs/bot_twitter.log'):
+    def logging_configuration(self, logging_level=logging.INFO, filename='logs/bot_twitter.log', username=None):
         """
         Logging configuration function
 
@@ -108,7 +96,11 @@ class Helpers:
 
         :return: None
         """
-        format = self.logging_get_format()
+        # Remove all handlers associated with the root logger object.
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
+        # Create the logger with the specified name.
+        format = self.logging_get_format(username)
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
         formatter = logging.Formatter(format)
@@ -122,7 +114,7 @@ class Helpers:
         file_handler.setFormatter(formatter)
 
         logger.addHandler(file_handler)
-        #logger.addHandler(stdout_handler)
+        logger.addHandler(stdout_handler)
 
 
     def load_configuration(self, configuration_file):
