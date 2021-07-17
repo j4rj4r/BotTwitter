@@ -4,3 +4,4 @@ __pycache__/
 configuration.yml
 *.db
 *.log
+*.js

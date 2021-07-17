@@ -70,8 +70,8 @@ if config['accounts_to_tag']:
 #
 bot = Bot(config, alerters, list_name, helpers)
 # Check run options
-if len(sys.argv) > 1 and sys.argv[1] == '--standelone':
-    logging.info("Mode : Standelone")
+if len(sys.argv) > 1 and sys.argv[1] == '--standalone':
+    logging.info("Mode : Standalone")
     bot.bot_start(user_information_list)
 else:
     logging.info("Mode : Interactive")
