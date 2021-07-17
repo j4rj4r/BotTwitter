@@ -15,7 +15,6 @@ from BotTwitter.helpers import Helpers, header, wait
 from BotTwitter.alerter import init_alerters
 from BotTwitter.bot import Bot
 
-
 # Step 0 : Initialization
 
 # Configuration
@@ -30,7 +29,10 @@ helpers.logging_configuration(config['logging_level'])
 header()
 logging.info('Starting bot ...')
 # Configuration of alert system
-alerters = init_alerters(config)
+if config['be_notify_by_alerters']:
+    alerters = init_alerters(config)
+else:
+    alerters = None
 # if doesn't exist create database
 dbman = BotTwitter.database_client.database(const.DB_FILE)
 # if doesn't exist create users table
@@ -59,7 +61,7 @@ for account in config['accounts']:
             logging.error(e)
             continue
 
- # Add Accounts to Tag
+# Add Accounts to Tag
 if config['accounts_to_tag']:
     list_name += config['accounts_to_tag']
     # We don't want a duplicate
@@ -76,4 +78,3 @@ else:
     command = helpers.ask_menu()
     if command == 'bot_start':
         bot.bot_start(user_information_list)
-
