@@ -26,7 +26,7 @@ class Bot:
         """
         Run main process to participate to a giveaways
         """
-        while self.run : # Infinite loop
+        while self.run:  # Infinite loop
             try:
                 # Set logs for the current user
                 self.helpers.logging_update_format(username=user.screen_name)
@@ -51,18 +51,18 @@ class Bot:
             except Exception as e:
                 logging.error('Error thread to participate to giveaways.')
                 logging.debug(e)
-                if e.api_code == 261 :
+                if e.api_code == 261:
                      # Send notification for the error code 261
                     alert_message = 'Error code 261 : Application blocked by Twitter.'
                     logging.error(alert_message)
-                    if self.config["be_notify_by_alerters"]:
-                        self.alerters(  subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
+                    if self.alerters:
+                        self.alerters(subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
                                     content=alert_message)
                     # Send notification for the end of the thread
                     alert_message = '/!\\ Stop participations for account ' + user.screen_name
                     logging.error(alert_message)
-                    if self.config["be_notify_by_alerters"]:
-                        self.alerters(  subject='🔴❌🔴 An issue with the account @'+self.user.screen_name+' need your attention ! 🔴❌🔴',
+                    if self.alerters:
+                        self.alerters(subject='🔴❌🔴 An issue with the account @'+self.user.screen_name+' need your attention ! 🔴❌🔴',
                                     content=alert_message)
                     self.run = False
 
@@ -100,7 +100,7 @@ class Bot:
                     tweetId, giveawayUsername, dateBot, tweetMessage = action.manage_giveaway.win(authorId=author_id)
                     if tweetId is not None:
                         # Notify user
-                        self.alerters( subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏', 
+                        self.alerters(subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏',
                                 content='You just received a new private message on Twitter from @'+giveawayUsername+' this is probably about your participation'
                                         +'on '+str(dateBot)+' to the giveaway https://twitter.com/'+giveawayUsername+'/status/'+str(tweetId)+' !\n'
                                         +'-------------------- Giveaway details : --------------------\n'
@@ -116,7 +116,7 @@ class Bot:
                         )
                     else:
                         # Notify user with default message
-                        self.alerters( subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏',
+                        self.alerters(subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏',
                                 content='You just received a new private message on Twitter')
             except Exception as e:
                 logging.error('Error thread to notify new private message.')
@@ -130,20 +130,22 @@ class Bot:
         # Each user do the actions, twitter will suggest different suggestion could be different
         threads = list()
 
-        if self.config["be_notify_by_alerters"]:
-            self.alerters( subject='🚀 '+const.APP_NAME+' version '+const.VERSION+' is starting !  🚀', content='')
+        if self.alerters:
+            self.alerters(subject='🚀 '+const.APP_NAME+' version '+const.VERSION+' is starting !  🚀', content='')
         # Start workers for every accounts
         for user_information in user_information_list:
             # Worker 1 : Participate to giveaways
-            thread_participate = threading.Thread(target=self.worker_participate_giveaways, args=(user_information['user'],user_information['api']))
+            thread_participate = threading.Thread(target=self.worker_participate_giveaways, args=(user_information['user'], user_information['api']))
             threads.append(thread_participate)
             # Worker 2 : Monitoring of new private messages
-            thread_mp_notification = threading.Thread(target=self.worker_detecting_mp, args=(user_information["user"], user_information["api"],))
-            threads.append(thread_mp_notification)
+            if self.alerters:
+                thread_mp_notification = threading.Thread(target=self.worker_detecting_mp, args=(user_information["user"], user_information["api"],))
+                threads.append(thread_mp_notification)
 
             # Start threads
             thread_participate.start()
-            thread_mp_notification.start()
+            if self.alerters:
+                thread_mp_notification.start()
 
         # Keep interactive way to stop the application
         while self.run:
