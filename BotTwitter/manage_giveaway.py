@@ -89,7 +89,7 @@ class Manage_Giveaway:
         Set a giveaway to won and return associate data
 
         :param authorId int: Author
-        
+
         :return TweetId, GiveawayUsername, DateBot, TweetMessage
         """
         giveaway_rows = self.database_giveaway.get_giveaways(UserId=self.user.id, GiveawayUserId=authorId)
@@ -100,3 +100,4 @@ class Manage_Giveaway:
                             +' posted by @'+giveaway_row.GiveawayUsername)
             self.database_giveaway.update_giveaway(GiveawayId=giveaway_row.GiveawayId, new_PrivateMessage=True)
             return giveaway_row.TweetId, giveaway_row.GiveawayUsername, giveaway_row.DateBot, giveaway_row.TweetMessage
+        return None, None, None, None

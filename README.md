@@ -172,11 +172,11 @@ words_to_blacklist_antibot:
 
 ### Lancement du bot :
 ```
-python3 main.py
+python3 main.py [--standelone]
 ou
-py main.py
+py main.py [--standelone]
 ```
-
+--standelone est un paramètre optionnel permetant d'éxéctuter directement le bot sans interactivité.
 
 Vous avez une question ? Des idées d'ameliorations ? vous pouvez venir sur notre serveur discord  : [MoneyMakers](https://discord.gg/gjNbrgwRxT)
 On recherche des devs pour continuer à améliorer ce bot et à commencer de nouveaux projets !

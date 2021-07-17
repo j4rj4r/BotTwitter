@@ -12,15 +12,17 @@ from BotTwitter.manage_rss import ManageRss
 
 
 class BypassAntiBot:
-    def __init__(self, api, flux_rss, user):
+    def __init__(self, api, flux_rss, user, blacklist_words):
         """
         BypassAntiBot constructor containing anti bot avoidance logic
 
         :param api tweepy.API: api object for current tweepy user
         :param flux_rss list: List of rss feeds
+        :param blacklist_words list: List of words blacklisted
         """
         self.api = api
         self.flux_rss = flux_rss
+        self.blacklist_words = blacklist_words
         self.managerss = ManageRss(user)
 
     def bypass(self):
@@ -114,8 +116,11 @@ class BypassAntiBot:
                     elif (e.api_code == 327) or (e.api_code == 326):
                         pass
                     else:
+                        logging.error("Error occurred during bypass :")
                         logging.error(e.reason)
-                except StopIteration:
+                except StopIteration as si:
+                    logging.error("Error occurred during bypass (stop iteration) :")
+                    logging.error(si.reason)
                     break
 
     def rss_and_tweet(self):
@@ -132,6 +137,7 @@ class BypassAntiBot:
 
         random.shuffle(feeds)
 
+        # Tweet RSS feeds entry if possible
         for feed in feeds:
             for post in feed.entries:
                 if nbtweet > 0:
@@ -148,7 +154,7 @@ class BypassAntiBot:
                             self.api.update_status(message)
                             next_tweet_sleep_count = random.randrange(10, 20)
                             nbtweet -= 1
-                            logging.info("Random tweet done, %s remaining, sleeping for %ss...",
+                            logging.info("Random tweet done (RSS), %s remaining, sleeping for %ss...",
                                          str(nbtweet),
                                          str(next_tweet_sleep_count))
                             time.sleep(next_tweet_sleep_count)
@@ -161,3 +167,68 @@ class BypassAntiBot:
                             else:
                                 logging.error('Error occurred during rss and tweet process :')
                                 logging.error(e.reason)
+
+        # Complete missing tweet with random tweets
+        while nbtweet > 0:
+            self.randomtweet(self.api)
+            next_tweet_sleep_count = random.randrange(10, 20)
+            nbtweet -= 1
+            logging.info("Random tweet done (Trends), %s remaining, sleeping for %ss...",
+                            str(nbtweet), str(next_tweet_sleep_count))
+            time.sleep(next_tweet_sleep_count)
+
+
+
+
+
+
+    #On récupère un message twitter et on le tweet
+    def randomtweet(self, api):
+        """
+        Randomly select trending tweets and Tweet them.
+        """
+        try:
+            #Code France (marseille) FR
+            trends1 = api.trends_place(610264)
+            #On récupère la liste des tendances
+            trends = list([trend['name'] for trend in trends1[0]['trends']])
+            nbrandom = random.randrange(0, len(trends))
+            #On cherche des tweets parmis les tweets recents
+            filter_list = " -filter:replies -filter:media -filter:retweets"
+            for word in self.blacklist_words:
+                filter_list += ' -' + word
+            for tweet in tweepy.Cursor(api.search, q=trends[nbrandom] + filter_list, lang="fr", tweet_mode="extended", result_type='recent').items(1):
+                if hasattr(tweet, 'retweeted_status'):
+                    #On ne veut pas tweet un concours
+                    if "CONCOURS" in tweet.retweeted_status.full_text.upper():
+                        pass
+                    else:
+                        tweettext = tweet.retweeted_status.full_text
+                        #On évite de notifier les gens quand on récupère un tweet d'un autre
+                        if "@" in tweettext:
+                            tweettext = tweettext.replace("@", " ")
+                        #On évite les # pour etre discret
+                        if "#" in tweettext:
+                            tweettext = tweettext.replace("#", " ")
+                        api.update_status(tweettext)
+                else:
+                    #On ne veut pas tweet un concours
+                    if "CONCOURS" in tweet.full_text.upper():
+                        pass
+                    else:
+                        tweettext = tweet.full_text
+                        if "@" in tweettext:
+                            tweettext = tweettext.replace("@", " ")
+                        if "#" in tweettext:
+                            tweettext = tweettext.replace("#", " ")
+                        api.update_status(tweettext)
+                time.sleep(30)
+        except tweepy.TweepError as e:
+            if e.api_code == 185:
+                logging.error('Too many requests to the API :')
+                time.sleep(1500)
+            elif (e.api_code == 187) or (e.api_code == 327) or (e.api_code == 186) or (e.api_code == 326):
+                pass
+            else:
+                logging.error('Error occurred during random tweet process :')
+                logging.error(e.reason)
