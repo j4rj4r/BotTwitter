@@ -81,9 +81,9 @@ class Helpers:
         :return format : format for logging
         """
         if username is None:
-            format='%(asctime)s - \t%(levelname)s \t- '+const.APP_NAME+'\t- %(message)s'
+            format='%(asctime)s - %(levelname)s - '+const.APP_NAME+' - %(message)s'
         else:
-            format='%(asctime)s - \t%(levelname)s \t- ' + str(username) + '\t-  %(message)s'
+            format='%(asctime)s - %(levelname)s - ' + str(username) + ' -  %(message)s'
         return format
 
     def logging_update_format(self, username=None):
@@ -95,9 +95,7 @@ class Helpers:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
         root_logger = logging.getLogger()  # root logger
-        for hdlr in root_logger.handlers[:]: # remove all old handlers
-            root_logger.removeHandler(hdlr)
-        root_logger.addHandler(handler) # set the new handler
+        root_logger.addHandler(handler)  # set the new handler
 
 
     def logging_configuration(self, logging_level=logging.INFO, filename='logs/bot_twitter.log'):

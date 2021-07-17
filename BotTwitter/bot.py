@@ -25,7 +25,7 @@ class Bot:
         """
         Run main process to participate to a giveaways
         """
-        while self.run: # Infinite loop
+        while self.run:  # Infinite loop
             try:
                 # Set logs for the current user
                 self.helpers.logging_update_format(username=user.screen_name)
@@ -99,7 +99,7 @@ class Bot:
                     tweetId, giveawayUsername, dateBot, tweetMessage = action.manage_giveaway.win(authorId=author_id)
                     if tweetId is not None:
                         # Notify user
-                        self.alerters( subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏', 
+                        self.alerters(subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏',
                                 content='You just received a new private message on Twitter from @'+giveawayUsername+' this is probably about your participation'
                                         +'on '+str(dateBot)+' to the giveaway https://twitter.com/'+giveawayUsername+'/status/'+str(tweetId)+' !\n'
                                         +'-------------------- Giveaway details : --------------------\n'
