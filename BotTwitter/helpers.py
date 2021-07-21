@@ -20,18 +20,39 @@ class Helpers:
         """
         The user is asked if he wants to leave
 
-        :return: None
+        :return: Boolean
         """
-        print('''[1] Next account | [2] Exit ''')
-        user_input = input("Your choice (by default 2): ")
+        try:
+            user_input = input('Type "STOP" to stop the application:\n')
 
-        # Continue
-        if user_input == '1':
-            pass
+            # Continue
+            if user_input == "STOP":
+                return True
+            # Exit
+            else:
+                print('/!\\ Please type "STOP" to exit the bot execution /!\\')
+                return False
+        except Exception as e:
+            return False
+
+    def ask_menu(self):
+        """
+        The user is ask what to do with the bot
+        """
+        user_input = input("Select an option : \n[1] Start the Bot.\n[2] Stats of the bot.\n[3] Exit.\n")
+
+        if user_input == "1":
+            print('=========================================')
+            print('= Bot will start in few seconds.        =')
+            print('= Type "STOP" to exit the bot execution =')
+            print('=========================================')
+            return 'bot_start'
+        elif user_input == "2":
+            logging.error('Feature not implemented yet !')
+            return 'bot_stats'
         # Exit
         else:
             sys.exit()
-        pass
 
     def get_user(self, api_key, api_secret, access_token, access_secret):
         """
@@ -60,26 +81,12 @@ class Helpers:
         :return format : format for logging
         """
         if username is None:
-            format='%(asctime)s - %(levelname)s - '+const.APP_NAME+'\t- %(message)s'
+            format='%(asctime)s - %(levelname)s \t- '+const.APP_NAME+' \t- %(message)s'
         else:
-            format='%(asctime)s - %(levelname)s - ' + str(username) + '\t-  %(message)s'
+            format='%(asctime)s - %(levelname)s \t- ' + str(username) + ' \t-  %(message)s'
         return format
 
-    def logging_update_format(self, username=None):
-        """
-        Update logging format if an username is specify
-        """
-        format = self.logging_get_format(username)
-        formatter = logging.Formatter(format)
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(formatter)
-        root_logger = logging.getLogger()  # root logger
-        for hdlr in root_logger.handlers[:]: # remove all old handlers
-            root_logger.removeHandler(hdlr)
-        root_logger.addHandler(handler) # set the new handler
-
-
-    def logging_configuration(self, logging_level=logging.INFO, filename='logs/bot_twitter.log'):
+    def logging_configuration(self, logging_level=logging.INFO, filename='logs/bot_twitter.log', username=None):
         """
         Logging configuration function
 
@@ -89,20 +96,26 @@ class Helpers:
 
         :return: None
         """
-        format = self.logging_get_format()
-
-        logging.basicConfig(filename=filename,
-                            level=logging.INFO,
-                            format=format)
-
-        root_logger = logging.getLogger()
-        root_logger.setLevel(logging_level)
-
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.INFO)
+        # Remove all handlers associated with the root logger object.
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
+        # Create the logger with the specified name.
+        format = self.logging_get_format(username)
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
         formatter = logging.Formatter(format)
-        handler.setFormatter(formatter)
-        root_logger.addHandler(handler)
+
+        stdout_handler = logging.StreamHandler(sys.stdout)
+        stdout_handler.setLevel(logging_level)
+        stdout_handler.setFormatter(formatter)
+
+        file_handler = logging.FileHandler(filename)
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+
+        logger.addHandler(file_handler)
+        logger.addHandler(stdout_handler)
+
 
     def load_configuration(self, configuration_file):
         """
@@ -124,7 +137,7 @@ def header():
     logging.info('==\t=============================================================\t==')
     logging.info('==\t                   ' + const.APP_NAME + '                             \t==')
     logging.info('==\t                   version : ' + const.VERSION + '                         \t==')
-    logging.info('==\t=============================================================\t==\n')
+    logging.info('==\t=============================================================\t==')
 
 def wait(min=60, max=min, prefix=''):
     """

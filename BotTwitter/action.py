@@ -1,4 +1,5 @@
 # Standard libraries
+from BotTwitter.helpers import wait
 import logging
 import random
 import re
@@ -13,7 +14,7 @@ from BotTwitter.manage_giveaway import Manage_Giveaway
 import tweepy
 
 class Action:
-    def __init__(self, configuration, list_name, user, api):
+    def __init__(self, configuration, list_name, user, api,  alerters):
         """
         Tweet class constructor, requires configuration dictionnary and username list
 
@@ -28,6 +29,7 @@ class Action:
         self.api = api
         self.manage_follow = Manage_follow(user, api) # Init follow management
         self.manage_giveaway = Manage_Giveaway(user) # Init giveaway management for stats
+        self.alerters =  alerters
 
     def search_tweets(self, api):
         """
@@ -157,13 +159,10 @@ class Action:
                         TagsBot=action_tag, RtBot=action_rt, FollowBot=action_follow, LikeBot=action_like, CommentBot=action_tag,
                         PrivateMessage=False
                     )
-                    random_sleep_time = random.randrange(10, 20)
-                    logging.info('You participated in the giveaway of : @%s. Sleeping for %ss...',
-                                 screen_name,
-                                 str(random_sleep_time))
-                    time.sleep(random_sleep_time)
+                    logging.info('You participated in the giveaway of : @%s', screen_name)
 
             except tweepy.TweepError as e:
+                logging.debug(e)
                 if e.api_code == 327:
                     pass
                 elif e.api_code == 161:
@@ -173,11 +172,27 @@ class Action:
                     logging.info('You have been blocked by: %s', screen_name)
                     break
                 elif e.api_code == 326:
-                    logging.warning('You have to do a captcha on the account: %s', self.user.screen_name)
-                    break
+                    alert_message = 'You have to do a captcha on the account: ' + self.user.screen_name
+                    logging.warning(alert_message)
+                    if self.config["be_notify_by_alerters"]:
+                        self.alerters(  subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
+                                    content=alert_message)
+                    # We wait for the captcha to be solved
+                    time.sleep(60 * 60 * 24) # Wait one day
+                elif e.api_code == 261:
+                    alert_message = 'Your application have been disable/blocked by Twitter.'
+                    logging.error(alert_message)
+                    if self.config["be_notify_by_alerters"]:
+                        self.alerters(  subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
+                                    content=alert_message)
+                    raise e
                 else:
                     logging.error('Error occurred dunring action with the API:')
                     logging.error(e)
+            # Sleep a random time
+            finally: #Sleep random time to avoid to be detected as a bot
+                wait(120, 240, "Worker 1 : Participate giveaways")
+
 
     def comment(self, action):
         """
