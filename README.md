@@ -36,7 +36,7 @@ If you need a tutorial: : [Developer account tutorial](https://www.extly.com/doc
      or
      py -m pip install tweepy -r requirements.txt
      ```
-These commands are to be entered in your console (cmd for Windows).  
+These commands must be pasted into your console (cmd for Windows).  
  If pip is not recognized you must install it.
 
 
@@ -83,7 +83,7 @@ accounts:
       - "Example"
 ```
 To make the antibot bypass function work properly, you need to add rss feeds to the configuration file.  
-A list of feeds you can add is available here: [Flux rss](http://atlasflux.saynete.net/index.htm)
+A list of feeds you can add is available here: [RSS Feeds](http://atlasflux.saynete.net/index.htm)
 ```
 # RSS
 flux_rss:
