@@ -14,7 +14,7 @@ An easy-to-use multi-account Twitter bot to enter (and win) contests.
 * The bot can respond to a contest with hashtags
 
 
-### Requirements and Dependencies :
+## Requirements and Dependencies :
 
 You must install [Python 3.x](https://www.python.org/downloads/) and these python3 libraries :
 ```
@@ -22,7 +22,7 @@ Tweepy
 PyYaml
 feedparser
 ```
-### Installation :
+## Installation :
 
 * To use the script you will first need a Twitter developer account to get your API access.
  You can request this access on the Twitter developer site: [Twitter Developer](https://developer.twitter.com/)  
@@ -40,7 +40,7 @@ These commands are to be entered in your console (cmd for Windows).
  If pip is not recognized you must install it.
 
 
-### Configuration :
+## Configuration :
 
 All configuration settings are in the **configuration.yml** file.  
 Copy the **configuration.yml.dist** file to create the **configuration.yml** file.
@@ -91,7 +91,7 @@ flux_rss:
     - https://www.24matins.fr/feed
 ```
 
-### How to run :
+## How to run :
 ```
 python3 main.py [--standalone]
 or
