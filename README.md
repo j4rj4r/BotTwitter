@@ -32,9 +32,9 @@ feedparser
 
 * Pour finir vous devez installer les libraries Tweepy, PyYaml et feedparser:
      ```
-     python3 -m pip install tweepy PyYaml feedparser
+     python3 -m pip install tweepy==3.10.0 PyYaml feedparser
      ou
-     py -m pip install tweepy PyYaml feedparser
+     py -m pip install tweepy==3.10.0 PyYaml feedparser
      ```
 Ces commandes sont à rentrer dans votre console (cmd pour Windows)
  Si pip n'est pas reconnu vous devez l'installer.
