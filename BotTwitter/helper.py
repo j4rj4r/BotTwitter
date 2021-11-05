@@ -30,7 +30,7 @@ class Helper:
         api = tweepy.API(auth)
 
         # Get Twitter User object and Create Table for each user
-        user = api.me()
+        user = api.verify_credentials()
         return api, user
 
     def logging_configuration(self, logging_level):
