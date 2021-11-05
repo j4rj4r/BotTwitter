@@ -15,7 +15,7 @@ class RetweetGiveaway:
         RetweetGiveaway class constructor, requires api object and user object
 
         :param api tweepy.API: api object from tweepy library
-        :param user tweepy.API.me() : User object for current bot
+        :param user tweepy.API.verify_credentials() : User object for current bot
         """
         self.user = user
         self.api = api

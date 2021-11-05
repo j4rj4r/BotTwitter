@@ -17,7 +17,7 @@ from BotTwitter.manage_rss import create_table_rss
 from BotTwitter.retweet_giveaway import RetweetGiveaway
 
 # Configuration
-VERSION = 3.0
+VERSION = 3.1
 CONFIGURATION_FILE = "configuration.yml"
 Helper = Helper()
 
@@ -113,7 +113,7 @@ while True:
                 auth.set_access_token(access_token, access_secret)
                 api = tweepy.API(auth)
 
-                user = api.me()
+                user = api.verify_credentials()
                 logging.info("-" * 40)
                 logging.info("Launching the bot on : @%s", user.screen_name)
 
