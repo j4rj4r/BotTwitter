@@ -174,7 +174,7 @@ class RetweetGiveaway:
                     logging.warning("You have to do a captcha on the account: %s", self.user.screen_name)
                     break
                 else:
-                    logging.error(e)
+                    logging.error(e.api_messages)
 
     def comment(self, tweet, sentence_for_tag, hashtag, list_name, hashtag_to_blacklist, nb_account_to_tag):
         """
