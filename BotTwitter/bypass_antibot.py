@@ -33,8 +33,8 @@ class BypassAntiBot:
             self.rss_and_tweet()
             logging.info("Anti-bot bypass completed !")
 
-        except tweepy.TweepError as e:
-            if e.api_code == 326:
+        except tweepy.TweepyException as e:
+            if e.api_codes == 326:
                 pass
 
     def random_retweet_calculation(self):
@@ -90,7 +90,7 @@ class BypassAntiBot:
         time.sleep(5)
         if nbtweet > 0:
             # Get tweet at Trending place 610264,
-            trend_api_response = self.api.trends_place(610264)
+            trend_api_response = self.api.get_place_trends(610264)
             # Pick Names of Trending Topics
             trends = list([trend['name'] for trend in trend_api_response[0]['trends']])
             # Randomly Select Tweet number in trending topic
