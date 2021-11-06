@@ -9,7 +9,7 @@ class ManageFollow:
         """
         ManageFollow object keeps track of user and tweets in an sqlite table
 
-        :param user tweepy.API.me() : Current user object for tweepy bot
+        :param user tweepy.API.verify_credentials() : Current user object for tweepy bot
         :param api tweepy.API: api object from tweepy library
         """
         self.user = user

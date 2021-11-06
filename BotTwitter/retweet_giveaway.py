@@ -44,8 +44,8 @@ class RetweetGiveaway:
         for word in words_to_search:
 
             logging.info("Searching giveaway with the word : %s", word)
-            for tweet in tweepy.Cursor(self.api.search,
-                                       q=word, since=(datetime.now() - timedelta(nb_days_rollback)).strftime('%Y-%m-%d'),
+            for tweet in tweepy.Cursor(self.api.search_tweets,
+                                       q=word, until=(datetime.now() - timedelta(nb_days_rollback)).strftime('%Y-%m-%d'),
                                        lang="fr", tweet_mode="extended").items(max_giveaway):
 
                 if tweet.retweet_count > 5:
@@ -140,7 +140,7 @@ class RetweetGiveaway:
                     if like_giveaway:
                         self.api.create_favorite(id_)
 
-                    self.api.create_friendship(author_id)
+                    self.api.create_friendship(user_id=author_id)
 
                     if len(giveaway) == 2:
                         comment_level = giveaway[1]
@@ -151,7 +151,7 @@ class RetweetGiveaway:
 
                     if len(entities['user_mentions']) > 0:
                         for mention in entities['user_mentions']:
-                            self.api.create_friendship(mention['id'])
+                            self.api.create_friendship(user_id=mention['id'])
                             managefollow.update_table(mention['id'])
 
                     random_sleep_time = random.randrange(10, 20)
@@ -161,16 +161,16 @@ class RetweetGiveaway:
 
                     time.sleep(random_sleep_time)
 
-            except tweepy.TweepError as e:
-                if e.api_code == 327:
+            except tweepy.TweepyException as e:
+                if e.api_codes == 327:
                     pass
-                elif e.api_code == 161:
+                elif e.api_codes == 161:
                     logging.warning("The account can no longer follow. We go to the next step.")
                     break
-                elif e.api_code == 136:
+                elif e.api_codes == 136:
                     logging.info("You have been blocked by: %s", screen_name)
                     break
-                elif e.api_code == 326:
+                elif e.api_codes == 326:
                     logging.warning("You have to do a captcha on the account: %s", self.user.screen_name)
                     break
                 else:

@@ -137,8 +137,8 @@ while True:
             except KeyboardInterrupt:
                 Helper.ask_to_exit()
 
-            except tweepy.TweepError as error:
-                if error.api_code == 326 or error.api_code == 32:
+            except tweepy.TweepyException as error:
+                if error.api_codes == 326 or error.api_code == 32:
                     logging.error("Connection error : %s", account_name)
                     continue
                 else:
