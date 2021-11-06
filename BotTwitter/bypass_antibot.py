@@ -95,7 +95,7 @@ class BypassAntiBot:
             trends = list([trend['name'] for trend in trend_api_response[0]['trends']])
             # Randomly Select Tweet number in trending topic
             random_count = random.randrange(0, len(trends))
-            for tweet in tweepy.Cursor(self.api.search,
+            for tweet in tweepy.Cursor(self.api.search_tweets,
                                        q=trends[random_count],
                                        result_type="recent",
                                        include_entities="True",
@@ -108,10 +108,10 @@ class BypassAntiBot:
                                  str(nbtweet),
                                  str(next_retweet_sleep_count))
                     time.sleep(next_retweet_sleep_count)  # Randomly stop activity for 10-20 seconds
-                except tweepy.TweepError as e:
-                    if e.api_code == 185:
+                except tweepy.TweepyException as e:
+                    if e.api_codes == 185:
                         break
-                    elif (e.api_code == 327) or (e.api_code == 326):
+                    elif (e.api_codes == 327) or (e.api_codes == 326):
                         pass
                     else:
                         logging.error(e.reason)
@@ -152,11 +152,11 @@ class BypassAntiBot:
                                          str(nbtweet),
                                          str(next_tweet_sleep_count))
                             time.sleep(next_tweet_sleep_count)
-                        except tweepy.TweepError as e:
-                            if e.api_code == 185:
+                        except tweepy.TweepyException as e:
+                            if e.api_codes == 185:
                                 break
-                            elif (e.api_code == 187) or (e.api_code == 327) or (e.api_code == 186) or (
-                                    e.api_code == 326):
+                            elif (e.api_codes == 187) or (e.api_codes == 327) or (e.api_codes == 186) or (
+                                    e.api_codes == 326):
                                 break
                             else:
                                 logging.error(e.reason)
