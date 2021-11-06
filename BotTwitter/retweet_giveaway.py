@@ -196,20 +196,20 @@ class RetweetGiveaway:
             comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
             comment = self.add_hashtag_comment(comment, tweet.retweeted_status.entities['hashtags'],
                                                hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.retweeted_status.id)
+            self.api.update_status(comment, in_reply_to_status_id=tweet.retweeted_status.id)
 
         # Random Sentence + Tag Comment + Update Status
         elif hashtag == 2:
             comment = "@" + tweet.retweeted_status.author.screen_name + " " + randomsentence + " "
             comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
-            self.api.update_status(comment, tweet.retweeted_status.id)
+            self.api.update_status(comment, in_reply_to_status_id=tweet.retweeted_status.id)
 
         # Hashtag Comment + Update Status
         elif hashtag == 3:
             comment = "@" + tweet.retweeted_status.author.screen_name + " "
             comment = self.add_hashtag_comment(comment, tweet.retweeted_status.entities['hashtags'],
                                                hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.retweeted_status.id)
+            self.api.update_status(comment, in_reply_to_status_id=tweet.retweeted_status.id)
 
         # User - Random Sentence + Tag Comment + Hashtag Comment + Update Status
         elif hashtag == 4:
@@ -217,20 +217,20 @@ class RetweetGiveaway:
             comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
             comment = self.add_hashtag_comment(comment, tweet.entities['hashtags'],
                                                hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.id)
+            self.api.update_status(comment, in_reply_to_status_id=tweet.id)
 
         # User - Random Sentence + Tag Comment + Update Status
         elif hashtag == 5:
             comment = "@" + tweet.user.screen_name + " " + randomsentence + " "
             comment = self.add_tag_comment(list_name, comment, nb_account_to_tag)
-            self.api.update_status(comment, tweet.id)
+            self.api.update_status(comment, in_reply_to_status_id=tweet.id)
 
         # User - Hashtag Comment + Update Status
         elif hashtag == 6:
             comment = "@" + tweet.user.screen_name + " "
             comment = self.add_hashtag_comment(comment, tweet.entities['hashtags'],
                                                hashtag_to_blacklist)
-            self.api.update_status(comment, tweet.id)
+            self.api.update_status(comment, in_reply_to_status_id=tweet.id)
 
     def manage_hashtag(self, hashtag_list, hashtag_to_blacklist):
         """
