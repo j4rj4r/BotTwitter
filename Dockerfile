@@ -4,6 +4,6 @@ Maintainer j4rj4r
 COPY . /App
 WORKDIR /App
 
-RUN pip install -r http://requirements.txt/
+RUN pip install -r requirements.txt
 
 CMD ["python","-u","/App/main.py"]
