@@ -54,7 +54,7 @@ class Helpers:
         else:
             sys.exit()
 
-    def get_user(self, api_key, api_secret, access_token, access_secret):
+    def get_user(self, api_key, api_secret, access_token, access_secret, bearer_token):
         """
         this method allows you to authenticate to the api and retrieve the user object.
 
@@ -66,13 +66,20 @@ class Helpers:
         :return: user
         """
         # Authenticate Key to use Twitter API
-        auth = tweepy.OAuthHandler(api_key, api_secret)
-        auth.set_access_token(access_token, access_secret)
-        # calling the api
-        api = tweepy.API(auth, wait_on_rate_limit=True)
+        api = tweepy.Client(
+            consumer_key=api_key,
+            consumer_secret=api_secret,
+            access_token=access_token,
+            access_token_secret=access_secret
+        )
+
+        # Authenticate with bearer token
+        api_search = client = tweepy.Client(bearer_token)
+
         # getting the authenticated user's information
-        user = api.me()
-        return api, user
+        user = api.get_me()
+        user = user.data
+        return api, api_search, user
 
     def logging_get_format(self, username=None):
         """

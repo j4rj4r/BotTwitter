@@ -12,6 +12,8 @@ accounts:
       - "805850378096-UJBmDK71e4E3roj2lizUI"
       # Access token secret
       - "xjH6TWQ4wBbNQ1Lv"
+      # Bearer token
+      - "hdjhdjshdjhsdj"
 
 
 # Minimum level wanted for script logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)

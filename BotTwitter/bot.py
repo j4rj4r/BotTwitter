@@ -22,7 +22,7 @@ class Bot:
         self.helpers = helpers
 
     # Worker 1 : Participate to giveaway
-    def worker_participate_giveaways(self, user, api):
+    def worker_participate_giveaways(self, user, api, api_search):
         """
         Run main process to participate to a giveaways
         """
@@ -30,13 +30,13 @@ class Bot:
             try:
                 # Set logs for the current user
                 #self.helpers.logging_update_format(username=user.screen_name)
-                self.helpers.logging_configuration(self.config['logging_level'],username=user.screen_name)
+                self.helpers.logging_configuration(self.config['logging_level'],username=user.username)
                 # Initialize actions and unfollow giveaway > 2 month
                 action = Action(self.config, self.list_name, user, api, self.alerters)
                 action.manage_follow.unfollow() # Clear the follow list before to do any actions
 
                 # We retrieve the list of actions to do
-                list_action = action.search_tweets(api)
+                list_action = action.search_tweets(api_search)
                 # If there is no action
                 if not list_action:
                     logging.error('There is no action to do!')
@@ -48,21 +48,21 @@ class Bot:
 
                 # Participate to giveaway
                 action.manage_action(list_action)
-            except Exception as e:
+            except tweepy.TweepyException as error:
                 logging.error('Error thread to participate to giveaways.')
                 logging.debug(e)
-                if e.api_code == 261:
+                if e.api_codes == 261:
                      # Send notification for the error code 261
                     alert_message = 'Error code 261 : Application blocked by Twitter.'
                     logging.error(alert_message)
                     if self.alerters:
-                        self.alerters(subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
+                        self.alerters(subject='⚠ An issue with the account @'+ self.user.username +' need your attention ! ⚠',
                                     content=alert_message)
                     # Send notification for the end of the thread
-                    alert_message = '/!\\ Stop participations for account ' + user.screen_name
+                    alert_message = '/!\\ Stop participations for account ' + user.username
                     logging.error(alert_message)
                     if self.alerters:
-                        self.alerters(subject='🔴❌🔴 An issue with the account @'+self.user.screen_name+' need your attention ! 🔴❌🔴',
+                        self.alerters(subject='🔴❌🔴 An issue with the account @'+ self.user.username +' need your attention ! 🔴❌🔴',
                                     content=alert_message)
                     self.run = False
 
@@ -116,7 +116,7 @@ class Bot:
                         )
                     else:
                         # Notify user with default message
-                        self.alerters(subject='🎁 Congratulation @'+user.screen_name+', You probably won a giveaway ! 👏',
+                        self.alerters(subject='🎁 Congratulation @'+ user.username +', You probably won a giveaway ! 👏',
                                 content='You just received a new private message on Twitter')
             except Exception as e:
                 logging.error('Error thread to notify new private message.')
@@ -135,7 +135,7 @@ class Bot:
         # Start workers for every accounts
         for user_information in user_information_list:
             # Worker 1 : Participate to giveaways
-            thread_participate = threading.Thread(target=self.worker_participate_giveaways, args=(user_information['user'], user_information['api']))
+            thread_participate = threading.Thread(target=self.worker_participate_giveaways, args=(user_information['user'], user_information['api'], user_information['api_search']))
             threads.append(thread_participate)
             # Worker 2 : Monitoring of new private messages
             if self.alerters:

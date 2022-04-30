@@ -31,7 +31,7 @@ class Action:
         self.manage_giveaway = Manage_Giveaway(user) # Init giveaway management for stats
         self.alerters =  alerters
 
-    def search_tweets(self, api):
+    def search_tweets(self, api_search):
         """
         Search for tweets and return a list of tweets based on the configuration.
 
@@ -42,9 +42,9 @@ class Action:
 
         for word in self.configuration['words_to_search']:
             logging.info('Searching tweet with the word : %s', word)
-            for tweet in tweepy.Cursor(api.search, q=word,
-                                since=(datetime.now() - timedelta(self.configuration['nb_days_rollback'])).strftime('%Y-%m-%d'),
-                                lang='fr', tweet_mode='extended').items(self.configuration['max_retrieve']):
+            for tweet in api_search.search_recent_tweets(query=word,
+                                start_time=(datetime.now() - timedelta(self.configuration['nb_days_rollback'])).strftime('%Y-%m-%d'),
+                                lang='fr', max_results=self.configuration['max_retrieve']):
 
                 if tweet.retweet_count > self.configuration['min_retweet']:
                     # Blacklist words management 
@@ -161,29 +161,29 @@ class Action:
                     )
                     logging.info('You participated in the giveaway of : @%s', screen_name)
 
-            except tweepy.TweepError as e:
+            except tweepy.TweepyException as e:
                 logging.debug(e)
-                if e.api_code == 327:
+                if e.api_codes == 327:
                     pass
-                elif e.api_code == 161:
+                elif e.api_codes == 161:
                     logging.warning('The account can no longer follow. We go to the next step.')
                     break
-                elif e.api_code == 136:
+                elif e.api_codes == 136:
                     logging.info('You have been blocked by: %s', screen_name)
                     break
-                elif e.api_code == 326:
-                    alert_message = 'You have to do a captcha on the account: ' + self.user.screen_name
+                elif e.api_codes == 326:
+                    alert_message = 'You have to do a captcha on the account: ' + self.user.username
                     logging.warning(alert_message)
                     if self.config["be_notify_by_alerters"]:
-                        self.alerters(  subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
+                        self.alerters(  subject='⚠ An issue with the account @'+ self.user.username +' need your attention ! ⚠',
                                     content=alert_message)
                     # We wait for the captcha to be solved
                     time.sleep(60 * 60 * 24) # Wait one day
-                elif e.api_code == 261:
+                elif e.api_codes == 261:
                     alert_message = 'Your application have been disable/blocked by Twitter.'
                     logging.error(alert_message)
                     if self.config["be_notify_by_alerters"]:
-                        self.alerters(  subject='⚠ An issue with the account @'+self.user.screen_name+' need your attention ! ⚠',
+                        self.alerters(  subject='⚠ An issue with the account @'+ self.user.username +' need your attention ! ⚠',
                                     content=alert_message)
                     raise e
                 else:

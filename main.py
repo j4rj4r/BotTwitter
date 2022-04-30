@@ -45,16 +45,16 @@ for account in config['accounts']:
     for account_name, list_auth in account.items():
         try:
             # Extract API & ACCESS credentials
-            api_key, api_secret, access_token, access_secret = list_auth
-            api, user = helpers.get_user(api_key, api_secret, access_token, access_secret)
+            api_key, api_secret, access_token, access_secret, bearer_token = list_auth
+            api, api_search, user = helpers.get_user(api_key, api_secret, access_token, access_secret, bearer_token)
 
             # Creation of the user in the database if it does not already exist
-            if not dbuser.user_exists(user.id_str):
-                dbuser.add_user(user.id_str, user.screen_name)
+            if not dbuser.user_exists(user.id):
+                dbuser.add_user(user.id, user.username)
 
-            list_name.append('@' + user.screen_name)
-            user_information_list.append({'api': api, 'user': user})
-            logging.info('Configuration completed for the account : %s', user.screen_name)
+            list_name.append('@' + user.username)
+            user_information_list.append({'api': api, 'api_search': api_search, 'user': user})
+            logging.info('Configuration completed for the account : %s', user.username)
 
         except Exception as e:
             logging.error('Error with account : %s', account_name)

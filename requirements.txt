@@ -1,3 +1,3 @@
-Pyyaml
-tweepy
-feedparser
+Pyyaml==6.0
+tweepy==4.8.0
+feedparser==6.0.8 
