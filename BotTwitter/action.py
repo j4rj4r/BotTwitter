@@ -42,10 +42,16 @@ class Action:
 
         for word in self.configuration['words_to_search']:
             logging.info('Searching tweet with the word : %s', word)
-            for tweet in api_search.search_recent_tweets(query=word,
-                                start_time=(datetime.now() - timedelta(self.configuration['nb_days_rollback'])).strftime('%Y-%m-%d'),
-                                lang='fr', max_results=self.configuration['max_retrieve']):
-
+            if self.configuration['nb_days_rollback'] == 0 :
+                startime = datetime.now() - timedelta(0, 20)
+            else :
+                startime = datetime.now() - timedelta(self.configuration['nb_days_rollback'])
+            startime = startime.isoformat('T') + "Z"
+            tweetlist =  api_search.search_recent_tweets(query=word,
+                                start_time=startime,
+                                max_results=self.configuration['max_retrieve'])
+            for tweet in tweetlist.data :
+                tweet_info = api_search.get_tweet(tweet.id, tweet_fields=["public_metrics"], expansions=["referenced_tweets.id"])
                 if tweet.retweet_count > self.configuration['min_retweet']:
                     # Blacklist words management 
                     blacklist = self.configuration['words_to_blacklist']
